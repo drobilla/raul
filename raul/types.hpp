@@ -15,29 +15,21 @@
  * 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
-#include "raul/Namespaces.hpp"
+#ifndef RAUL_TYPES_HPP
+#define RAUL_TYPES_HPP
+
+#include <stdint.h>
 
 namespace Raul {
 
+typedef uint32_t TickTime;  ///< absolute time in ticks
+typedef uint32_t TickCount; ///< offset in ticks
+typedef double   BeatTime;
+typedef double   BeatCount;
+typedef double   Seconds;
 
-/** Create a prefixed qname from @a uri, if possible.
- *
- * If @a uri can not be qualified with the namespaces currently in this
- * Namespaces, @a uri will be returned unmodified.
- */
-std::string
-Namespaces::qualify(std::string uri) const
-{
-	for (const_iterator i = begin(); i != end(); ++i) {
-		size_t ns_len = i->second.length();
+typedef unsigned char Byte;
 
-		if (uri.substr(0, ns_len) == i->second)
-			return i->first + ":" + uri.substr(ns_len);
-	}
-
-	return uri;
 }
 
-
-} // namespace Raul
-
+#endif // RAUL_TYPES_HPP

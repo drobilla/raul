@@ -15,29 +15,22 @@
  * 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
-#include "raul/Namespaces.hpp"
+#ifndef RAUL_QUANTIZER_HPP
+#define RAUL_QUANTIZER_HPP
+
+#include <cmath>
 
 namespace Raul {
 
 
-/** Create a prefixed qname from @a uri, if possible.
- *
- * If @a uri can not be qualified with the namespaces currently in this
- * Namespaces, @a uri will be returned unmodified.
- */
-std::string
-Namespaces::qualify(std::string uri) const
-{
-	for (const_iterator i = begin(); i != end(); ++i) {
-		size_t ns_len = i->second.length();
-
-		if (uri.substr(0, ns_len) == i->second)
-			return i->first + ":" + uri.substr(ns_len);
+class Quantizer {
+public:
+	inline static double quantize(double q, double value) {
+		return (q > 0) ? lrint(value / q) * q : value;
 	}
-
-	return uri;
-}
+};
 
 
 } // namespace Raul
 
+#endif // RAUL_QUANTIZER_HPP

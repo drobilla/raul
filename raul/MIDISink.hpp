@@ -15,29 +15,27 @@
  * 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
-#include "raul/Namespaces.hpp"
+#ifndef RAUL_MIDI_SINK_HPP
+#define RAUL_MIDI_SINK_HPP
+
+#include <stdexcept>
+#include <raul/TimeSlice.hpp>
+#include <raul/Deletable.hpp>
 
 namespace Raul {
 
 
-/** Create a prefixed qname from @a uri, if possible.
- *
- * If @a uri can not be qualified with the namespaces currently in this
- * Namespaces, @a uri will be returned unmodified.
+/** Pure virtual base for anything you can write MIDI to.
  */
-std::string
-Namespaces::qualify(std::string uri) const
-{
-	for (const_iterator i = begin(); i != end(); ++i) {
-		size_t ns_len = i->second.length();
-
-		if (uri.substr(0, ns_len) == i->second)
-			return i->first + ":" + uri.substr(ns_len);
-	}
-
-	return uri;
-}
+class MIDISink : public Deletable {
+public:
+	virtual void write_event(BeatTime             time,
+	                         size_t               ev_size,
+	                         const unsigned char* ev) throw (std::logic_error) = 0;
+};
 
 
 } // namespace Raul
+
+#endif // RAUL_MIDI_SINK_HPP
 

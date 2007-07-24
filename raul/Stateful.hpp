@@ -15,29 +15,28 @@
  * 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
-#include "raul/Namespaces.hpp"
+#ifndef STATEFUL_H
+#define STATEFUL_H
+
+#include <raul/RDFModel.hpp>
 
 namespace Raul {
 
 
-/** Create a prefixed qname from @a uri, if possible.
- *
- * If @a uri can not be qualified with the namespaces currently in this
- * Namespaces, @a uri will be returned unmodified.
- */
-std::string
-Namespaces::qualify(std::string uri) const
-{
-	for (const_iterator i = begin(); i != end(); ++i) {
-		size_t ns_len = i->second.length();
+class Stateful {
+public:
+	virtual ~Stateful() {}
 
-		if (uri.substr(0, ns_len) == i->second)
-			return i->first + ":" + uri.substr(ns_len);
-	}
+	virtual void write_state(RDF::Model& model) = 0;
+	
+	RDF::Node id() const { return _id; }
+	void      set_id(const RDF::Node& id) { _id = id; }
 
-	return uri;
-}
-
+protected:
+	RDF::Node _id;
+};
+	
 
 } // namespace Raul
 
+#endif // STATEFUL_H

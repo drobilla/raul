@@ -15,29 +15,39 @@
  * 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
-#include "raul/Namespaces.hpp"
+#ifndef RAUL_ATOMIC_PTR_HPP
+#define RAUL_ATOMIC_PTR_HPP
+
+#include <glib.h>
 
 namespace Raul {
 
 
-/** Create a prefixed qname from @a uri, if possible.
- *
- * If @a uri can not be qualified with the namespaces currently in this
- * Namespaces, @a uri will be returned unmodified.
- */
-std::string
-Namespaces::qualify(std::string uri) const
-{
-	for (const_iterator i = begin(); i != end(); ++i) {
-		size_t ns_len = i->second.length();
+template<typename T>
+class AtomicPtr {
+public:
 
-		if (uri.substr(0, ns_len) == i->second)
-			return i->first + ":" + uri.substr(ns_len);
-	}
+	inline AtomicPtr()
+		{ g_atomic_pointer_set(&_val, NULL); }
 
-	return uri;
-}
+	inline AtomicPtr(const AtomicPtr& copy)
+		{ g_atomic_pointer_set(&_val, copy.get()); }
+
+	inline T* get() const
+		{ return (T*)g_atomic_pointer_get(&_val); }
+
+	inline void operator=(T* val)
+		{ g_atomic_pointer_set(&_val, val); }
+
+	/** Set value to newval iff current value is oldval */
+	inline bool compare_and_exchange(int oldval, int newval)
+		{ return g_atomic_pointer_compare_and_exchange(&_val, oldval, newval); }
+
+private:
+	volatile T* _val;
+};
 
 
 } // namespace Raul
 
+#endif // RAUL_ATOMIC_PTR_HPP
