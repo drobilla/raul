@@ -22,6 +22,7 @@
 #include <string>
 #include <sstream>
 
+#include "raul/Atom.hpp"
 #include "redlandmm/Node.hpp"
 #include "redlandmm/World.hpp"
 
