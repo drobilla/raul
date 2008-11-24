@@ -223,11 +223,11 @@ List<T>::chop_front(List<T>& front, size_t front_size, Node* new_head)
 	} else {
 		front._size = front_size;
 		front._head = _head;
-		front._tail = new_head->_prev;
+		front._tail = new_head->prev();
 		if (new_head->prev())
-			new_head->prev()->_next = NULL;
+			new_head->prev()->next(NULL);
 		_head = new_head;
-		new_head->_prev = NULL;
+		new_head->prev(NULL);
 		_size -= front_size;
 	}
 	assert((front._head.get() && front._tail.get()) || (!front._head.get() && !front._tail.get()));
