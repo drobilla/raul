@@ -109,7 +109,6 @@ List<T>::push_back(T& elem)
  *
  * This operation is fast ( O(1) ).
  * The appended list is not safe to use concurrently with this call.
- *
  * The appended list will be empty after this call.
  *
  * Thread safe (may be called while another thread is reading the list).
@@ -123,6 +122,9 @@ List<T>::append(List<T>& list)
 	Node* const my_tail    = _tail.get();
 	Node* const other_head = list._head.get();
 	Node* const other_tail = list._tail.get();
+	
+	assert((my_head && my_tail) || (!my_head && !my_tail));
+	assert((other_head && other_tail) || (!other_head && !other_tail));
 
 	// Appending to an empty list
 	if (my_head == NULL && my_tail == NULL) {
@@ -178,7 +180,6 @@ List<T>::erase(const iterator iter)
 	Node* const n = iter._listnode;
 	
 	if (n) {
-	
 		Node* const prev = n->prev();
 		Node* const next = n->next();
 
@@ -199,7 +200,38 @@ List<T>::erase(const iterator iter)
 		--_size;
 	}
 
+	assert((_head.get() && _tail.get()) || (!_head.get() && !_tail.get()));
 	return n;
+}
+
+
+template <typename T>
+void
+List<T>::chop_front(List<T>& front, size_t front_size, Node* new_head)
+{
+	assert(new_head != _head.get());
+	assert((front._head.get() && front._tail.get()) || (!front._head.get() && !front._tail.get()));
+	assert((_head.get() && _tail.get()) || (!_head.get() && !_tail.get()));
+	if (!new_head) {
+		assert(front_size == static_cast<size_t>(_size.get()));
+		front._size = _size;
+		front._head = _head;
+		front._tail = _tail;
+		_size = 0;
+		_head = NULL;
+		_tail = NULL;
+	} else {
+		front._size = front_size;
+		front._head = _head;
+		front._tail = new_head->_prev;
+		if (new_head->prev())
+			new_head->prev()->_next = NULL;
+		_head = new_head;
+		new_head->_prev = NULL;
+		_size -= front_size;
+	}
+	assert((front._head.get() && front._tail.get()) || (!front._head.get() && !front._tail.get()));
+	assert((_head.get() && _tail.get()) || (!_head.get() && !_tail.get()));
 }
 
 

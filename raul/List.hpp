@@ -69,11 +69,17 @@ public:
 	};
 
 
-	List() : _size(0), _end_iter(this), _const_end_iter(this) {
+	List(size_t size=0, Node* head=NULL, Node* tail=NULL)
+		: _size(size)
+		, _end_iter(this)
+		, _const_end_iter(this)
+	{
+		_head = head;
+		_tail = tail;
 		_end_iter._listnode = NULL;
 		_const_end_iter._listnode = NULL;
 	}
-
+	
 	~List();
 
 	void push_back(Node* elem); ///< Realtime Safe
@@ -106,6 +112,9 @@ public:
 		inline bool            operator==(const const_iterator& iter) const;
 		inline bool            operator==(const iterator& iter) const;
 	
+		inline       typename List<T>::Node* node()       { return _listnode; }
+		inline const typename List<T>::Node* node() const { return _listnode; }
+
 		friend class List<T>;
 		
 	private:
@@ -126,7 +135,7 @@ public:
 		inline bool      operator!=(const const_iterator& iter) const;
 		inline bool      operator==(const iterator& iter) const;
 		inline bool      operator==(const const_iterator& iter) const;
-	
+		
 		friend class List<T>;
 		friend class List<T>::const_iterator;
 
@@ -135,6 +144,7 @@ public:
 		typename List<T>::Node* _listnode;
 	};
 
+	void chop_front(List<T>& front, size_t front_size, Node* new_head);
 	
 	Node* erase(const iterator iter);
 
@@ -147,6 +157,9 @@ public:
 	T&       front()       { return *begin(); }
 	const T& front() const { return *begin(); }
 
+	Node*       head()       { return _head.get(); }
+	const Node* head() const { return _head.get(); }
+
 private:
 	AtomicPtr<Node> _head;
 	AtomicPtr<Node> _tail; ///< writer only
@@ -158,6 +171,7 @@ private:
 
 } // namespace Raul
 
+#endif // RAUL_LIST_HPP
+
 #include "ListImpl.hpp"
 
-#endif // RAUL_LIST_HPP
