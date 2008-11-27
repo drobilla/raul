@@ -37,14 +37,14 @@ public:
 		{ return (T*)g_atomic_pointer_get((volatile gpointer*)(&_val)); }
 
 	inline void operator=(T* val)
-		{ g_atomic_pointer_set((volatile gpointer*)(&_val), (gpointer)val); }
+		{ g_atomic_pointer_set(&_val, static_cast<gpointer>(val)); }
 
 	/** Set value to newval iff current value is oldval */
 	inline bool compare_and_exchange(int oldval, int newval)
-		{ return g_atomic_pointer_compare_and_exchange((volatile gpointer*)(&_val), oldval, newval); }
+		{ return g_atomic_pointer_compare_and_exchange(&_val, oldval, newval); }
 
 private:
-	mutable T* volatile _val;
+	mutable volatile gpointer _val;
 };
 
 

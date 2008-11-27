@@ -17,7 +17,9 @@ read_write_test(EventRingBuffer& rb, unsigned offset)
 	snprintf((char*)buf, 5, "%d", offset);
 	size = strlen((char*)buf);
 
+#ifndef NDEBUG
 	size_t written = rb.write(t, size, buf);
+#endif
 	assert(written == size);
 	
 	for (size_t i=0; i < 4; ++i)
