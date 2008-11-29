@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-import Params
 import autowaf
 
 # Version of this package (even if built as a child)
@@ -35,14 +34,14 @@ def configure(conf):
 
 def build(bld):
 	# Headers
-	install_files('INCLUDEDIR', 'raul', 'raul/*.hpp')
-	install_files('INCLUDEDIR', 'raul', 'raul/*.h')
+	bld.install_files('${INCLUDEDIR}/raul', 'raul/*.hpp')
+	bld.install_files('${INCLUDEDIR}/raul', 'raul/*.h')
 	
 	# Pkgconfig file
 	autowaf.build_pc(bld, 'RAUL', RAUL_VERSION, 'GLIBMM GTHREAD')
 	
 	# Library
-	obj = bld.create_obj('cpp', 'shlib')
+	obj = bld.new_task_gen('cxx', 'shlib')
 	obj.source = '''
 		src/Maid.cpp
 		src/Path.cpp
@@ -51,19 +50,19 @@ def build(bld):
 		src/Symbol.cpp
 		src/Thread.cpp
 	'''
-	obj.includes = ['.','./raul']
-	obj.name     = 'libraul'
-	obj.target   = 'raul'
-	obj.uselib   = 'GLIBMM GTHREAD'
-	obj.inst_dir = bld.env()['LIBDIRNAME']
-	obj.vnum     = RAUL_LIB_VERSION
+	obj.includes     = ['.','./raul']
+	obj.name         = 'libraul'
+	obj.target       = 'raul'
+	obj.uselib       = 'GLIBMM GTHREAD'
+	obj.install_path = '${LIBDIR}'
+	obj.vnum         = RAUL_LIB_VERSION
 	
 	# Unit tests
 	bld.add_subdirs('tests')
 	
 	# Documentation
 	autowaf.build_dox(bld, 'RAUL', RAUL_VERSION, srcdir, blddir)
-	install_files('HTMLDIR', '', blddir + '/default/doc/html/*')
+	bld.install_files('${HTMLDIR}', blddir + '/default/doc/html/*')
 
 def shutdown():
 	autowaf.shutdown()

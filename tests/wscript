@@ -15,10 +15,10 @@ def build(bld):
 		table_test
 	'''
 	for i in tests.split():
-		obj = bld.create_obj('cpp', 'program')
+		obj = bld.new_task_gen('cxx', 'program')
 		obj.source       = i + '.cpp'
 		obj.includes     = '..'
 		obj.uselib_local = 'libraul'
 		obj.target       = i
-		obj.inst_var     = 0
+		obj.install_path = ''
 
