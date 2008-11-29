@@ -1,6 +1,6 @@
 #include <iostream>
-#include <raul/AtomicInt.hpp>
-#include <raul/AtomicPtr.hpp>
+#include "raul/AtomicInt.hpp"
+#include "raul/AtomicPtr.hpp"
 
 using namespace std;
 using namespace Raul;

@@ -1,5 +1,5 @@
 #include <iostream>
-#include <raul/Thread.hpp>
+#include "raul/Thread.hpp"
 
 using namespace std;
 using namespace Raul;
