@@ -46,11 +46,11 @@ public:
 		BLOB
 	};
 
-	Atom()                       : _type(NIL),    _blob_val(0)                     {}
-	Atom(int32_t val)            : _type(INT),    _int_val(val)                    {}
-	Atom(float val)              : _type(FLOAT),  _float_val(val)                  {}
-	Atom(bool val)               : _type(BOOL),   _bool_val(val)                   {}
-	Atom(const char* val)        : _type(STRING), _string_val(strdup(val))         {}
+	Atom()                : _type(NIL),    _blob_val(0)                     {}
+	Atom(int32_t val)     : _type(INT),    _int_val(val)                    {}
+	Atom(float val)       : _type(FLOAT),  _float_val(val)                  {}
+	Atom(bool val)        : _type(BOOL),   _bool_val(val)                   {}
+	Atom(const char* val) : _type(STRING), _string_val(strdup(val))         {}
 	
 	Atom(Type t, const std::string& val) : _type(t), _string_val(strdup(val.c_str())) {}
 	
