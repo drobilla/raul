@@ -89,12 +89,22 @@ public:
 	
 	/** Return the name of this object (everything after the last '/').
 	 * This is the "method name" for OSC paths.
+	 * The empty string may be returned (if the path is "/").
 	 */
-	inline Symbol name() const {
+	inline std::string name() const {
 		if ((*this) == "/")
 			return "";
 		else
 			return substr(find_last_of("/")+1);
+	}
+	
+	
+	/** Return the name of this object (everything after the last '/').
+	 * This is the "method name" for OSC paths.
+	 * Note it is illegal to call this method on the path "/".
+	 */
+	inline Symbol symbol() const {
+		return substr(find_last_of("/")+1);
 	}
 	
 	
