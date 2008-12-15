@@ -50,7 +50,8 @@ def build(bld):
 		src/Symbol.cpp
 		src/Thread.cpp
 	'''
-	obj.includes     = ['.','./raul']
+	obj.export_incdirs = ['.']
+	obj.includes     = ['.', './src']
 	obj.name         = 'libraul'
 	obj.target       = 'raul'
 	obj.uselib       = 'GLIBMM GTHREAD'
