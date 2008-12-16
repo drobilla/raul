@@ -18,8 +18,8 @@
 #ifndef RAUL_COMMAND_HPP
 #define RAUL_COMMAND_HPP
 
-#include "raul/Semaphore.hpp"
 #include <boost/utility.hpp>
+#include "raul/Semaphore.hpp"
 
 namespace Raul {
 
@@ -30,7 +30,7 @@ namespace Raul {
  * (OSC, GUI, etc) and waiting on the result.  Works well for coarsely timed
  * events (e.g. 'play' clicked in a GUI).
  *
- * Realtime safe on the commend executing side.
+ * Realtime safe on the command executing side.
  *
  * \ingroup raul
  */

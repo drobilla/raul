@@ -69,8 +69,6 @@ public:
 			free(_blob_val);
 	}
 
-	// Gotta love C++ boilerplate:
-	
 	Atom(const Atom& copy)
 		: _type(copy._type)
 	{

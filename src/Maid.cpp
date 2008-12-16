@@ -17,6 +17,7 @@
 
 #include "raul/Maid.hpp"
 #include "raul/Deletable.hpp"
+#include "raul/SharedPtr.hpp"
 
 namespace Raul {
 
