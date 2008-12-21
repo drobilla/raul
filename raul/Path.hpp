@@ -75,7 +75,8 @@ public:
 	static bool is_valid(const std::basic_string<char>& path);
 	
 	static bool is_valid_name(const std::basic_string<char>& name) {
-		return name.length() > 0 && is_valid(std::string("/").append(name));
+		return name.length() > 0 && name.find("/") == std::string::npos
+			&& is_valid(std::string("/").append(name));
 	}
 
 	static std::string pathify(const std::basic_string<char>& str);
