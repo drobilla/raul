@@ -21,6 +21,7 @@
 #include <cstring>
 #include <string>
 #include <sstream>
+#include <math.h>
 
 #include "raul/Atom.hpp"
 #include "redlandmm/Node.hpp"
@@ -72,6 +73,8 @@ atom_to_node(Redland::World& world, const Atom& atom)
 		type = librdf_new_uri(world.world(), CUC("http://www.w3.org/2001/XMLSchema#integer"));
 		break;
 	case Atom::FLOAT:
+		if (isnan(atom.get_float()) || isinf(atom.get_float()))
+			break;
 		os.precision(8);
 		os << atom.get_float();
 		str = os.str();
