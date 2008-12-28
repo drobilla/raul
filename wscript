@@ -28,8 +28,10 @@ def set_options(opt):
 def configure(conf):
 	autowaf.configure(conf)
 	autowaf.check_tool(conf, 'compiler_cxx')
-	autowaf.check_pkg(conf, 'glibmm-2.4', destvar='GLIBMM', vnum='2.14.0', mandatory=True)
-	autowaf.check_pkg(conf, 'gthread-2.0', destvar='GTHREAD', vnum='2.14.0', mandatory=True)
+	autowaf.check_pkg(conf, 'glibmm-2.4', atleast_version='2.14.0',
+			uselib_store='GLIBMM', mandatory=True)
+	autowaf.check_pkg(conf, 'gthread-2.0', atleast_version='2.14.0',
+			uselib_store='GTHREAD', mandatory=True)
 	autowaf.print_summary(conf)
 
 def build(bld):
