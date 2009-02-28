@@ -78,7 +78,6 @@ private:
  */
 class TimeStamp {
 public:
-
 	inline TimeStamp(TimeUnit unit, uint32_t ticks=0, uint32_t subticks=0)
 		: _ticks(ticks)
 		, _subticks(subticks)

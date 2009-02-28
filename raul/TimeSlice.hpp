@@ -58,23 +58,23 @@ public:
 		, _offset_ticks(TimeUnit(TimeUnit::FRAMES, rate), 0, 0)
 	{}
 
-
 	/** Set the start and length of the slice.
 	 *
 	 * Note that external offset is not affected by this, don't forget to reset
 	 * the offset each cycle!
 	 */
-	void set_window(TimeStamp start, TimeDuration length) {
+	void set_slice(TimeStamp start, TimeDuration length) {
+		assert(start.unit() == ticks_unit());
+		assert(length.unit() == ticks_unit());
 		_start_ticks = start;
 		_length_ticks = length;
 		update_beat_time();
 	}
 
-	void set_slice(TimeStamp start, TimeDuration length) {
-		assert(start.unit() == length.unit());
-		_start_ticks = start;
+	void set_length(TimeDuration length) {
+		assert(length.unit() == ticks_unit());
 		_length_ticks = length;
-		update_beat_time();
+		_length_beats = ticks_to_beats(_length_ticks);
 	}
 
 	bool contains(TimeStamp time) {
