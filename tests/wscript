@@ -2,16 +2,16 @@
 
 def build(bld):
 	tests = '''
-		path_test 
-		thread_test 
-		queue_test 
-		ringbuffer_test 
-		midi_ringbuffer_test 
-		atomic_test 
-		list_test 
-		time_test 
-		quantize_test 
-		smf_test 
+		path_test
+		thread_test
+		queue_test
+		ringbuffer_test
+		midi_ringbuffer_test
+		atomic_test
+		list_test
+		time_test
+		quantize_test
+		smf_test
 		table_test
 	'''
 	for i in tests.split():

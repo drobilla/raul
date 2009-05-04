@@ -38,10 +38,10 @@ def build(bld):
 	# Headers
 	bld.install_files('${INCLUDEDIR}/raul', 'raul/*.hpp')
 	bld.install_files('${INCLUDEDIR}/raul', 'raul/*.h')
-	
+
 	# Pkgconfig file
 	autowaf.build_pc(bld, 'RAUL', RAUL_VERSION, 'GLIBMM GTHREAD')
-	
+
 	# Library
 	obj = bld.new_task_gen('cxx', 'shlib')
 	obj.source = '''
@@ -59,10 +59,10 @@ def build(bld):
 	obj.uselib       = 'GLIBMM GTHREAD'
 	obj.install_path = '${LIBDIR}'
 	obj.vnum         = RAUL_LIB_VERSION
-	
+
 	# Unit tests
 	bld.add_subdirs('tests')
-	
+
 	# Documentation
 	autowaf.build_dox(bld, 'RAUL', RAUL_VERSION, srcdir, blddir)
 	bld.install_files('${HTMLDIR}', blddir + '/default/doc/html/*')
