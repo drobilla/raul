@@ -41,14 +41,14 @@ namespace AtomRDF {
 inline Atom
 node_to_atom(const Redland::Node& node)
 {
-	if (node.type() == Redland::Node::RESOURCE)
-		return Atom(node.to_c_string());
+	if (node.is_bool()) 
+		return Atom(bool(node.to_bool()));
+	else if (node.is_resource())
+		return Atom(Atom::URI, node.to_c_string());
 	else if (node.is_float())
 		return Atom(node.to_float());
 	else if (node.is_int())
 		return Atom(node.to_int());
-	else if (node.is_bool()) 
-		return Atom(node.to_bool());
 	else
 		return Atom(node.to_c_string());
 }
@@ -91,6 +91,10 @@ atom_to_node(Redland::World& world, const Atom& atom)
 			str = "false";
 		type = librdf_new_uri(world.world(), CUC("http://www.w3.org/2001/XMLSchema#boolean"));
 		break;
+	case Atom::URI:
+		str = atom.get_uri();
+		node = librdf_new_node_from_uri_string(world.world(), CUC(str.c_str()));
+		break;
 	case Atom::STRING:
 		str = atom.get_string();
 		break;
@@ -101,7 +105,7 @@ atom_to_node(Redland::World& world, const Atom& atom)
 		break;
 	}
 	
-	if (str != "")
+	if (!node && str != "")
 		node = librdf_new_node_from_typed_literal(world.world(), CUC(str.c_str()), NULL, type);
 
 	return Redland::Node(world, node);
