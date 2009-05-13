@@ -102,6 +102,7 @@ private:
 	unsigned    _context;
 	std::string _name;
 	bool        _pthread_exists;
+	bool        _own_thread;
 	pthread_t   _pthread;
 };
 
