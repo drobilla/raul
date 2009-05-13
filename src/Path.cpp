@@ -21,9 +21,10 @@ using namespace std;
 
 namespace Raul {
 
-const std::string Path::prefix     = "path:";
-const size_t      Path::prefix_len = 5;
-const std::string Path::root_uri   = Path::prefix + "/";
+const string Path::scheme     = "path";
+const string Path::prefix     = Path::scheme + ":";
+const size_t Path::prefix_len = prefix.length();
+const string Path::root_uri   = Path::prefix + "/";
 
 bool
 Path::is_valid(const std::basic_string<char>& path_str)

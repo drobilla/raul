@@ -55,6 +55,7 @@ public:
 		std::string _path;
 	};
 
+	static const std::string scheme;
 	static const std::string prefix;
 	static const size_t      prefix_len;
 	static const std::string root_uri;

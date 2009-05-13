@@ -74,7 +74,7 @@ public:
 	std::string chop_scheme() const { return chop_start(":"); }
 
 	/** Return the URI scheme (everything before the first ':') */
-	inline std::string name() const { return substr(0, find(":")); }
+	inline std::string scheme() const { return substr(0, find(":")); }
 
 	inline const std::string& str()   const { return *this; }
 	inline const char*        c_str() const { return str().c_str(); }
