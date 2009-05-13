@@ -24,9 +24,6 @@
 #include <boost/utility.hpp>
 #include "raul/AtomicInt.hpp"
 
-#include <iostream>
-using namespace std;
-
 namespace Raul {
 
 
