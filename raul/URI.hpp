@@ -1,15 +1,15 @@
 /* This file is part of Raul.
  * Copyright (C) 2007 Dave Robillard <http://drobilla.net>
- * 
+ *
  * Raul is free software; you can redistribute it and/or modify it under the
  * terms of the GNU General Public License as published by the Free Software
  * Foundation; either version 2 of the License, or (at your option) any later
  * version.
- * 
+ *
  * Raul is distributed in the hope that it will be useful, but WITHOUT ANY
  * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  * FOR A PARTICULAR PURPOSE.  See the GNU General Public License for details.
- * 
+ *
  * You should have received a copy of the GNU General Public License along
  * with this program; if not, write to the Free Software Foundation, Inc.,
  * 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA
@@ -24,7 +24,7 @@
 
 namespace Raul {
 
-	
+
 /** Simple wrapper around standard string with useful URI-specific methods.
  *
  * This "should" be used for proper URIs (RFC3986), but not much support or
@@ -64,7 +64,7 @@ public:
 	static bool is_valid(const std::basic_string<char>& uri) {
 		return uri.find(":") != std::string::npos;
 	}
-	
+
 	/** Return path with every up to and including the first occurence of str */
 	inline const std::string chop_start(const std::string& str) const {
 		return substr(find(str) + str.length());
@@ -81,7 +81,7 @@ public:
 
 	inline operator const std::string() const { return str(); }
 	inline operator       std::string()       { return str(); }
-	
+
 	inline std::string substr(size_t start, size_t end=std::string::npos) const {
 		return str().substr(start, end);
 	}

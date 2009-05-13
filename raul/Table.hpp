@@ -1,15 +1,15 @@
 /* This file is part of Raul.
  * Copyright (C) 2007 Dave Robillard <http://drobilla.net>
- * 
+ *
  * Raul is free software; you can redistribute it and/or modify it under the
  * terms of the GNU General Public License as published by the Free Software
  * Foundation; either version 2 of the License, or (at your option) any later
  * version.
- * 
+ *
  * Raul is distributed in the hope that it will be useful, but WITHOUT ANY
  * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  * FOR A PARTICULAR PURPOSE.  See the GNU General Public License for details.
- * 
+ *
  * You should have received a copy of the GNU General Public License along
  * with this program; if not, write to the Free Software Foundation, Inc.,
  * 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA
@@ -39,7 +39,7 @@ class Table : public boost::noncopyable {
 public:
 	Table<K, T>() : _entries() {}
 	Table<K, T>(size_t capacity) : _entries(capacity) {}
-	
+
 	void clear() { _entries.clear(); }
 	bool empty() const { return _entries.empty(); }
 	void reserve(size_t n) { _entries.reserve(n); }
@@ -58,7 +58,7 @@ public:
 		const Table<K,T>* _table;
 		size_t _index;
 	};
-	
+
 	struct iterator {
 		iterator(Table<K,T>& t, size_t i) : _table(&t), _index(i) {}
 		inline std::pair<K, T>& operator*() const { return (std::pair<K, T>&)_table->_entries[_index]; }
@@ -83,14 +83,14 @@ public:
 	void erase(iterator i);
 	void erase(iterator start, iterator end);
 	void erase_by_index(size_t start, size_t end);
-	
+
 	SharedPtr< Table<K, T> > yank(iterator start, iterator end);
 
 	std::pair<iterator, bool> cram(const Table<K, T>& range);
-	
+
 	const_iterator find(const_iterator start, const_iterator end, const K& key) const;
 	const_iterator find(const K& key) const;
-	
+
 	iterator find(const_iterator start, const_iterator end, const K& key);
 	iterator find(const K& key);
 
@@ -110,7 +110,7 @@ private:
 #endif
 
 	friend class iterator;
-	
+
 	typedef std::pair<K, T> Entry;
 
 	std::vector<Entry> _entries;

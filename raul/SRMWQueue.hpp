@@ -1,15 +1,15 @@
 /* This file is part of Raul.
  * Copyright (C) 2007 Dave Robillard <http://drobilla.net>
- * 
+ *
  * Raul is free software; you can redistribute it and/or modify it under the
  * terms of the GNU General Public License as published by the Free Software
  * Foundation; either version 2 of the License, or (at your option) any later
  * version.
- * 
+ *
  * Raul is distributed in the hope that it will be useful, but WITHOUT ANY
  * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  * FOR A PARTICULAR PURPOSE.  See the GNU General Public License for details.
- * 
+ *
  * You should have received a copy of the GNU General Public License along
  * with this program; if not, write to the Free Software Foundation, Inc.,
  * 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA
@@ -34,7 +34,7 @@ namespace Raul {
  * data into this queue for a single thread to consume.
  *
  * The interface is intentionally as similar to std::queue as possible, but
- * note the additional thread restrictions imposed (e.g. empty() is only 
+ * note the additional thread restrictions imposed (e.g. empty() is only
  * legal to call in the read thread).
  *
  * Obey the threading restrictions documented here, or horrible nasty (possibly
@@ -54,35 +54,35 @@ class SRMWQueue : boost::noncopyable
 public:
 	SRMWQueue(size_t size);
 	~SRMWQueue();
-	
+
 
 	// Any thread:
-	
+
 	inline size_t capacity() const { return _size-1; }
 
-	
+
 	// Write thread(s):
 
 	inline bool full() const;
 	inline bool push(const T& obj);
-	
+
 
 	// Read thread:
-	
+
 	inline bool empty() const;
 	inline T&   front() const;
 	inline void pop();
-	
+
 private:
 
 	// Note that _front doesn't need to be an AtomicInt since it's only accessed
 	// by the (single) reader thread
-	
+
 	unsigned       _front; ///< Circular index of element at front of queue (READER ONLY)
 	AtomicInt      _back; ///< Circular index 1 past element at back of queue (WRITERS ONLY)
 	AtomicInt      _write_space; ///< Remaining free space for new elements (all threads)
 	const unsigned _size; ///< Size of @ref _objects (you can store _size-1 objects)
-	
+
 	T* const         _objects; ///< Fixed array containing queued elements
 	AtomicInt* const _valid; ///< Parallel array to _objects, whether loc is written or not
 };
@@ -145,7 +145,7 @@ SRMWQueue<T>::push(const T& elem)
 	 * really isn't designed to be filled... */
 
 	if (already_full) {
-		
+
 		/* if multiple threads simultaneously get here, _write_space may be 0
 		 * or negative.  The next call to pop() will set _write_space back to
 		 * a sane value.  Note that _write_space is not exposed, so this is okay
@@ -154,14 +154,14 @@ SRMWQueue<T>::push(const T& elem)
 		return false;
 
 	} else {
-		
+
 		// Note: _size must be a power of 2 for this to not explode when _back overflows
 		const unsigned write_index = (unsigned)_back.exchange_and_add(1) % _size;
-		
+
 		assert(_valid[write_index] == 0);
 		_objects[write_index] = elem;
 		++(_valid[write_index]);
-	
+
 		return true;
 
 	}

@@ -1,15 +1,15 @@
 /* This file is part of Raul.
  * Copyright (C) 2007 Dave Robillard <http://drobilla.net>
- * 
+ *
  * Raul is free software; you can redistribute it and/or modify it under the
  * terms of the GNU General Public License as published by the Free Software
  * Foundation; either version 2 of the License, or (at your option) any later
  * version.
- * 
+ *
  * Raul is distributed in the hope that it will be useful, but WITHOUT ANY
  * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  * FOR A PARTICULAR PURPOSE.  See the GNU General Public License for details.
- * 
+ *
  * You should have received a copy of the GNU General Public License along
  * with this program; if not, write to the Free Software Foundation, Inc.,
  * 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA
@@ -63,7 +63,7 @@ List<T>::push_back(Node* const ln)
 	assert(ln);
 
 	ln->next(NULL);
-	
+
 	if ( ! _head.get()) { // empty
 		ln->prev(NULL);
 		_tail = ln;
@@ -91,7 +91,7 @@ List<T>::push_back(T& elem)
 	assert(ln);
 
 	ln->next(NULL);
-	
+
 	if ( ! _head.get()) { // empty
 		ln->prev(NULL);
 		_tail = ln;
@@ -122,7 +122,7 @@ List<T>::append(List<T>& list)
 	Node* const my_tail    = _tail.get();
 	Node* const other_head = list._head.get();
 	Node* const other_tail = list._tail.get();
-	
+
 	assert((my_head && my_tail) || (!my_head && !my_tail));
 	assert((other_head && other_tail) || (!other_head && !other_tail));
 
@@ -132,7 +132,7 @@ List<T>::append(List<T>& list)
 		_tail = other_tail;
 		_size = list._size;
 	} else if (other_head != NULL && other_tail != NULL) {
-	
+
 		other_head->prev(my_tail);
 
 		// FIXME: atomicity an issue? _size < true size is probably fine...
@@ -167,7 +167,7 @@ List<T>::find(const T& val)
 
 
 /** Remove an element from the list using an iterator.
- * 
+ *
  * This function is realtime safe - it is the caller's responsibility to
  * delete the returned Node, or there will be a leak.
  * Thread safe (safe to call while another thread reads the list).
@@ -178,7 +178,7 @@ typename List<T>::Node*
 List<T>::erase(const iterator iter)
 {
 	Node* const n = iter._listnode;
-	
+
 	if (n) {
 		Node* const prev = n->prev();
 		Node* const next = n->next();
@@ -196,7 +196,7 @@ List<T>::erase(const iterator iter)
 
 		if (next)
 			n->next()->prev(prev);
-	
+
 		--_size;
 	}
 
@@ -313,7 +313,7 @@ List<T>::begin()
 	typename List<T>::iterator iter(this);
 
 	iter._listnode = _head.get();
-	
+
 	return iter;
 }
 
@@ -340,7 +340,7 @@ List<T>::const_iterator::const_iterator(const List<T>* const list)
 
 template <typename T>
 const T&
-List<T>::const_iterator::operator*() 
+List<T>::const_iterator::operator*()
 {
 	assert(_listnode);
 	return _listnode->elem();
@@ -349,7 +349,7 @@ List<T>::const_iterator::operator*()
 
 template <typename T>
 const T*
-List<T>::const_iterator::operator->() 
+List<T>::const_iterator::operator->()
 {
 	assert(_listnode);
 	return &_listnode->elem();

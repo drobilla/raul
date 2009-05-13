@@ -1,15 +1,15 @@
 /* This file is part of Raul.
  * Copyright (C) 2008 Dave Robillard <http://drobilla.net>
- * 
+ *
  * Raul is free software; you can redistribute it and/or modify it under the
  * terms of the GNU General Public License as published by the Free Software
  * Foundation; either version 2 of the License, or (at your option) any later
  * version.
- * 
+ *
  * Raul is distributed in the hope that it will be useful, but WITHOUT ANY
  * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  * FOR A PARTICULAR PURPOSE.  See the GNU General Public License for details.
- * 
+ *
  * You should have received a copy of the GNU General Public License along
  * with this program; if not, write to the Free Software Foundation, Inc.,
  * 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA
@@ -25,8 +25,8 @@
 #include <iostream>
 
 namespace Raul {
-	
-	
+
+
 /** A type of time stamp
  */
 class TimeUnit {
@@ -36,7 +36,7 @@ public:
 		BEATS,
 		SECONDS
 	};
-	
+
 	/** @a ppt (parts per tick) is the sample rate for FRAMES,
 	 *         PPQN for BEATS, and ignored for SECONDS.
 	 */
@@ -52,11 +52,11 @@ public:
 
 	inline Type     type() const { return _type; }
 	inline uint32_t ppt()  const { return _ppt; }
-	
+
 	inline bool operator==(const TimeUnit& rhs) const {
 		return (_type == rhs._type && _ppt == rhs._ppt);
 	}
-	
+
 	inline bool operator!=(const TimeUnit& rhs) const {
 		return (_type != rhs._type || _ppt != rhs._ppt);
 	}
@@ -83,7 +83,7 @@ public:
 		, _subticks(subticks)
 		, _unit(unit)
 	{}
-	
+
 	inline TimeStamp(TimeUnit unit, double dec)
 		: _ticks((uint32_t)floor(dec))
 		, _subticks((dec - floor(dec)) * unit.ppt())
@@ -92,11 +92,11 @@ public:
 		assert(dec >= 0);
 		assert(dec <= std::numeric_limits<uint32_t>::max());
 	}
-	
+
 	inline TimeUnit unit()     const { return _unit; }
 	inline uint32_t ticks()    const { return _ticks; }
 	inline uint32_t subticks() const { return _subticks; }
-	
+
 	inline double to_double() const {
 		return _ticks + (_subticks / (double)_unit.ppt());
 	}
@@ -112,7 +112,7 @@ public:
 		//_unit = rhs._unit;
 		return *this;
 	}
-	
+
 	inline TimeStamp& operator=(uint32_t ticks) {
 		_ticks = ticks;
 		_subticks = 0;
@@ -124,7 +124,7 @@ public:
 			&& _subticks == rhs._subticks
 			&& _unit == rhs._unit;
 	}
-	
+
 	inline bool operator!=(const TimeStamp& rhs) const {
 		return ! operator==(rhs);
 	}
@@ -134,21 +134,21 @@ public:
 		return (_ticks < rhs._ticks
 				|| (_ticks == rhs._ticks && _subticks < rhs._subticks));
 	}
-	
+
 	inline bool operator<=(const TimeStamp& rhs) const {
 		assert(_unit == rhs._unit);
 		return (_ticks <= rhs._ticks
 				|| (_ticks == rhs._ticks && _subticks <= rhs._subticks));
 	}
-	
+
 	inline bool operator>=(const TimeStamp& rhs) const {
 		return ! (rhs < *this);
 	}
-	
+
 	inline bool operator>(const TimeStamp& rhs) const {
 		return ! (rhs <= *this);
 	}
-	
+
 	inline TimeStamp& operator+=(const TimeStamp& rhs) {
 		assert(_unit == rhs._unit);
 		_ticks += rhs._ticks;
@@ -160,7 +160,7 @@ public:
 		}
 		return *this;
 	}
-	
+
 	inline TimeStamp& operator-=(const TimeStamp& rhs) {
 		assert(_unit == rhs._unit);
 		assert(rhs <= *this);
@@ -173,14 +173,14 @@ public:
 		}
 		return *this;
 	}
-	
+
 	inline TimeStamp operator+(const TimeStamp& rhs) const {
 		assert(_unit == rhs._unit);
 		TimeStamp result = *this;
 		result += rhs;
 		return result;
 	}
-	
+
 	inline TimeStamp operator-(const TimeStamp& rhs) const {
 		assert(_unit == rhs._unit);
 		TimeStamp result = *this;
@@ -213,7 +213,7 @@ operator<<(std::ostream& os, const TimeStamp& t)
 	return os;
 }
 
-	
+
 class FrameStamp : public TimeStamp {
 public:
 	inline FrameStamp(uint32_t rate, uint32_t ticks=0, uint32_t subticks=0)

@@ -51,17 +51,17 @@ main(int argc, char** argv)
 
 	t[20] = 20;
 	t[21] = 21;
-	
+
 	cout << "Contents:" << endl;
 	for (Table<int,int>::const_iterator i = t.begin(); i != t.end(); ++i)
 		cout << i->first << " ";
 	cout << endl;
-	
+
 	std::cout << "Range " << t.begin()->first << " .. " << range_end_val << std::endl;
 
 	Table<int,int>::const_iterator range_begin = t.begin();
 	++range_begin; ++range_begin;
-	
+
 	Table<int,int>::iterator range_end = t.find_range_end(t.begin(), range_comparator);
 
 	for (Table<int,int>::const_iterator i = t.begin(); i != range_end; ++i)
@@ -79,7 +79,7 @@ main(int argc, char** argv)
 	for (Table<int,int>::const_iterator i = t.begin(); i != t.end(); ++i)
 		cout << i->first << " ";
 	cout << endl;
-	
+
 	cout << "Erasing elements 0..3" << endl;
 	first = t.begin();
 	last = first;
@@ -89,7 +89,7 @@ main(int argc, char** argv)
 	for (Table<int,int>::const_iterator i = t.begin(); i != t.end(); ++i)
 		cout << i->first << " ";
 	cout << endl;
-	
+
 	cout << "Erasing elements end()-2..end()" << endl;
 	last = t.end();
 	first = last;
@@ -99,7 +99,7 @@ main(int argc, char** argv)
 	for (Table<int,int>::const_iterator i = t.begin(); i != t.end(); ++i)
 		cout << i->first << " ";
 	cout << endl;
-	
+
 	cout << "Erasing everything" << endl;
 	first = t.begin();
 	last = t.end();
@@ -108,7 +108,7 @@ main(int argc, char** argv)
 	for (Table<int,int>::const_iterator i = t.begin(); i != t.end(); ++i)
 		cout << i->first << " ";
 	cout << endl;
-	
+
 	/* **** */
 
 	PathTable<char> pt;
@@ -122,12 +122,12 @@ main(int argc, char** argv)
 	pt.insert(make_pair("/bar/buzz/WHAT", 'c'));
 	pt.insert(make_pair("/bar/buzz/WHHHhhhhhAT", 'c'));
 	pt.insert(make_pair("/quux", 'a'));
-	
+
 	cout << "Paths: " << endl;
 	for (PathTable<char>::const_iterator i = pt.begin(); i != pt.end(); ++i)
 		cout << i->first << " ";
 	cout << endl;
-	
+
 	PathTable<char>::const_iterator descendants_begin = pt.begin();
 	size_t begin_index = rand() % pt.size();
 	for (size_t i=0; i < begin_index; ++i)
@@ -147,14 +147,14 @@ main(int argc, char** argv)
 	assert(quux_end != quux);
 
 	SharedPtr< Table<Path,char> > yanked = pt.yank(quux, quux_end);
-	
+
 	cout << "Yanked " << yank_path << endl;
 	for (PathTable<char>::const_iterator i = pt.begin(); i != pt.end(); ++i)
 		cout << i->first << " ";
 	cout << endl;
 
 	pt.cram(*yanked.get());
-	
+
 	cout << "Crammed " << yank_path << endl;
 	for (PathTable<char>::const_iterator i = pt.begin(); i != pt.end(); ++i)
 		cout << i->first << " ";
@@ -164,7 +164,7 @@ main(int argc, char** argv)
 
 	cout << "\nAssuming you built with debugging, if this continues to run "
 		<< "and chews your CPU without dying, everything's good." << endl;
-	
+
 
 	Table<string, string> st;
 
@@ -175,7 +175,7 @@ main(int argc, char** argv)
 	//st["zeta"] = "one";
 
 	st.erase("banana");
-	
+
 	for (Table<int,int>::const_iterator i = t.begin(); i != t.end(); ++i)
 		cout << i->first << " ";
 	cout << endl;
@@ -235,88 +235,88 @@ benchmark(size_t n)
 	timeval t1;
 	t1.tv_sec=0;
 	t1.tv_usec=0;
-	
+
 	timeval t2;
 	t2.tv_sec=0;
 	t2.tv_usec=0;
-	
+
 
 	/** std::map **/
 
 	std::map<string,int> m;
 
 	gettimeofday(&t1, NULL);
-	
+
 	for (size_t i=0; i < n; ++i)
 		m.insert(make_pair(values[i], i));
-	
+
 	gettimeofday(&t2, NULL);
 
 	float delta_t = (t2.tv_sec - t1.tv_sec) + (t2.tv_usec - t1.tv_usec) * 0.000001f;
 
 	cout << "std::map time to insert " << n << " values: \t" << delta_t << endl;
-	
+
 	gettimeofday(&t1, NULL);
-	
+
 	for (size_t i=0; i < n; ++i)
 		useless_accumulator += m.find(values[i])->second;
-	
+
 	gettimeofday(&t2, NULL);
 
 	delta_t = (t2.tv_sec - t1.tv_sec) + (t2.tv_usec - t1.tv_usec) * 0.000001f;
 
 	cout << "std::map time to lookup " << n << " values: \t" << delta_t << endl;
-	
-	
+
+
 	/** std::set **/
 
 	std::set<std::string> s;
 
 	gettimeofday(&t1, NULL);
-	
+
 	for (size_t i=0; i < n; ++i)
 		s.insert(values[i]);
-	
+
 	gettimeofday(&t2, NULL);
 
 	delta_t = (t2.tv_sec - t1.tv_sec) + (t2.tv_usec - t1.tv_usec) * 0.000001f;
 
 	cout << "std::set time to insert " << n << " values: \t" << delta_t << endl;
-	
+
 	gettimeofday(&t1, NULL);
-	
+
 	for (size_t i=0; i < n; ++i)
 		useless_accumulator += (int)(*s.find(values[i]))[0];
-	
+
 	gettimeofday(&t2, NULL);
 
 	delta_t = (t2.tv_sec - t1.tv_sec) + (t2.tv_usec - t1.tv_usec) * 0.000001f;
 
 	cout << "std::set time to lookup " << n << " values: \t" << delta_t << endl;
-	
-	
+
+
 	/** sorted std::vector **/
 
 	/*std::vector<int> v;
 
 	gettimeofday(&t1, NULL);
-	
+
 	for (size_t i=0; i < n; ++i)
 		v.push_back(values[i]);
 
 	sort(v.begin(), v.end());
-	
+
 	gettimeofday(&t2, NULL);
 
 	delta_t = (t2.tv_sec - t1.tv_sec) + (t2.tv_usec - t1.tv_usec) * 0.000001f;
 
 	cout << "std::vector (sorted) time to insert " << n << " values: \t" << delta_t << endl;
-	
+
 	gettimeofday(&t1, NULL);
-	
+
 	for (size_t i=0; i < n; ++i)
 		useless_accumulator += *lower_bound(v.begin(), v.end(), values[i]);
-	
+
 	gettimeofday(&t2, NULL);
 
 	delta_t = (t2.tv_sec - t1.tv_sec) + (t2.tv_usec - t1.tv_usec) * 0.000001f;
@@ -325,55 +325,55 @@ benchmark(size_t n)
 
 
 	/** Raul::Table **/
-	
+
 	Raul::Table<string,int> t(n);
-	
+
 	gettimeofday(&t1, NULL);
-	
+
 	for (size_t i=0; i < n; ++i)
 		t.insert(make_pair(values[i], i));
-	
+
 	gettimeofday(&t2, NULL);
 
 	delta_t = (t2.tv_sec - t1.tv_sec) + (t2.tv_usec - t1.tv_usec) * 0.000001f;
 
 	cout << "Raul::Table time to insert " << n << " values: " << delta_t << endl;
-	
+
 	gettimeofday(&t1, NULL);
-	
+
 	for (size_t i=0; i < n; ++i)
 		useless_accumulator += t.find(values[i])->second;
-	
+
 	gettimeofday(&t2, NULL);
 
 	delta_t = (t2.tv_sec - t1.tv_sec) + (t2.tv_usec - t1.tv_usec) * 0.000001f;
 
 	cout << "Raul::Table time to lookup " << n << " values: \t" << delta_t << endl;
-	
-	
+
+
 #ifdef WITH_TR1
 	/** boost::hash && std::unordered_map **/
-	
+
 	tr1::unordered_map<string, int, boost::hash<string> > um;
 
 	gettimeofday(&t1, NULL);
-	
+
 	um.rehash(n);
-	
+
 	for (size_t i=0; i < n; ++i)
 		um.insert(make_pair(values[i], i));
-	
+
 	gettimeofday(&t2, NULL);
 
 	delta_t = (t2.tv_sec - t1.tv_sec) + (t2.tv_usec - t1.tv_usec) * 0.000001f;
 
 	cout << "tr1::unordered_map + boost::hash time to insert " << n << " values: \t" << delta_t << endl;
-	
+
 	gettimeofday(&t1, NULL);
-	
+
 	for (size_t i=0; i < n; ++i)
 		useless_accumulator += um.find(values[i])->second;
-	
+
 	gettimeofday(&t2, NULL);
 
 	delta_t = (t2.tv_sec - t1.tv_sec) + (t2.tv_usec - t1.tv_usec) * 0.000001f;

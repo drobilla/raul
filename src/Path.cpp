@@ -1,15 +1,15 @@
 /* This file is part of Raul.
  * Copyright (C) 2007 Dave Robillard <http://drobilla.net>
- * 
+ *
  * Raul is free software; you can redistribute it and/or modify it under the
  * terms of the GNU General Public License as published by the Free Software
  * Foundation; either version 2 of the License, or (at your option) any later
  * version.
- * 
+ *
  * Raul is distributed in the hope that it will be useful, but WITHOUT ANY
  * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  * FOR A PARTICULAR PURPOSE.  See the GNU General Public License for details.
- * 
+ *
  * You should have received a copy of the GNU General Public License along
  * with this program; if not, write to the Free Software Foundation, Inc.,
  * 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA
@@ -38,13 +38,13 @@ Path::is_valid(const std::basic_string<char>& path_str)
 	// Must start with a /
 	if (path[0] != '/')
 		return false;
-	
+
 	// Must not end with a slash unless "/"
 	if (path.length() > 1 && path[path.length()-1] == '/')
 		return false;
 
 	assert(path.find_last_of("/") != string::npos);
-	
+
 	// Double slash not allowed
 	if (path.find("//") != string::npos)
 		return false;
@@ -74,24 +74,24 @@ Path::pathify(const std::basic_string<char>& str)
 {
 	if (str.length() == 0)
 		return root_uri; // this might not be wise?
-	
+
 	string path  = (str.substr(0, prefix_len) == prefix) ? str : prefix + str;
 	size_t start = prefix_len + 1;
 
 	// Must start with a /
 	if (path.at(start) != '/')
 		path = string("/").append(path);
-	
+
 	// Must not end with a slash unless "/"
 	if (path.length() > prefix_len + 1 && path.at(path.length()-1) == '/')
 		path = path.substr(0, path.length()-1); // chop trailing slash
 
 	assert(path.find_last_of("/") != string::npos);
-	
+
 	replace_invalid_chars(path, start, false);
 
 	assert(is_valid(path));
-	
+
 	return path;
 }
 
@@ -127,7 +127,7 @@ Path::replace_invalid_chars(string& str, size_t start, bool replace_slash)
 	size_t open_bracket = str.find_first_of('(');
 	if (open_bracket != string::npos)
 		str = str.substr(0, open_bracket);
-	
+
 	open_bracket = str.find_first_of('[');
 	if (open_bracket != string::npos)
 		str = str.substr(0, open_bracket);
@@ -137,7 +137,7 @@ Path::replace_invalid_chars(string& str, size_t start, bool replace_slash)
 
 	if (isdigit(str[0]))
 		str = string("_").append(str);
-	
+
 	for (size_t i=0; i < str.length(); ++i) {
 		if (i > 0 && str[i-1] == '/' && isdigit(str[i])) {
 			str = str.substr(0, i) + "_" + str.substr(i);
@@ -157,7 +157,7 @@ Path::replace_invalid_chars(string& str, size_t start, bool replace_slash)
 			str[i] = '_';
 		}
 	}
-	
+
 	if (str.length() != 1 && str[str.length()-1] == '_')
 		str = str.substr(0, str.length()-1);
 

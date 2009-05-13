@@ -1,15 +1,15 @@
 /* This file is part of Raul.
  * Copyright (C) 2007 Dave Robillard <http://drobilla.net>
- * 
+ *
  * Raul is free software; you can redistribute it and/or modify it under the
  * terms of the GNU General Public License as published by the Free Software
  * Foundation; either version 2 of the License, or (at your option) any later
  * version.
- * 
+ *
  * Raul is distributed in the hope that it will be useful, but WITHOUT ANY
  * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  * FOR A PARTICULAR PURPOSE.  See the GNU General Public License for details.
- * 
+ *
  * You should have received a copy of the GNU General Public License along
  * with this program; if not, write to the Free Software Foundation, Inc.,
  * 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA
@@ -35,7 +35,7 @@ Table<K,T>::is_sorted() const
 {
 	if (size() <= 1)
 		return true;
-	
+
 	K prev_key = _entries[0].first;
 
 	for (size_t i=1; i < size(); ++i)
@@ -43,7 +43,7 @@ Table<K,T>::is_sorted() const
 			return false;
 		else
 			prev_key = _entries[i].first;
-	
+
 	return true;
 }
 #endif
@@ -87,7 +87,7 @@ Table<K,T>::find(const_iterator start, const_iterator finish, const K& key)
 	size_t lower = start._index;
 	size_t upper = finish._index - 1;
 	size_t i;
-	
+
 	while (upper >= lower) {
 		i = lower + ((upper - lower) / 2);
 		const Entry& elem = _entries[i];
@@ -101,7 +101,7 @@ Table<K,T>::find(const_iterator start, const_iterator finish, const K& key)
 		else
 			break;
 	}
-	
+
 	return end();
 }
 
@@ -125,7 +125,7 @@ Table<K,T>::find_range_end(const_iterator start, bool (*comp)(const K&,const K&)
 	return (const_cast<Table<K, T>&>(*this)).find_range_end(*((iterator*)&start), comp);
 }
 
-	
+
 /** Find the end of a range using a custom comparator.
  * Two entries a, b are considered in the range if comp(a, b) returns true.
  *
@@ -158,11 +158,11 @@ Table<K,T>::find_range_end(iterator start, bool (*comp)(const K&,const K&))
 	}
 
 	size_t i;
-	
+
 	while (upper > lower) {
-	
+
 		i = lower + ((upper - lower) / 2);
-		
+
 		if (upper - lower == 1) {
 			if (comp(key, _entries[upper].first) && upper < size())
 				return iterator(*this, upper+1);
@@ -174,26 +174,26 @@ Table<K,T>::find_range_end(iterator start, bool (*comp)(const K&,const K&))
 
 		// Hit
 		if (comp(key, elem.first)) {
-			
+
 			if (i == size()-1 || !comp(key, _entries[i+1].first))
 				return iterator(*this, i+1);
-			else 
+			else
 				lower = i;
 
 		// Miss
 		} else {
 
 			upper = i;
-			
+
 		}
 	}
-	
+
 	assert(comp(start->first, _entries[lower].first));
 	assert(lower == size()-1 || !comp(start->first, _entries[lower+1].first));
 
 	return iterator(*this, lower+1);
 }
-	
+
 
 /** Erase and return a range of entries */
 template <typename K, typename T>
@@ -216,16 +216,16 @@ std::pair<typename Table<K,T>::iterator, bool>
 Table<K, T>::cram(const Table<K,T>& range)
 {
 	/* FIXME: _way_ too slow */
-	
+
 	const size_t orig_size = size();
 
 	if (range.size() == 0)
 		return std::make_pair(end(), false);
-	
+
 	std::pair<iterator, bool> ret = insert(range._entries.front());
 	if (range.size() == 1)
 		return ret;
-	
+
 	const size_t insert_index = ret.first._index;
 
 	std::vector<Entry> new_entries(orig_size + range.size());
@@ -235,18 +235,18 @@ Table<K, T>::cram(const Table<K,T>& range)
 
 	for (size_t i=0; i < size() - insert_index; ++i)
 		new_entries.at(new_entries.size() - 1 - i) = _entries.at(size() - 1 - i);
-	
+
 	for (size_t i=1; i < range.size(); ++i)
 		new_entries.at(insert_index + i) = range._entries.at(i);
-	
+
 	_entries = new_entries;
-	
+
 	/*std::cerr << "********************************\n";
 	for (size_t i=0; i < size(); ++i) {
 		std::cerr << _entries[i].first << std::endl;
 	}
 	std::cerr << "********************************\n";*/
-	
+
 	assert(size() == orig_size + range.size());
 #ifdef TABLE_SORT_DEBUG
 	assert(is_sorted());
@@ -269,7 +269,7 @@ Table<K,T>::insert(const std::pair<K, T>& entry)
 {
 	const K& key = entry.first;
 	const T& value = entry.second;
-	
+
 	if (size() == 0 || (size() == 1 && key > _entries[0].first)) {
 		_entries.push_back(entry);
 		return std::make_pair(iterator(*this, size()-1), true);
@@ -282,7 +282,7 @@ Table<K,T>::insert(const std::pair<K, T>& entry)
 	size_t lower = 0;
 	size_t upper = size() - 1;
 	size_t i;
-	
+
 	// Find the earliest element > key
 	while (upper >= lower) {
 		i = lower + ((upper - lower) / 2);
@@ -309,22 +309,22 @@ Table<K,T>::insert(const std::pair<K, T>& entry)
 	// Lil' off by one touchup :)
 	if (i < size() && _entries[i].first <= key)
 		++i;
-	
+
 	_entries.push_back(_entries.back());
 
 	// Shift everything beyond i right
 	for (size_t j = size()-2; j > i; --j)
 		_entries[j] = _entries[j-1];
-	
+
 	_entries[i] = entry;
 
 #ifdef TABLE_SORT_DEBUG
 	assert(is_sorted());
 #endif
-	
+
 	return std::make_pair(iterator(*this, i), true);
 }
-	
+
 
 /** Insert an item, and return a reference to it's value.
  *

@@ -1,15 +1,15 @@
 /* This file is part of Raul.
  * Copyright (C) 2007 Dave Robillard <http://drobilla.net>
- * 
+ *
  * Raul is free software; you can redistribute it and/or modify it under the
  * terms of the GNU General Public License as published by the Free Software
  * Foundation; either version 2 of the License, or (at your option) any later
  * version.
- * 
+ *
  * Raul is distributed in the hope that it will be useful, but WITHOUT ANY
  * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  * FOR A PARTICULAR PURPOSE.  See the GNU General Public License for details.
- * 
+ *
  * You should have received a copy of the GNU General Public License along
  * with this program; if not, write to the Free Software Foundation, Inc.,
  * 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA
@@ -29,7 +29,7 @@ namespace Raul {
 
 
 /** A realtime safe, (partially) thread safe doubly-linked list.
- * 
+ *
  * Elements can be added safely while another thread is reading the list.
  * Like a typical ringbuffer, this is single-reader single-writer threadsafe
  * only.  See documentation for specific functions for specifics.
@@ -38,7 +38,7 @@ template <typename T>
 class List : public Raul::Deletable, public boost::noncopyable
 {
 public:
-	
+
 	/** A node in a List.
 	 *
 	 * This is exposed so the user can allocate Nodes in different thread
@@ -54,14 +54,14 @@ public:
 		Node(const typename List<Y>::Node& copy)
 			: _elem(copy._elem), _prev(copy._prev), _next(copy._next)
 		{}
-	
+
 		Node*     prev() const   { return _prev.get(); }
 		void      prev(Node* ln) { _prev = ln; }
 		Node*     next() const   { return _next.get(); }
 		void      next(Node* ln) { _next = ln; }
 		T&        elem()         { return _elem;}
 		const T&  elem() const   { return _elem; }
-		
+
 	private:
 		T               _elem;
 		AtomicPtr<Node> _prev;
@@ -79,7 +79,7 @@ public:
 		_end_iter._listnode = NULL;
 		_const_end_iter._listnode = NULL;
 	}
-	
+
 	~List();
 
 	void push_back(Node* elem); ///< Realtime Safe
@@ -111,12 +111,12 @@ public:
 		inline bool            operator!=(const iterator& iter) const;
 		inline bool            operator==(const const_iterator& iter) const;
 		inline bool            operator==(const iterator& iter) const;
-	
+
 		inline       typename List<T>::Node* node()       { return _listnode; }
 		inline const typename List<T>::Node* node() const { return _listnode; }
 
 		friend class List<T>;
-		
+
 	private:
 		const List<T>*                _list;
 		const typename List<T>::Node* _listnode;
@@ -135,7 +135,7 @@ public:
 		inline bool      operator!=(const const_iterator& iter) const;
 		inline bool      operator==(const iterator& iter) const;
 		inline bool      operator==(const const_iterator& iter) const;
-		
+
 		friend class List<T>;
 		friend class List<T>::const_iterator;
 
@@ -145,7 +145,7 @@ public:
 	};
 
 	void chop_front(List<T>& front, size_t front_size, Node* new_head);
-	
+
 	Node* erase(const iterator iter);
 
 	iterator find(const T& val);

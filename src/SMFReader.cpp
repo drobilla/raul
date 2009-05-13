@@ -1,15 +1,15 @@
 /* This file is part of Raul.
  * Copyright (C) 2007 Dave Robillard <http://drobilla.net>
- * 
+ *
  * Raul is free software; you can redistribute it and/or modify it under the
  * terms of the GNU General Public License as published by the Free Software
  * Foundation; either version 2 of the License, or (at your option) any later
  * version.
- * 
+ *
  * Raul is distributed in the hope that it will be useful, but WITHOUT ANY
  * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  * FOR A PARTICULAR PURPOSE.  See the GNU General Public License for details.
- * 
+ *
  * You should have received a copy of the GNU General Public License along
  * with this program; if not, write to the Free Software Foundation, Inc.,
  * 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA
@@ -88,7 +88,7 @@ SMFReader::~SMFReader()
 		close();
 }
 
-	
+
 bool
 SMFReader::open(const string& filename) throw (logic_error, UnsupportedTime)
 {
@@ -111,7 +111,7 @@ SMFReader::open(const string& filename) throw (logic_error, UnsupportedTime)
 			_fd = NULL;
 			return false;
 		}
-		
+
 		// Read type (bytes 8..9)
 		fseek(_fd, 8, SEEK_SET);
 		uint16_t type_be = 0;
@@ -127,20 +127,20 @@ SMFReader::open(const string& filename) throw (logic_error, UnsupportedTime)
 		uint16_t ppqn_be = 0;
 		fread(&ppqn_be, 2, 1, _fd);
 		_ppqn = GUINT16_FROM_BE(ppqn_be);
-		
+
 		// TODO: Absolute (SMPTE seconds) time support
 		if ((_ppqn & 0x8000) != 0)
 			throw UnsupportedTime();
 
 		seek_to_track(1);
-		
+
 		return true;
 	} else {
 		return false;
 	}
 }
 
-	
+
 /** Seek to the start of a given track, starting from 1.
  * Returns true if specified track was found.
  */
@@ -188,7 +188,7 @@ SMFReader::seek_to_track(unsigned track) throw (std::logic_error)
 	}
 }
 
-	
+
 /** Read an event from the current position in file.
  *
  * File position MUST be at the beginning of a delta time, or this will die very messily.
@@ -274,14 +274,14 @@ SMFReader::read_event(size_t    buf_len,
 		// Read event, return size
 		if (ferror(_fd))
 			throw CorruptFile();
-		
+
 		fread(buf+1, 1, *ev_size - 1, _fd);
-	
+
 		if ((buf[0] & 0xF0) == 0x90 && buf[2] == 0) {
 			buf[0] = (0x80 | (buf[0] & 0x0F));
 			buf[2] = 0x40;
 		}
-		
+
 		return *ev_size;
 	}
 }

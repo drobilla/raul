@@ -37,7 +37,7 @@ extern "C" {
 inline static const char* midi_name(uint8_t status)
 {
 	switch (status) {
-	
+
 	case MIDI_CMD_NOTE_OFF:
 		return "Note Off"; break;
 	case MIDI_CMD_NOTE_ON:

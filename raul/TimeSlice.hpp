@@ -1,15 +1,15 @@
 /* This file is part of Raul.
  * Copyright (C) 2007 Dave Robillard <http://drobilla.net>
- * 
+ *
  * Raul is free software; you can redistribute it and/or modify it under the
  * terms of the GNU General Public License as published by the Free Software
  * Foundation; either version 2 of the License, or (at your option) any later
  * version.
- * 
+ *
  * Raul is distributed in the hope that it will be useful, but WITHOUT ANY
  * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  * FOR A PARTICULAR PURPOSE.  See the GNU General Public License for details.
- * 
+ *
  * You should have received a copy of the GNU General Public License along
  * with this program; if not, write to the Free Software Foundation, Inc.,
  * 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA
@@ -94,7 +94,7 @@ public:
 		_beat_rate = 60.0/bpm;
 		update_beat_time();
 	}
-	
+
 	inline TimeStamp beats_to_seconds(TimeStamp beats) const {
 		return TimeStamp(real_unit(), beats.to_double() * 1/(double)_beat_rate);
 	}
@@ -102,7 +102,7 @@ public:
 	inline TimeStamp beats_to_ticks(TimeStamp beats) const {
 		return TimeStamp(ticks_unit(), beats.to_double() / (double)_beat_rate * _tick_rate);
 	}
-		
+
 	inline TimeStamp ticks_to_seconds(TimeStamp ticks) const {
 		return TimeStamp(real_unit(), ticks.ticks() * 1/(double)_tick_rate);
 	}
@@ -110,7 +110,7 @@ public:
 	inline TimeStamp ticks_to_beats(TimeStamp ticks) const {
 		return TimeStamp(beats_unit(), ticks.ticks() * 1/(double)_tick_rate * _beat_rate);
 	}
-	
+
 	/** Start of current sub-cycle in ticks */
 	inline TimeStamp start_ticks() const { return _start_ticks; }
 
@@ -128,7 +128,7 @@ public:
 
 	/** Offset relative to external (e.g Jack) time */
 	inline TimeDuration offset_ticks() const { return _offset_ticks; }
-	
+
 	inline TimeUnit beats_unit() const { return _start_beats.unit(); }
 	inline TimeUnit ticks_unit() const { return _start_ticks.unit(); }
 	inline TimeUnit real_unit()  const { return TimeUnit(TimeUnit::SECONDS, 0); }
@@ -148,7 +148,7 @@ private:
 	TimeDuration _length_ticks; ///< Current window length in ticks
 	TimeStamp    _start_beats;  ///< Current window start in beats
 	TimeDuration _length_beats; ///< Current window length in beats
-	
+
 	TimeDuration _offset_ticks; ///< Offset to global time (ie Jack sub-cycle offset)
 };
 

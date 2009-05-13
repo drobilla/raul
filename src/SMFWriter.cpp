@@ -1,15 +1,15 @@
 /* This file is part of Raul.
  * Copyright (C) 2007 Dave Robillard <http://drobilla.net>
- * 
+ *
  * Raul is free software; you can redistribute it and/or modify it under the
  * terms of the GNU General Public License as published by the Free Software
  * Foundation; either version 2 of the License, or (at your option) any later
  * version.
- * 
+ *
  * Raul is distributed in the hope that it will be useful, but WITHOUT ANY
  * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  * FOR A PARTICULAR PURPOSE.  See the GNU General Public License for details.
- * 
+ *
  * You should have received a copy of the GNU General Public License along
  * with this program; if not, write to the Free Software Foundation, Inc.,
  * 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA
@@ -71,7 +71,7 @@ SMFWriter::start(const string&   filename,
 
 	_fd = fopen(filename.c_str(), "w+");
 
-	if (_fd) { 
+	if (_fd) {
 		_track_size = 0;
 		_filename = filename;
 		_start_time = start_time;
@@ -106,7 +106,7 @@ SMFWriter::write_event(Raul::TimeStamp      time,
 	delta_time -= _start_time;
 
 	fseek(_fd, 0, SEEK_END);
-	
+
 	uint64_t delta_ticks = delta_time.ticks() * _unit.ppt() + delta_time.subticks();
 	size_t stamp_size = 0;
 
@@ -121,7 +121,7 @@ SMFWriter::write_event(Raul::TimeStamp      time,
 		_track_size += stamp_size + 3;
 		delta_ticks -= VAR_LEN_MAX;
 	}
-	
+
 	assert(delta_ticks <= VAR_LEN_MAX);
 	stamp_size = write_var_len((uint32_t)delta_ticks);
 	fwrite(ev, 1, ev_size, _fd);
@@ -173,7 +173,7 @@ SMFWriter::write_header()
 	assert(_fd);
 	fseek(_fd, 0, 0);
 	write_chunk("MThd", 6, data);
-	write_chunk_header("MTrk", _track_size); 
+	write_chunk_header("MTrk", _track_size);
 }
 
 
@@ -203,7 +203,7 @@ void
 SMFWriter::write_chunk(const char id[4], uint32_t length, void* data)
 {
 	write_chunk_header(id, length);
-	
+
 	fwrite(data, 1, length, _fd);
 }
 

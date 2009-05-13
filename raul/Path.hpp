@@ -1,15 +1,15 @@
 /* This file is part of Raul.
  * Copyright (C) 2007 Dave Robillard <http://drobilla.net>
- * 
+ *
  * Raul is free software; you can redistribute it and/or modify it under the
  * terms of the GNU General Public License as published by the Free Software
  * Foundation; either version 2 of the License, or (at your option) any later
  * version.
- * 
+ *
  * Raul is distributed in the hope that it will be useful, but WITHOUT ANY
  * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  * FOR A PARTICULAR PURPOSE.  See the GNU General Public License for details.
- * 
+ *
  * You should have received a copy of the GNU General Public License along
  * with this program; if not, write to the Free Software Foundation, Inc.,
  * 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA
@@ -29,14 +29,14 @@
 
 namespace Raul {
 
-	
+
 /** Simple wrapper around standard string with useful path-specific methods.
  *
  * This enforces that a Path is a valid OSC path (though it is used for
  * GraphObject paths, which aren't directly OSC paths but a portion of one).
  *
  * A path is divided by slashes (/).  The first character MUST be a slash, and
- * the last character MUST NOT be a slash (except in the special case of the 
+ * the last character MUST NOT be a slash (except in the special case of the
  * root path "/", which is the only valid single-character path).
  *
  * Valid characters are the 95 printable ASCII characters (32-126), excluding:
@@ -74,7 +74,7 @@ public:
 		if (!is_valid(str()))
 			throw BadPath(str());
 	}
-	
+
 	/** Construct a Path from a C string.
 	 *
 	 * It is a fatal error to construct a Path from an invalid string,
@@ -86,9 +86,9 @@ public:
 		if (!is_valid(str()))
 			throw BadPath(str());
 	}
-	
+
 	static bool is_valid(const std::basic_string<char>& path);
-	
+
 	static bool is_valid_name(const std::basic_string<char>& name) {
 		return name.length() > 0 && name.find("/") == std::string::npos
 			&& is_valid(std::string("/").append(name));
@@ -98,12 +98,12 @@ public:
 	static std::string nameify(const std::basic_string<char>& str);
 
 	static void replace_invalid_chars(std::string& str, size_t start, bool replace_slash = false);
-	
+
 	bool is_root() const { return str() == root_uri; }
 
 	bool is_child_of(const Path& parent) const;
 	bool is_parent_of(const Path& child) const;
-	
+
 	Path child(const std::string& s) const {
 		if (is_valid(s))
 			return std::string(base()) + Path(s).chop_scheme().substr(1);
@@ -112,7 +112,7 @@ public:
 	}
 
 	Path operator+(const Path& p) const { return child(p); }
-	
+
 	/** Return the name of this object (everything after the last '/').
 	 * This is the "method name" for OSC paths.
 	 * The empty string may be returned (if the path is "/").
@@ -123,8 +123,8 @@ public:
 		else
 			return substr(find_last_of("/")+1);
 	}
-	
-	
+
+
 	/** Return the name of this object (everything after the last '/').
 	 * This is the "method name" for OSC paths.
 	 * Note it is illegal to call this method on the path "/".
@@ -132,8 +132,8 @@ public:
 	inline Symbol symbol() const {
 		return substr(find_last_of("/")+1);
 	}
-	
-	
+
+
 	/** Return the parent's path.
 	 *
 	 * Calling this on the path "/" will return "/".
@@ -147,7 +147,7 @@ public:
 			return (last_slash == prefix_len) ? root_uri : substr(0, last_slash);
 		}
 	}
-	
+
 
 	/** Return path relative to some base path (chop prefix)
 	 */

@@ -48,7 +48,7 @@ struct WriteAction {
 
 
 // The victim
-SRMWQueue<WriteAction> queue(QUEUE_SIZE); 
+SRMWQueue<WriteAction> queue(QUEUE_SIZE);
 
 
 class WriteThread : public Thread {
@@ -119,7 +119,7 @@ dump_data()
 int main()
 {
 	unsigned long total_processed = 0;
-	
+
 	cout << "Testing size" << endl;
 	for (unsigned i=0; i < queue.capacity(); ++i) {
 		queue.push(i);
@@ -137,7 +137,7 @@ int main()
 			}
 		}
 	}
-	
+
 	for (unsigned i=0; i < queue.capacity(); ++i)
 		queue.pop();
 
@@ -145,7 +145,7 @@ int main()
 		cerr << "ERROR: Should be empty" << endl;
 		return -1;
 	}
-	
+
 	cout << "Testing concurrent reading/writing" << endl;
 	vector<WriteThread*> writers(NUM_WRITERS, new WriteThread());
 
@@ -177,7 +177,7 @@ int main()
 		/*if (count > 0)
 			cout << "Processed " << count << " requests\t\t"
 				<< "(total " << total_processed << ")\r\n";*/
-		
+
 		//if (total_processed > 0 && total_processed % 128l == 0)
 		//	cout << "Total processed: " << total_processed << "\r\n";
 	}
@@ -185,7 +185,7 @@ int main()
     if (tcsetattr(0, TCSANOW, &orig_term) != 0) return 1; //restore
 
 	cout << "Finishing." << endl;
-	
+
 	// Stop the writers
 	for (unsigned i=0; i < NUM_WRITERS; ++i)
 		writers[i]->stop();
@@ -212,7 +212,7 @@ int main()
 	cout << "Total processed: " << total_processed << endl;
 	if (total_processed > INT_MAX)
 		cout << "(Counter had to wrap)" << endl;
-	else 
+	else
 		cout << "(Counter did NOT have to wrap)" << endl;
 
 
@@ -224,7 +224,7 @@ int main()
 		cout << "FAILED BY " << diff << endl;
 	//	dump_data();
 	}
-	
+
 	dump_data();
 
 	return 0;
@@ -240,7 +240,7 @@ int main()
 	cout << "New queue.  Should be empty: " << q.empty() << endl;
 	cout << "Capacity: " << q.capacity() << endl;
 	//cout << "Fill: " << q.fill() << endl;
-	
+
 	for (uint i=0; i < 5; ++i) {
 		q.push(i);
 		assert(!q.full());
@@ -263,7 +263,7 @@ int main()
 	}
 	cout << "Queue should be empty: " << q.empty() << endl;
 	//cout << "Fill: " << q.fill() << endl;
-	
+
 	cout << "Attempting to add eleven elements to queue of size 10. Only first 10 should succeed:" << endl;
 	for (uint i=20; i <= 39; ++i) {
 		cout << i;
@@ -271,7 +271,7 @@ int main()
 		cout << " - full: " << q.full();
 		cout << ", succeeded: " << q.push(i) << endl;
 	}
-	
+
 	return 0;
 }
 #endif

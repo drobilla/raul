@@ -23,7 +23,7 @@ main()
 	cerr << "Nameification:" << endl;
 	for (list<string>::iterator i = names.begin(); i != names.end(); ++i)
 		cerr << *i << " -> " << Path::nameify(*i) << endl;
-	
+
 	cerr << endl;
 	cerr << Path("/foo/bar") << " parent = " << Path("/foo/bar").parent() << endl;
 	cerr << Path("/foo") << " parent = " << Path("/foo").parent() << endl;
@@ -34,7 +34,7 @@ main()
 	cerr <<  (Path("/").is_parent_of(Path("/foo"))) << endl;
 	cerr <<  (Path("/foo").is_parent_of(Path("/foo/bar"))) << endl;
 	cerr << !(Path("/foo").is_parent_of(Path("/foo2"))) << endl;
-	
+
     cerr << endl << endl << "Descendants..." << endl;
     cerr << "/     /foo     " << Path::descendant_comparator("/", "/foo") << endl;
     cerr << "/foo  /foo/bar " << Path::descendant_comparator("/foo", "/foo/bar") << endl;

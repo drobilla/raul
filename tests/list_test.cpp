@@ -38,7 +38,7 @@ int main()
 		cout << *i << endl;
 	}
 	cout << endl;
-	
+
 	/*l.remove(1);
 
 	cout << "Removed 1 (head) (by value)...\n";
@@ -60,7 +60,7 @@ int main()
 		cout << *i << endl;
 	}
 	cout << endl;
-	
+
 	/*l.remove(5);
 
 	cout << "Removed 5 (by value)...\n";
@@ -68,7 +68,7 @@ int main()
 		cout << *i << endl;
 	}
 	cout << endl;
-	
+
 	l.remove(8);
 
 	cout << "Removed 8 (tail) (by value)...\n";
@@ -97,7 +97,7 @@ int main()
 	for (List<int>::iterator i = r.begin(); i != r.end(); ++i) {
 		cout << *i << endl;
 	}
-	
+
 	cout << "\n\nTesting appending to an empty list:\n";
 	l.clear();
 
@@ -106,12 +106,12 @@ int main()
 	l2.push_back(new List<int>::Node(2));
 	l2.push_back(new List<int>::Node(3));
 	l2.push_back(new List<int>::Node(4));
-	
+
 	cout << "l1:\n";
 	for (List<int>::iterator i = l.begin(); i != l.end(); ++i) {
 		cout << *i << endl;
 	}
-	
+
 	cout << "l2:\n";
 	for (List<int>::iterator i = l2.begin(); i != l2.end(); ++i) {
 		cout << *i << endl;
@@ -122,18 +122,18 @@ int main()
 	for (List<int>::iterator i = l.begin(); i != l.end(); ++i) {
 		cout << *i << endl;
 	}
-	
+
 	cout << "\n\nAppending non-empty lists:\n";
 	l2.push_back(new List<int>::Node(5));
 	l2.push_back(new List<int>::Node(6));
 	l2.push_back(new List<int>::Node(7));
 	l2.push_back(new List<int>::Node(8));
-	
+
 	cout << "l1:\n";
 	for (List<int>::iterator i = l.begin(); i != l.end(); ++i) {
 		cout << *i << endl;
 	}
-	
+
 	cout << "l2:\n";
 	for (List<int>::iterator i = l2.begin(); i != l2.end(); ++i) {
 		cout << *i << endl;
@@ -144,15 +144,15 @@ int main()
 	for (List<int>::iterator i = l.begin(); i != l.end(); ++i) {
 		cout << *i << endl;
 	}
-	
-	
+
+
 	cout << "\n\nAppending an empty list:\n";
-	
+
 	cout << "l1:\n";
 	for (List<int>::iterator i = l.begin(); i != l.end(); ++i) {
 		cout << *i << endl;
 	}
-	
+
 	cout << "l2:\n";
 	for (List<int>::iterator i = l2.begin(); i != l2.end(); ++i) {
 		cout << *i << endl;

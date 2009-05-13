@@ -23,7 +23,7 @@ int
 main()
 {
 	RingBuffer<char> rb(5);
-	
+
 	char ev[] = { 'a', 'b', 'c' };
 
 	rb.write(3, ev);
@@ -34,7 +34,7 @@ main()
 
 	char ev2[] = { 'd', 'e', 'f' };
 	rb.write(3, ev2);
-	
+
 
 	size_t read = rb.read(3, buf);
 	if (read < 3)
