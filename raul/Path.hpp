@@ -25,6 +25,7 @@
 #include <cassert>
 
 #include "raul/Symbol.hpp"
+#include "raul/URI.hpp"
 
 namespace Raul {
 
@@ -43,11 +44,23 @@ namespace Raul {
  *
  * \ingroup raul
  */
-class Path : public std::basic_string<char> {
+class Path : public URI {
 public:
+	class BadPath : public std::exception {
+	public:
+		BadPath(const std::string& path) : _path(path) {}
+		~BadPath() throw() {}
+		const char* what() const throw() { return _path.c_str(); }
+	private:
+		std::string _path;
+	};
+
+	static const std::string prefix;
+	static const size_t      prefix_len;
+	static const std::string root_uri;
 
 	/** Construct an uninitialzed path, because the STL is annoying. */
-	Path() : std::basic_string<char>("/") {}
+	Path() : URI(root_uri) {}
 
 	/** Construct a Path from an std::string.
 	 *
@@ -55,21 +68,22 @@ public:
 	 * use is_valid first to check.
 	 */
 	Path(const std::basic_string<char>& path)
-		: std::basic_string<char>(path)
+		: URI((path.find(":") == std::string::npos) ? prefix + path : path)
 	{
-		assert(is_valid(path));
+		if (!is_valid(str()))
+			throw BadPath(str());
 	}
 	
-
 	/** Construct a Path from a C string.
 	 *
 	 * It is a fatal error to construct a Path from an invalid string,
 	 * use is_valid first to check.
 	 */
 	Path(const char* cpath)
-		: std::basic_string<char>(cpath)
+		: URI((std::string(cpath).find(":") == std::string::npos) ? prefix + cpath : cpath)
 	{
-		assert(is_valid(cpath));
+		if (!is_valid(str()))
+			throw BadPath(str());
 	}
 	
 	static bool is_valid(const std::basic_string<char>& path);
@@ -82,18 +96,28 @@ public:
 	static std::string pathify(const std::basic_string<char>& str);
 	static std::string nameify(const std::basic_string<char>& str);
 
-	static void replace_invalid_chars(std::string& str, bool replace_slash = false);
+	static void replace_invalid_chars(std::string& str, size_t start, bool replace_slash = false);
 	
+	bool is_root() const { return str() == root_uri; }
+
 	bool is_child_of(const Path& parent) const;
 	bool is_parent_of(const Path& child) const;
+	
+	Path child(const std::string& s) const {
+		if (is_valid(s))
+			return std::string(base()) + Path(s).chop_scheme().substr(1);
+		else
+			return std::string(base()) + s;
+	}
 
+	Path operator+(const Path& p) const { return child(p); }
 	
 	/** Return the name of this object (everything after the last '/').
 	 * This is the "method name" for OSC paths.
 	 * The empty string may be returned (if the path is "/").
 	 */
 	inline std::string name() const {
-		if ((*this) == "/")
+		if (str() == root_uri)
 			return "";
 		else
 			return substr(find_last_of("/")+1);
@@ -115,15 +139,19 @@ public:
 	 * This is the (deepest) "container path" for OSC paths.
 	 */
 	inline Path parent() const {
-		std::basic_string<char> parent = substr(0, find_last_of("/"));
-		return (parent == "") ? "/" : parent;
+		if (str() == root_uri) {
+			return str();
+		} else {
+			size_t last_slash = find_last_of("/");
+			return (last_slash == prefix_len) ? root_uri : substr(0, last_slash);
+		}
 	}
 	
 
-	/** Return path relative to soe base path (chop prefix)
+	/** Return path relative to some base path (chop prefix)
 	 */
 	inline Path relative_to_base(const Path& base) const {
-		if ((*this) == base) {
+		if (str() == base) {
 			return "/";
 		} else {
 			assert(length() > base.length());
@@ -138,17 +166,18 @@ public:
 	 * child path can be made using parent.base() + child_name.
 	 */
 	inline const std::string base() const {
-		if ((*this) == "/")
-			return *this;
+		if (str() == root_uri)
+			return str();
 		else
-			return (*this) + "/";
+			return str() + "/";
 	}
+
 
 	/** Return true if \a child is equal to, or a descendant of \a parent */
 	static bool descendant_comparator(const Path& parent, const Path& child) {
 		return ( child == parent || (child.length() > parent.length() &&
 				(!std::strncmp(parent.c_str(), child.c_str(), parent.length())
-						&& (parent == "/" || child[parent.length()] == '/'))) );
+						&& (parent.str() == root_uri || child[parent.length()] == '/'))) );
 	}
 };
 

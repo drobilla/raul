@@ -21,10 +21,16 @@ using namespace std;
 
 namespace Raul {
 
+const std::string Path::prefix     = "path:";
+const size_t      Path::prefix_len = 5;
+const std::string Path::root_uri   = Path::prefix + "/";
 
 bool
-Path::is_valid(const std::basic_string<char>& path)
+Path::is_valid(const std::basic_string<char>& path_str)
 {
+	const size_t colon = path_str.find(":");
+	const string path = (colon == string::npos) ? path_str : path_str.substr(colon + 1);
+
 	if (path.length() == 0)
 		return false;
 
@@ -42,7 +48,6 @@ Path::is_valid(const std::basic_string<char>& path)
 	if (path.find("//") != string::npos)
 		return false;
 
-
 	for (size_t i=0; i < path.length(); ++i)
 		// All contained symbols must not start with a digit
 		if (i > 0 && path[i-1] == '/' && isdigit(path[i]))
@@ -53,20 +58,6 @@ Path::is_valid(const std::basic_string<char>& path)
 				&& (path[i] < 'A' || path[i] > 'Z')
 				&& (path[i] < '0' || path[i] > '9') )
 			return false;
-
-#if 0
-	// Disallowed characters
-	if (       path.find(" ") != string::npos 
-			|| path.find("#") != string::npos
-			|| path.find("*") != string::npos
-			|| path.find(",") != string::npos
-			|| path.find("?") != string::npos
-			|| path.find("[") != string::npos
-			|| path.find("]") != string::npos
-			|| path.find("{") != string::npos
-			|| path.find("}") != string::npos)
-		return false;
-#endif
 
 	return true;
 }
@@ -80,22 +71,23 @@ Path::is_valid(const std::basic_string<char>& path)
 string
 Path::pathify(const std::basic_string<char>& str)
 {
-	string path = str;
-
-	if (path.length() == 0)
-		return "/"; // this might not be wise
+	if (str.length() == 0)
+		return root_uri; // this might not be wise?
+	
+	string path  = (str.substr(0, prefix_len) == prefix) ? str : prefix + str;
+	size_t start = prefix_len + 1;
 
 	// Must start with a /
-	if (path.at(0) != '/')
+	if (path.at(start) != '/')
 		path = string("/").append(path);
 	
 	// Must not end with a slash unless "/"
-	if (path.length() > 1 && path.at(path.length()-1) == '/')
+	if (path.length() > prefix_len + 1 && path.at(path.length()-1) == '/')
 		path = path.substr(0, path.length()-1); // chop trailing slash
 
 	assert(path.find_last_of("/") != string::npos);
 	
-	replace_invalid_chars(path, false);
+	replace_invalid_chars(path, start, false);
 
 	assert(is_valid(path));
 	
@@ -115,7 +107,7 @@ Path::nameify(const std::basic_string<char>& str)
 	if (name.length() == 0)
 		return "_"; // this might not be wise
 
-	replace_invalid_chars(name, true);
+	replace_invalid_chars(name, 0, true);
 
 	assert(is_valid(string("/") + name));
 
@@ -126,8 +118,11 @@ Path::nameify(const std::basic_string<char>& str)
 /** Replace any invalid characters in @a str with a suitable replacement.
  */
 void
-Path::replace_invalid_chars(string& str, bool replace_slash)
+Path::replace_invalid_chars(string& str, size_t start, bool replace_slash)
 {
+	string prefix = str.substr(0, start);
+	str = str.substr(start);
+
 	size_t open_bracket = str.find_first_of('(');
 	if (open_bracket != string::npos)
 		str = str.substr(0, open_bracket);
@@ -139,25 +134,6 @@ Path::replace_invalid_chars(string& str, bool replace_slash)
 	if (str[str.length()-1] == ' ')
 		str = str.substr(0, str.length()-1);
 
-//#define STRICT_SYMBOLS
-
-#ifdef STRICT_SYMBOLS
-	// dB = special case, need to avoid CamelCase killing below
-	while (true) {
-		size_t decibels = str.find("dB");
-		if (decibels != string::npos)
-			str[decibels+1] = 'b';
-		else
-			break;
-	}
-
-	// Kill CamelCase in favour of god_fearing_symbol_names
-	for (size_t i=1; i < str.length(); ++i) {
-		if (str[i] >= 'A' && str[i] <= 'Z' && str[i-1] >= 'a' && str[i-1] <= 'z')
-			str = str.substr(0, i) + '_' + str.substr(i);
-	}
-#endif
-
 	if (isdigit(str[0]))
 		str = string("_").append(str);
 	
@@ -166,15 +142,9 @@ Path::replace_invalid_chars(string& str, bool replace_slash)
 			str = str.substr(0, i) + "_" + str.substr(i);
 		} else if (str[i] == '\'') {
 			str = str.substr(0, i) + str.substr(i+1);
-#ifdef STRICT_SYMBOLS
-		} else if (str[i] >= 'A' && str[i] <= 'Z') {
-			str[i] = std::tolower(str[i]);
-#endif
 		} else if ( str[i] != '_' && str[i] != '/'
 				&& (str[i] < 'a' || str[i] > 'z')
-#ifndef STRICT_SYMBOLS
 				&& (str[i] < 'A' || str[i] > 'Z')
-#endif
 				&& (str[i] < '0' || str[i] > '9') ) {
 			if (i > 0 && str[i-1] == '_') {
 				str = str.substr(0, i) + str.substr(i+1);
@@ -189,6 +159,8 @@ Path::replace_invalid_chars(string& str, bool replace_slash)
 	
 	if (str.length() != 1 && str[str.length()-1] == '_')
 		str = str.substr(0, str.length()-1);
+
+	str = prefix + str;
 }
 
 

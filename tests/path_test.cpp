@@ -23,6 +23,11 @@ main()
 	cerr << "Nameification:" << endl;
 	for (list<string>::iterator i = names.begin(); i != names.end(); ++i)
 		cerr << *i << " -> " << Path::nameify(*i) << endl;
+	
+	cerr << endl;
+	cerr << Path("/foo/bar") << " parent = " << Path("/foo/bar").parent() << endl;
+	cerr << Path("/foo") << " parent = " << Path("/foo").parent() << endl;
+	cerr << Path("/") << " parent = " << Path("/").parent() << endl;
 
 	cerr << "1's are good..." << endl << endl;
 
