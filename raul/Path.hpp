@@ -156,7 +156,7 @@ public:
 			return "/";
 		} else {
 			assert(length() > base.length());
-			return substr(base.length());
+			return substr(base.length() - 1);
 		}
 	}
 
