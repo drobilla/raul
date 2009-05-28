@@ -44,7 +44,7 @@ node_to_atom(const Redland::Node& node)
 	if (node.is_bool())
 		return Atom(bool(node.to_bool()));
 	else if (node.is_resource())
-		return Atom(Atom::URI, node.to_c_string());
+		return Atom(Atom::URI, node.world()->qualify(node.to_c_string()));
 	else if (node.is_float())
 		return Atom(node.to_float());
 	else if (node.is_int())
