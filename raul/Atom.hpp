@@ -181,9 +181,9 @@ private:
 		bool    _bool_val;
 		char*   _string_val;
 		struct {
-			size_t  _blob_type_length; // length of type string (first part of buffer, inc. \0)
-			size_t  _blob_size;        // length of data after type string
-			void*   _blob_val;         // buffer
+			size_t _blob_type_length; // length of type string (first part of buffer, inc. \0)
+			size_t _blob_size;        // length of data after type string
+			void*  _blob_val;         // buffer
 		};
 	};
 };
@@ -198,7 +198,7 @@ static inline std::ostream& operator<<(std::ostream& os, const Raul::Atom& atom)
 	case Raul::Atom::INT:    return os << atom.get_int32();
 	case Raul::Atom::FLOAT:  return os << atom.get_float();
 	case Raul::Atom::BOOL:   return os << atom.get_bool();
-	case Raul::Atom::URI:    return os << atom.get_uri();
+	case Raul::Atom::URI:    return os << "<" << atom.get_uri() << ">";
 	case Raul::Atom::STRING: return os << atom.get_string();
 	case Raul::Atom::BLOB:   return os << atom.get_blob();
 	}
