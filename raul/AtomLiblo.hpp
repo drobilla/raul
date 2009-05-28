@@ -44,6 +44,9 @@ lo_message_add_atom(lo_message m, const Atom& atom)
 	case Atom::STRING:
 		lo_message_add_string(m, atom.get_string());
 		break;
+	case Atom::URI:
+		lo_message_add_symbol(m, atom.get_uri());
+		break;
 	case Atom::BOOL:
 		if (atom.get_bool())
 			lo_message_add_true(m);
@@ -75,6 +78,8 @@ lo_arg_to_atom(char type, lo_arg* arg)
 		return Atom(arg->f);
 	case 's':
 		return Atom(&arg->s);
+	case 'S':
+		return Atom(Atom::URI, &arg->S);
 	case 'T':
 		return Atom((bool)true);
 	case 'F':
