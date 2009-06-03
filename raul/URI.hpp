@@ -46,7 +46,7 @@ public:
 	 * It is a fatal error to construct a URI from an invalid string,
 	 * use is_valid first to check.
 	 */
-	URI(const std::basic_string<char>& uri) : std::basic_string<char>(uri) {
+	URI(const std::basic_string<char>& uri="nil:0") : std::basic_string<char>(uri) {
 		if (!is_valid(uri))
 			throw BadURI(uri);
 	}
