@@ -32,6 +32,12 @@ def configure(conf):
 			uselib_store='GLIBMM', mandatory=True)
 	autowaf.check_pkg(conf, 'gthread-2.0', atleast_version='2.14.0',
 			uselib_store='GTHREAD', mandatory=True)
+	
+	# Boost headers
+	autowaf.check_header(conf, 'boost/shared_ptr.hpp', mandatory=True)
+	autowaf.check_header(conf, 'boost/weak_ptr.hpp', mandatory=True)
+	autowaf.check_header(conf, 'boost/utility.hpp', mandatory=True)
+	
 	autowaf.print_summary(conf)
 
 def build(bld):

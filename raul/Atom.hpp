@@ -18,6 +18,7 @@
 #ifndef RAUL_ATOM_HPP
 #define RAUL_ATOM_HPP
 
+#include <stdint.h>
 #include <cstdlib>
 #include <cassert>
 #include <cstring>
