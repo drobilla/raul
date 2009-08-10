@@ -2,6 +2,7 @@
 #include "raul/EventRingBuffer.hpp"
 #include <iostream>
 #include <cstring>
+#include <cstdio>
 #include "raul/midi_names.h"
 
 using namespace std;
