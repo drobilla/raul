@@ -58,7 +58,7 @@ public:
 	 *
 	 * Obviously not realtime safe.
 	 */
-	inline void wait() { while (sem_wait(&_sem) != 0) ; }
+	inline void wait() { while (sem_wait(&_sem) != 0) {} }
 
 	/** Non-blocking version of wait().
 	 *
