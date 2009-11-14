@@ -56,6 +56,8 @@ namespace boost {
 #error "This is VERY slow.  Please report your platform to dave@drobilla.net"
 #endif
 
+template <typename T> void NullDeleter(T* ptr) {}
+
 #define SharedPtr boost::shared_ptr
 #define PtrCast   boost::dynamic_pointer_cast
 
