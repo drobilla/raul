@@ -40,7 +40,7 @@ public:
 		{ g_atomic_pointer_set(&_val, static_cast<gpointer>(val)); }
 
 	/** Set value to newval iff current value is oldval */
-	inline bool compare_and_exchange(int oldval, int newval)
+	inline bool compare_and_exchange(gpointer oldval, gpointer newval)
 		{ return g_atomic_pointer_compare_and_exchange(&_val, oldval, newval); }
 
 private:
