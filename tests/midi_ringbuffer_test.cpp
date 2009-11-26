@@ -4,7 +4,7 @@
 #include <cstring>
 #include <cstdio>
 #include "raul/midi_names.h"
-
+#include <stdio.h>
 using namespace std;
 using namespace Raul;
 
