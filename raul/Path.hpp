@@ -30,17 +30,17 @@
 namespace Raul {
 
 
-/** Simple wrapper around standard string with useful path-specific methods.
+/** A URI which is a path (for example a filesystem or OSC path).
  *
- * This enforces that a Path is a valid OSC path (though it is used for
- * GraphObject paths, which aren't directly OSC paths but a portion of one).
+ * A Path always has the special URI scheme "path:".
+ *
+ * This enforces that a Path is a valid path, where each fragment is a valid
+ * Symbol, separated by exactly one slash (/).
  *
  * A path is divided by slashes (/).  The first character MUST be a slash, and
  * the last character MUST NOT be a slash (except in the special case of the
- * root path "/", which is the only valid single-character path).
- *
- * Valid characters are the 95 printable ASCII characters (32-126), excluding:
- * space # * , ? [ ] { }
+ * root path "/", which is the only valid single-character path).  The path:
+ * scheme is added automatically (since a Patch is actually a URI).
  *
  * \ingroup raul
  */

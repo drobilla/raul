@@ -31,7 +31,11 @@
 namespace Raul {
 
 
-/** An OSC atom (fundamental data types OSC messages are composed of).
+/** A piece of data with some type.
+ *
+ * Atoms can be of various primitive types (integer, float, etc) as well as
+ * a string or primitive.  The primitive types are entirely contained within
+ * the Atom, i.e. the Atom is POD.  String, URI, and blob atoms are not POD.
  *
  * \ingroup raul
  */

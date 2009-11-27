@@ -27,10 +27,15 @@
 namespace Raul {
 
 
-/** A restricted string (C identifier, which is a component of a path).
+/** A restricted string (C identifier, which is a component of a Path).
  *
- * A Symbol is an lv2-compliant symbol, which is also valid as a component of
- * a URI, filesystem or OSC path, programming language identifier, etc.
+ * A Symbol is a very restricted string suitable for use as an identifier.
+ * It is a valid LV2 symbol, URI fragment, filename, OSC path fragment,
+ * and identifier for most programming languages (including C).
+ *
+ * Valid characters are _, a-z, A-Z, 0-9, except the first character which
+ * must not be 0-9.
+ *
  * \ingroup raul
  */
 class Symbol : public std::basic_string<char> {
