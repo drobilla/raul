@@ -1,3 +1,18 @@
+raul (0.6.0) unstable; urgency=low
+
+  * Switch to waf build system
+  * Fix compilation with GCC 4.4
+  * Add URI class and make Path a special URI (with scheme "path:")
+  * Remove JackDriver
+  * Add NullDeleter convenience for SharedPtr
+  * Add URI Atom type
+  * Add C++ style printing for Atom
+  * Fix type wackiness for glib atomic functions on PPC
+  * Remove misguided LASH stuff
+  * Depend on glib (instead of glibmm)
+  
+ -- Dave Robillard <dave@drobilla.net>  Tue, 08 Dec 2009 19:20:37 -0500
+
 raul (0.5.1) unstable; urgency=low
 
   * OSC blob fixes

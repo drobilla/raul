@@ -14,11 +14,12 @@ def build(bld):
 		smf_test
 		table_test
 	'''
-	for i in tests.split():
-		obj = bld.new_task_gen('cxx', 'program')
-		obj.source       = i + '.cpp'
-		obj.includes     = '..'
-		obj.uselib_local = 'libraul'
-		obj.target       = i
-		obj.install_path = ''
+	if bld.env['BUILD_TESTS']:
+		for i in tests.split():
+			obj = bld.new_task_gen('cxx', 'program')
+			obj.source       = i + '.cpp'
+			obj.includes     = '..'
+			obj.uselib_local = 'libraul'
+			obj.target       = i
+			obj.install_path = ''
 

@@ -19,7 +19,7 @@
 #include <cassert>
 #include <cstring>
 #include <iostream>
-#include <glibmm/miscutils.h>
+#include <glib.h>
 #include "raul/SMFReader.hpp"
 #include "raul/midi_events.h"
 

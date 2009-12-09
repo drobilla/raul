@@ -1,8 +1,9 @@
 #!/usr/bin/env python
 import autowaf
+import Options
 
 # Version of this package (even if built as a child)
-RAUL_VERSION = '0.5.1'
+RAUL_VERSION = '0.6.0'
 
 # Library version (UNIX style major, minor, micro)
 # major increment <=> incompatible changes
@@ -12,7 +13,8 @@ RAUL_VERSION = '0.5.1'
 #   0.4.0 = 0,0,0
 #   0.5.0 = 1,0,0 (SVN r1283)
 #   0.5.1 = 2,0,0
-RAUL_LIB_VERSION = '2.0.0'
+#   0.6.0 = 3,0,0
+RAUL_LIB_VERSION = '3.0.0'
 
 # Variables for 'waf dist'
 APPNAME = 'raul'
@@ -24,21 +26,27 @@ blddir = 'build'
 
 def set_options(opt):
 	autowaf.set_options(opt)
+	opt.add_option('--test', action='store_true', default=False, dest='build_tests',
+			help="Build unit tests")
 
 def configure(conf):
 	autowaf.configure(conf)
 	conf.check_tool('compiler_cxx')
-	autowaf.check_pkg(conf, 'glibmm-2.4', atleast_version='2.14.0',
-			uselib_store='GLIBMM', mandatory=True)
+	autowaf.check_pkg(conf, 'glib-2.0', atleast_version='2.2',
+			uselib_store='GLIB', mandatory=True)
 	autowaf.check_pkg(conf, 'gthread-2.0', atleast_version='2.14.0',
 			uselib_store='GTHREAD', mandatory=True)
 	
+	conf.env['BUILD_TESTS'] = Options.options.build_tests
+
 	# Boost headers
 	autowaf.check_header(conf, 'boost/shared_ptr.hpp', mandatory=True)
 	autowaf.check_header(conf, 'boost/weak_ptr.hpp', mandatory=True)
 	autowaf.check_header(conf, 'boost/utility.hpp', mandatory=True)
 	
 	autowaf.print_summary(conf)
+	autowaf.display_msg(conf, "Unit tests", str(conf.env['BUILD_TESTS']))
+	print
 
 def build(bld):
 	# Headers
