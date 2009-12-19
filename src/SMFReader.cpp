@@ -71,7 +71,7 @@ midi_event_size(unsigned char status)
 }
 
 
-SMFReader::SMFReader(const string filename)
+SMFReader::SMFReader(const std::string filename)
 	: _fd(NULL)
 	, _ppqn(0)
 	, _track(0)
@@ -90,7 +90,7 @@ SMFReader::~SMFReader()
 
 
 bool
-SMFReader::open(const string& filename) throw (logic_error, UnsupportedTime)
+SMFReader::open(const std::string& filename) throw (logic_error, UnsupportedTime)
 {
 	if (_fd)
 		throw logic_error("Attempt to start new read while write in progress.");

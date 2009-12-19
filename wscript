@@ -59,6 +59,7 @@ def build(bld):
 	# Library
 	obj = bld.new_task_gen('cxx', 'shlib')
 	obj.source = '''
+		src/Configuration.cpp
 		src/Maid.cpp
 		src/Path.cpp
 		src/SMFReader.cpp

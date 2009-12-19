@@ -28,7 +28,7 @@ pthread_once_t Thread::_thread_key_once = PTHREAD_ONCE_INIT;
 pthread_key_t  Thread::_thread_key;
 
 
-Thread::Thread(const string& name)
+Thread::Thread(const std::string& name)
 	: _exit_flag(false)
 	, _context(0)
 	, _name(name)
@@ -41,7 +41,7 @@ Thread::Thread(const string& name)
 
 
 /** Must be called from thread */
-Thread::Thread(pthread_t thread, const string& name)
+Thread::Thread(pthread_t thread, const std::string& name)
 	: _exit_flag(false)
 	, _context(0)
 	, _name(name)

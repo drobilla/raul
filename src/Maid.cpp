@@ -33,10 +33,9 @@ Maid::~Maid()
 	cleanup();
 }
 
-/** Manage a SharedPtr.
- * NOT realtime safe.
+/** Manage a SharedPtr.  NOT realtime safe.
  *
- * @ptr is guaranteed to be deleted in the context that calls cleanup()
+ * @a ptr is guaranteed to be deleted in the context that calls cleanup()
  */
 void
 Maid::manage(SharedPtr<Raul::Deletable> ptr)

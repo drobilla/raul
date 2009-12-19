@@ -62,8 +62,8 @@ SMFWriter::~SMFWriter()
  *    to write_event will have this value subtracted before writing).
  */
 bool
-SMFWriter::start(const string&   filename,
-                 Raul::TimeStamp start_time) throw (logic_error)
+SMFWriter::start(const std::string& filename,
+                 Raul::TimeStamp    start_time) throw (logic_error)
 {
 	if (_fd)
 		throw logic_error("Attempt to start new write while write in progress.");

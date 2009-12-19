@@ -119,7 +119,7 @@ Path::nameify(const std::basic_string<char>& str)
 /** Replace any invalid characters in @a str with a suitable replacement.
  */
 void
-Path::replace_invalid_chars(string& str, size_t start, bool replace_slash)
+Path::replace_invalid_chars(std::string& str, size_t start, bool replace_slash)
 {
 	string prefix = str.substr(0, start);
 	str = str.substr(start);
