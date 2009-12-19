@@ -72,9 +72,7 @@ Thread::get()
 void
 Thread::start()
 {
-	if (_pthread_exists) {
-		cout << "[" << _name << " Thread] Already started." << endl;
-	} else {
+	if (!_pthread_exists) {
 		cout << "[" << _name << " Thread] Starting." << endl;
 
 		pthread_attr_t attr;
