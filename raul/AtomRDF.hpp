@@ -22,7 +22,7 @@
 #include <string>
 #include <sstream>
 #include <cmath>
-
+#include "raul/log.hpp"
 #include "raul/Atom.hpp"
 #include "redlandmm/Node.hpp"
 #include "redlandmm/World.hpp"
@@ -101,7 +101,7 @@ atom_to_node(Redland::World& world, const Atom& atom)
 	case Atom::BLOB:
 	case Atom::NIL:
 	default:
-		//std::cerr << "WARNING: Unserializable Atom!" << std::endl;
+		warn << "Unserializable Atom" << std::endl;
 		break;
 	}
 

@@ -18,8 +18,8 @@
 #include <cstdio>
 #include <cassert>
 #include <cstring>
-#include <iostream>
 #include <glib.h>
+#include "raul/log.hpp"
 #include "raul/SMFReader.hpp"
 #include "raul/midi_events.h"
 
@@ -95,7 +95,7 @@ SMFReader::open(const std::string& filename) throw (logic_error, UnsupportedTime
 	if (_fd)
 		throw logic_error("Attempt to start new read while write in progress.");
 
-	cout << "Opening SMF file " << filename << " for reading." << endl;
+	info << "Opening SMF file " << filename << " for reading." << endl;
 
 	_fd = fopen(filename.c_str(), "r+");
 
@@ -106,7 +106,7 @@ SMFReader::open(const std::string& filename) throw (logic_error, UnsupportedTime
 		mthd[4] = '\0';
 		fread(mthd, 1, 4, _fd);
 		if (strcmp(mthd, "MThd")) {
-			cerr << filename << " is not an SMF file, aborting." << endl;
+			error << filename << " is not an SMF file, aborting." << endl;
 			fclose(_fd);
 			_fd = NULL;
 			return false;
@@ -166,7 +166,7 @@ SMFReader::seek_to_track(unsigned track) throw (std::logic_error)
 		if (!strcmp(id, "MTrk")) {
 			++track_pos;
 		} else {
-			std::cerr << "Unknown chunk ID " << id << endl;
+			error << "Unknown chunk ID " << id << endl;
 		}
 
 		uint32_t chunk_size_be;
@@ -252,10 +252,6 @@ SMFReader::read_event(size_t    buf_len,
 			throw PrematureEOF();
 		uint8_t type = fgetc(_fd);
 		const uint32_t size = read_var_len(_fd);
-		/*cerr.flags(ios::hex);
-		cerr << "SMF - meta 0x" << (int)type << ", size = ";
-		cerr.flags(ios::dec);
-		cerr << size << endl;*/
 
 		if ((uint8_t)type == 0x2F) {
 			return -1; // we hit the logical EOF anyway...
@@ -266,7 +262,6 @@ SMFReader::read_event(size_t    buf_len,
 	}
 
 	if (*ev_size > buf_len || *ev_size == 0 || feof(_fd)) {
-		//cerr << "SMF - Skipping event" << endl;
 		// Skip event, return 0
 		fseek(_fd, *ev_size - 1, SEEK_CUR);
 		return 0;

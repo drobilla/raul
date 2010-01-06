@@ -22,6 +22,7 @@
 #include <cstring>
 #include <iostream>
 #include <glib.h>
+#include "raul/log.hpp"
 
 namespace Raul {
 
@@ -189,7 +190,7 @@ bool
 RingBuffer<T>::skip(size_t size)
 {
 	if (read_space() < size) {
-		std::cerr << "WARNING: Attempt to skip past end of MIDI ring buffer" << std::endl;
+		warn << "Attempt to skip past end of MIDI ring buffer" << std::endl;
 		return false;
 	}
 

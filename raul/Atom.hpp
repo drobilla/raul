@@ -210,4 +210,18 @@ static inline std::ostream& operator<<(std::ostream& os, const Raul::Atom& atom)
 	return os;
 }
 
+static inline std::ostream& operator<<(std::ostream& os, Raul::Atom::Type type)
+{
+	switch (type) {
+	case Raul::Atom::NIL:    return os << "Nil";
+	case Raul::Atom::INT:    return os << "Int32";
+	case Raul::Atom::FLOAT:  return os << "Float";
+	case Raul::Atom::BOOL:   return os << "Bool";
+	case Raul::Atom::URI:    return os << "URI";
+	case Raul::Atom::STRING: return os << "String";
+	case Raul::Atom::BLOB:   return os << "Blob";
+	}
+	return os;
+}
+
 #endif // RAUL_ATOM_HPP

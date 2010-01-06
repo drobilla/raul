@@ -19,8 +19,8 @@
 #include <cassert>
 #include <cstring>
 #include <cstdio>
-#include <iostream>
 #include <glib.h>
+#include "raul/log.hpp"
 #include "raul/SMFWriter.hpp"
 
 using namespace std;
@@ -68,7 +68,7 @@ SMFWriter::start(const std::string& filename,
 	if (_fd)
 		throw logic_error("Attempt to start new write while write in progress.");
 
-	cerr << "Opening SMF file " << filename << " for writing." << endl;
+	info << "Opening SMF file " << filename << " for writing." << endl;
 
 	_fd = fopen(filename.c_str(), "w+");
 
@@ -155,7 +155,7 @@ SMFWriter::finish() throw (logic_error)
 void
 SMFWriter::write_header()
 {
-	cerr << "SMF Flushing header\n";
+	info << "SMF Flushing header\n";
 
 	assert(_fd);
 
@@ -181,7 +181,7 @@ SMFWriter::write_header()
 void
 SMFWriter::write_footer()
 {
-	cerr << "SMF - Writing EOT\n";
+	info << "Writing EOT\n";
 
 	fseek(_fd, 0, SEEK_END);
 	write_var_len(1); // whatever...

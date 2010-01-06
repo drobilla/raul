@@ -20,6 +20,7 @@
 
 #include <iostream>
 #include <lo/lo.h>
+#include "raul/log.hpp"
 #include "raul/Atom.hpp"
 
 namespace Raul {
@@ -85,7 +86,7 @@ lo_arg_to_atom(char type, lo_arg* arg)
 	case 'F':
 		return Atom((bool)false);
 	default:
-		std::cerr << "WARNING: Unable to convert OSC type '"
+		warn << "Unable to convert OSC type '"
 			<< type << "' to Atom" << std::endl;
 		return Atom();
 	}

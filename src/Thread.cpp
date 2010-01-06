@@ -15,9 +15,11 @@
  * 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
-#include <iostream>
 #include <cstring>
+#include "raul/log.hpp"
 #include "raul/Thread.hpp"
+
+#define LOG(s) s << "[" << _name << "] "
 
 using namespace std;
 
@@ -73,7 +75,7 @@ void
 Thread::start()
 {
 	if (!_pthread_exists) {
-		cout << "[" << _name << " Thread] Starting." << endl;
+		LOG(info) << "Starting thread" << endl;
 
 		pthread_attr_t attr;
 		pthread_attr_init(&attr);
@@ -96,7 +98,7 @@ Thread::stop()
 		}
 		_pthread = NULL;
 		_pthread_exists = false;
-		cout << "[" << _name << " Thread] Exiting." << endl;
+		LOG(info) << "Exiting thread" << endl;
 	}
 }
 
@@ -107,16 +109,16 @@ Thread::set_scheduling(int policy, unsigned int priority)
 	sp.sched_priority = priority;
 	int result = pthread_setschedparam(_pthread, policy, &sp);
 	if (!result) {
-		cout << "[" << _name << "] Set scheduling policy to ";
+		LOG(info) << "Set scheduling policy to ";
 		switch (policy) {
-			case SCHED_FIFO:  cout << "SCHED_FIFO";  break;
-			case SCHED_RR:    cout << "SCHED_RR";    break;
-			case SCHED_OTHER: cout << "SCHED_OTHER"; break;
-			default:          cout << "UNKNOWN";     break;
+			case SCHED_FIFO:  info << "SCHED_FIFO";  break;
+			case SCHED_RR:    info << "SCHED_RR";    break;
+			case SCHED_OTHER: info << "SCHED_OTHER"; break;
+			default:          info << "UNKNOWN";     break;
 		}
-		cout << ", priority " << sp.sched_priority << endl;
+		info << ", priority " << sp.sched_priority << endl;
 	} else {
-		cout << "[" << _name << "] Unable to set scheduling policy ("
+		LOG(info) << "Unable to set scheduling policy ("
 			<< strerror(result) << ")" << endl;
 	}
 }

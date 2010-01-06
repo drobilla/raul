@@ -24,6 +24,7 @@
 #include <sys/time.h>
 #include <sys/resource.h>
 #include <boost/utility.hpp>
+#include "raul/log.hpp"
 
 namespace Raul {
 
@@ -47,7 +48,7 @@ public:
 
         const std::string arguments = command.substr((command.find(" ") + 1));
 
-        std::cerr << "Launching child process '" << executable << "' with arguments '"
+        info << "Launching child process '" << executable << "' with arguments '"
             << arguments << "'" << std::endl;
 
         // Use the same double fork() trick as JACK to prevent zombie children

@@ -28,6 +28,10 @@ def set_options(opt):
 	autowaf.set_options(opt)
 	opt.add_option('--test', action='store_true', default=False, dest='build_tests',
 			help="Build unit tests")
+	opt.add_option('--log-colour', action='store_true', default=True, dest='log_colour',
+			help="Coloured console/log output")
+	opt.add_option('--log-debug', action='store_true', default=False, dest='log_debug',
+			help="Print debugging output")
 
 def configure(conf):
 	autowaf.configure(conf)
@@ -39,6 +43,13 @@ def configure(conf):
 			uselib_store='GTHREAD', mandatory=True)
 	
 	conf.env['BUILD_TESTS'] = Options.options.build_tests
+
+	if Options.options.log_colour:
+		conf.define('LOG_COLOUR', 1)
+	if Options.options.log_debug:
+		conf.define('LOG_DEBUG', 1)
+	
+	conf.write_config_header('raul-config.h')
 
 	# Boost headers
 	autowaf.check_header(conf, 'boost/shared_ptr.hpp', mandatory=True)
@@ -67,6 +78,7 @@ def build(bld):
 		src/SMFWriter.cpp
 		src/Symbol.cpp
 		src/Thread.cpp
+		src/log.cpp
 	'''
 	obj.export_incdirs = ['.']
 	obj.includes     = ['.', './src']

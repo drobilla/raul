@@ -241,12 +241,6 @@ Table<K, T>::cram(const Table<K,T>& range)
 
 	_entries = new_entries;
 
-	/*std::cerr << "********************************\n";
-	for (size_t i=0; i < size(); ++i) {
-		std::cerr << _entries[i].first << std::endl;
-	}
-	std::cerr << "********************************\n";*/
-
 	assert(size() == orig_size + range.size());
 #ifdef TABLE_SORT_DEBUG
 	assert(is_sorted());
