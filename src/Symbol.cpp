@@ -59,13 +59,10 @@ Symbol::symbolify(const std::basic_string<char>& str)
 {
 	string symbol = str;
 
-	Path::replace_invalid_chars(symbol, true);
+	Path::replace_invalid_chars(symbol, 0, true);
 
 	if (symbol.length() == 0)
 		return "_";
-
-	if (isdigit(symbol[0]))
-		symbol = string("_").append(symbol);
 
 	assert(is_valid(symbol));
 
