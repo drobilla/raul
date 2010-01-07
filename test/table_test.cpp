@@ -162,10 +162,6 @@ main(int argc, char** argv)
 
 	/* **** */
 
-	cout << "\nAssuming you built with debugging, if this continues to run "
-		<< "and chews your CPU without dying, everything's good." << endl;
-
-
 	Table<string, string> st;
 
 	st.insert(make_pair("apple", "core"));
@@ -180,7 +176,7 @@ main(int argc, char** argv)
 		cout << i->first << " ";
 	cout << endl;
 
-	while (true) {
+	for (int i = 0; i < 1000; ++i) {
 		Table<int, int> t;
 
 		size_t table_size = (rand() % 1000) + 1;
@@ -198,14 +194,13 @@ main(int argc, char** argv)
 
 		/*cout << "CONTENTS:" << endl;
 
-		  for (Table<int,int>::const_iterator i = t.begin(); i != t.end(); ++i) {
-		  cout << i->first << ": " << i->second << endl;
-		  }
+		for (Table<int,int>::const_iterator i = t.begin(); i != t.end(); ++i) {
+			cout << i->first << ": " << i->second << endl;
+		}
 
-		  Table<int,int>::iterator i = t.find(7);
-		  if (i != t.end())
-		  cout << "Find: 7: " << i->second << endl;
-		  */
+		Table<int,int>::iterator i = t.find(7);
+		if (i != t.end())
+			cout << "Find: 7: " << i->second << endl;*/
 	}
 
 	return 0;

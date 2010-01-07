@@ -4,8 +4,6 @@
 #include <algorithm>
 #include <stdio.h>
 #include <stdlib.h>
-#include <fcntl.h>
-#include <termios.h>
 #include "raul/SRSWQueue.hpp"
 #include "raul/SRMWQueue.hpp"
 #include "raul/Thread.hpp"
@@ -15,9 +13,9 @@ using namespace std;
 using namespace Raul;
 
 static const unsigned NUM_DATA = 10;
-static const unsigned QUEUE_SIZE = 1024*1024;
+static const unsigned QUEUE_SIZE = 128;
 static const unsigned NUM_WRITERS = 2;
-static const unsigned PUSHES_PER_ITERATION = 2;
+static const unsigned PUSHES_PER_ITERATION = 3;
 
 // Data to read/write using actions pumped through the queue
 struct Record {
@@ -32,18 +30,13 @@ Record data[NUM_DATA];
 
 // Actions pumped through the queue to manipulate data
 struct WriteAction {
-	WriteAction(unsigned idx)
-		: index(idx)/*, has_read(false)*/ {}
+	WriteAction(unsigned idx) : index(idx) {}
 
 	inline void read() const {
-		//cout << "READ " << index << "\r\n";
-		//assert(!has_read);
 		++(data[index].read_count);
-		//has_read = true;
 	};
 
 	unsigned index;
-	//bool has_read;
 };
 
 
@@ -54,11 +47,8 @@ SRMWQueue<WriteAction> queue(QUEUE_SIZE);
 class WriteThread : public Thread {
 protected:
 	void _run() {
-
-		cout << "Writer starting.\r\n";
-
 		// Wait for everything to get ready
-		sleep(2);
+		sleep(1);
 
 		while (true) {
 			for (unsigned j=0; j < PUSHES_PER_ITERATION; ++j) {
@@ -67,17 +57,12 @@ protected:
 					++(data[i].write_count);
 					//cout << "WRITE " << i << "\r\n";
 				} else {
-					cerr << "FAILED WRITE\r\n";
+					//cerr << "FAILED WRITE\r\n";
 				}
 			}
 
-			// FIXME: remove!
-			//if (rand() % 20)
-			//	usleep(1);
-
 			// This thread will never cancel without this here since
-			// all the stuff about is cancellation point free
-			// (good!  RT safe)
+			// this loop is hard RT safe and thus cancellation point free
 			pthread_testcancel();
 		}
 
@@ -92,7 +77,7 @@ unsigned
 data_is_sane()
 {
 	unsigned ret = 0;
-	for (unsigned i=0; i < NUM_DATA; ++i) {
+	for (unsigned i = 0; i < NUM_DATA; ++i) {
 		unsigned diff = abs(data[i].read_count.get() - data[i].write_count.get());
 		ret += diff;
 	}
@@ -104,7 +89,7 @@ data_is_sane()
 void
 dump_data()
 {
-	for (unsigned i=0; i < NUM_DATA; ++i) {
+	for (unsigned i = 0; i < NUM_DATA; ++i) {
 		cout << i << ":\t" << data[i].read_count.get()
 			<< "\t : \t" << data[i].write_count.get();
 		if (data[i].read_count.get() == data[i].write_count.get())
@@ -115,8 +100,8 @@ dump_data()
 }
 
 
-
-int main()
+int
+main()
 {
 	unsigned long total_processed = 0;
 
@@ -138,7 +123,7 @@ int main()
 		}
 	}
 
-	for (unsigned i=0; i < queue.capacity(); ++i)
+	for (unsigned i = 0; i < queue.capacity(); ++i)
 		queue.pop();
 
 	if (!queue.empty()) {
@@ -149,23 +134,16 @@ int main()
 	cout << "Testing concurrent reading/writing" << endl;
 	vector<WriteThread*> writers(NUM_WRITERS, new WriteThread());
 
-	struct termios orig_term;
-    struct termios raw_term;
-
-    cfmakeraw(&raw_term);
-    if (tcgetattr(0, &orig_term) != 0) return 1; //save terminal settings
-    if (tcsetattr(0, TCSANOW, &raw_term) != 0) return 1; //set to raw
-    fcntl(0, F_SETFL, O_NONBLOCK); //set to nonblocking IO on stdin
-
-
 	for (unsigned i=0; i < NUM_WRITERS; ++i) {
 		writers[i]->set_name(string("Writer ") + (char)('0' + i));
 		writers[i]->start();
 	}
 
+	sleep(1);
+
 	// Read
-	while (getchar() == -1) {
-		unsigned count = 0;
+	unsigned count = 0;
+	for (unsigned i = 0; i < 10000000; ++i) {
 		while (count < queue.capacity() && !queue.empty()) {
 			WriteAction action = queue.front();
 			queue.pop();
@@ -176,21 +154,19 @@ int main()
 
 		/*if (count > 0)
 			cout << "Processed " << count << " requests\t\t"
-				<< "(total " << total_processed << ")\r\n";*/
+				<< "(total " << total_processed << ")\r\n";
 
-		//if (total_processed > 0 && total_processed % 128l == 0)
-		//	cout << "Total processed: " << total_processed << "\r\n";
+		if (total_processed > 0 && total_processed % 128l == 0)
+			cout << "Total processed: " << total_processed << "\r\n";*/
 	}
 
-    if (tcsetattr(0, TCSANOW, &orig_term) != 0) return 1; //restore
-
-	cout << "Finishing." << endl;
+	cout << "Processed " << total_processed << " requests" << endl;
 
 	// Stop the writers
 	for (unsigned i=0; i < NUM_WRITERS; ++i)
 		writers[i]->stop();
 
-	cout << "\n\n****************** DONE *********************\n\n";
+	//cout << "\n\n****************** DONE *********************\n\n";
 
 	unsigned leftovers = 0;
 
@@ -207,7 +183,7 @@ int main()
 		cout << "Processed " << leftovers << " leftovers." << endl;
 
 
-	cout << "\n\n*********************************************\n\n";
+	//cout << "\n\n*********************************************\n\n";
 
 	cout << "Total processed: " << total_processed << endl;
 	if (total_processed > INT_MAX)
@@ -216,16 +192,16 @@ int main()
 		cout << "(Counter did NOT have to wrap)" << endl;
 
 
-	unsigned diff = data_is_sane();
+	const unsigned diff = data_is_sane();
 
 	if (diff == 0) {
-		cout << "PASS" << endl;
+		return EXIT_SUCCESS;
 	} else {
 		cout << "FAILED BY " << diff << endl;
-	//	dump_data();
+		return EXIT_FAILURE;
 	}
 
-	dump_data();
+	//dump_data();
 
 	return 0;
 }

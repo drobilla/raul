@@ -59,6 +59,20 @@ def configure(conf):
 	autowaf.print_summary(conf)
 	autowaf.display_msg(conf, "Unit tests", str(conf.env['BUILD_TESTS']))
 	print
+	
+tests = '''
+	test/path_test
+	test/thread_test
+	test/queue_test
+	test/ringbuffer_test
+	test/midi_ringbuffer_test
+	test/atomic_test
+	test/list_test
+	test/time_test
+	test/quantize_test
+	test/smf_test
+	test/table_test
+'''
 
 def build(bld):
 	# Headers
@@ -68,9 +82,7 @@ def build(bld):
 	# Pkgconfig file
 	autowaf.build_pc(bld, 'RAUL', RAUL_VERSION, 'GLIBMM GTHREAD')
 
-	# Library
-	obj = bld.new_task_gen('cxx', 'shlib')
-	obj.source = '''
+	lib_source = '''
 		src/Configuration.cpp
 		src/Maid.cpp
 		src/Path.cpp
@@ -80,20 +92,47 @@ def build(bld):
 		src/Thread.cpp
 		src/log.cpp
 	'''
+
+	# Library
+	obj = bld.new_task_gen('cxx', 'shlib')
 	obj.export_incdirs = ['.']
+	obj.source       = lib_source
 	obj.includes     = ['.', './src']
 	obj.name         = 'libraul'
 	obj.target       = 'raul'
 	obj.uselib       = 'GLIBMM GTHREAD'
 	obj.install_path = '${LIBDIR}'
 	obj.vnum         = RAUL_LIB_VERSION
+	
+	if bld.env['BUILD_TESTS']:
+		# Static library (for unit test code coverage)
+		obj = bld.new_task_gen('cxx', 'staticlib')
+		obj.source       = lib_source
+		obj.includes     = ['.', './src']
+		obj.name         = 'libraul_static'
+		obj.target       = 'raul_static'
+		obj.uselib       = 'GLIBMM GTHREAD'
+		obj.install_path = ''
+		obj.cxxflags      = [ '-fprofile-arcs',  '-ftest-coverage' ]
 
-	# Unit tests
-	bld.add_subdirs('tests')
+		# Unit tests
+		for i in tests.split():
+			obj = bld.new_task_gen('cxx', 'program')
+			obj.source       = i + '.cpp'
+			obj.includes     = '..'
+			obj.uselib_local = 'libraul_static'
+			obj.uselib       = 'GLIB GLIBMM'
+			obj.libs         = 'gcov'
+			obj.target       = i
+			obj.install_path = ''
+			obj.cxxflags      = [ '-fprofile-arcs',  '-ftest-coverage' ]
 
 	# Documentation
 	autowaf.build_dox(bld, 'RAUL', RAUL_VERSION, srcdir, blddir)
 	bld.install_files('${HTMLDIR}', blddir + '/default/doc/html/*')
+
+def test(ctx):
+	autowaf.run_tests(APPNAME, tests.split())
 
 def shutdown():
 	autowaf.shutdown()
