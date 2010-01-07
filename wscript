@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 import autowaf
 import Options
+import os
 
 # Version of this package (even if built as a child)
 RAUL_VERSION = '0.6.0'
@@ -132,7 +133,7 @@ def build(bld):
 	bld.install_files('${HTMLDIR}', blddir + '/default/doc/html/*')
 
 def test(ctx):
-	autowaf.run_tests(APPNAME, tests.split())
+	autowaf.run_tests(ctx, APPNAME, tests.split())
 
 def shutdown():
 	autowaf.shutdown()
