@@ -79,14 +79,7 @@ protected:
 	bool _exit_flag;
 
 private:
-
-	inline static void* _static_run(void* me) {
-		pthread_setspecific(_thread_key, me);
-		Thread* myself = (Thread*)me;
-		myself->_run();
-		myself->_pthread_exists = false;
-		return NULL; // and I
-	}
+	static void* _static_run(void* me);
 
 	/** Allocate thread-specific data key */
 	static void thread_key_alloc() {

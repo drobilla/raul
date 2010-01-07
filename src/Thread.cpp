@@ -70,6 +70,18 @@ Thread::get()
 	return *this_thread;
 }
 
+
+void*
+Thread::_static_run(void* thread)
+{
+	Thread* me = (Thread*)thread;
+	pthread_setspecific(me->_thread_key, thread);
+	me->_run();
+	me->_pthread_exists = false;
+	return NULL;
+}
+
+
 /** Launch and start the thread. */
 void
 Thread::start()
