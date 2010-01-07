@@ -1,5 +1,6 @@
 #include <iostream>
 #include <string>
+#include "raul/log.hpp"
 #include "raul/SMFReader.hpp"
 #include "raul/SMFWriter.hpp"
 
@@ -10,15 +11,21 @@ using namespace Raul;
 int
 main(int argc, char** argv)
 {
+#define CHECK(cond) \
+	do { if (!(cond)) { \
+		error << "Test at " << __FILE__ << ":" << __LINE__ << " failed: " << __STRING(cond) << endl; \
+		return 1; \
+	} } while (0)
+
+	static const uint16_t ppqn = 19200;
+
 	const char* filename = NULL;
 
 	if (argc < 2) {
 		filename = "./test.mid";
-		SMFWriter writer(TimeUnit(TimeUnit::BEATS, 19200));
+		SMFWriter writer(TimeUnit(TimeUnit::BEATS, ppqn));
 		writer.start(string(filename), TimeStamp(writer.unit(), 0, 0));
 		writer.finish();
-		cout << "Wrote " << filename << " with PPQN = " << writer.unit().ppt() << endl;
-
 	} else {
 		filename = argv[1];
 	}
@@ -32,14 +39,11 @@ main(int argc, char** argv)
 		return -1;
 	}
 
-	cout << "Opened SMF file " << filename << endl;
-
-	cout << "Type: " << reader.type() << endl;
-	cout << "Num tracks: " << reader.num_tracks() << endl;
-	cout << "PPQN: " << reader.ppqn() << endl;
+	CHECK(reader.type() == 0);
+	CHECK(reader.num_tracks() == 1);
+	CHECK(reader.ppqn() == ppqn);
 
 	for (unsigned t=1; t <= reader.num_tracks(); ++t) {
-		cout << "******** Track " << t << " ********" << endl;
 		reader.seek_to_track(t);
 
 		unsigned char buf[4];
@@ -47,7 +51,7 @@ main(int argc, char** argv)
 		uint32_t      ev_delta_time;
 		while (reader.read_event(4, buf, &ev_size, &ev_delta_time) >= 0) {
 
-			cout << "Event, size = " << ev_size << ", time = " << ev_delta_time;
+			cout << t << ": Event, size = " << ev_size << ", time = " << ev_delta_time;
 			cout << ":\t";
 			cout.flags(ios::hex);
 			for (uint32_t i=0; i < ev_size; ++i) {
