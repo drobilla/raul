@@ -202,7 +202,7 @@ static inline std::ostream& operator<<(std::ostream& os, const Raul::Atom& atom)
 	case Raul::Atom::NIL:    return os << "(nil)";
 	case Raul::Atom::INT:    return os << atom.get_int32();
 	case Raul::Atom::FLOAT:  return os << atom.get_float();
-	case Raul::Atom::BOOL:   return os << atom.get_bool();
+	case Raul::Atom::BOOL:   return os << (atom.get_bool() ? "true" : "false");
 	case Raul::Atom::URI:    return os << "<" << atom.get_uri() << ">";
 	case Raul::Atom::STRING: return os << atom.get_string();
 	case Raul::Atom::BLOB:   return os << atom.get_blob();
@@ -214,7 +214,7 @@ static inline std::ostream& operator<<(std::ostream& os, Raul::Atom::Type type)
 {
 	switch (type) {
 	case Raul::Atom::NIL:    return os << "Nil";
-	case Raul::Atom::INT:    return os << "Int32";
+	case Raul::Atom::INT:    return os << "Int";
 	case Raul::Atom::FLOAT:  return os << "Float";
 	case Raul::Atom::BOOL:   return os << "Bool";
 	case Raul::Atom::URI:    return os << "URI";
