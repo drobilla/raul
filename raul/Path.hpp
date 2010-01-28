@@ -173,6 +173,15 @@ public:
 			return str() + "/";
 	}
 
+	/** Return path with a trailing "/".
+	 *
+	 * Returned value is guaranteed to be a valid parent path, i.e. a valid
+	 * child path can be made using parent.base() + child_name.
+	 */
+	inline const std::string base_no_scheme() const {
+		return base().substr(find(":") + 1);
+	}
+
 
 	/** Return true if \a child is equal to, or a descendant of \a parent */
 	static bool descendant_comparator(const Path& parent, const Path& child) {
