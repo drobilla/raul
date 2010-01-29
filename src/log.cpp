@@ -50,16 +50,16 @@ std::ostream error(&error_buffer);
 std::ostream debug(&debug_buffer);
 
 
-const char*
+std::string
 Raul::LogBuffer::colour(Colour c)
 {
 	std::stringstream ss;
 	ss << "\033[0;" << _colour << "m";
-	return ss.str().c_str();
+	return ss.str();
 }
 
 
-const char*
+std::string
 Raul::LogBuffer::plain()
 {
 	return "\033[0m";
@@ -70,7 +70,7 @@ void
 Raul::LogBuffer::emit()
 {
 	if (_colour != DEFAULT)
-		_out << colour(_colour);
+		_out << std::string(colour(_colour));
 
 	_out << _prefix << _line;
 

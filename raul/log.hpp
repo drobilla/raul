@@ -44,10 +44,10 @@ public:
 	{}
 
 	/** Change the colour of the output, e.g. out << colour(RED) << "red" << endl; */
-	const char* colour(Colour c);
+	std::string colour(Colour c);
 
 	/** Reset the colour of the output, e.g. out << plain() << "plain" << endl; */
-	const char* plain();
+	std::string plain();
 
 protected:
 	int_type overflow(int_type c) {
