@@ -63,17 +63,18 @@ def configure(conf):
 	print
 	
 tests = '''
-	test/path_test
-	test/thread_test
-	test/queue_test
-	test/ringbuffer_test
-	test/midi_ringbuffer_test
+	test/atom_test
 	test/atomic_test
 	test/list_test
-	test/time_test
+	test/midi_ringbuffer_test
+	test/path_test
 	test/quantize_test
+	test/queue_test
+	test/ringbuffer_test
 	test/smf_test
 	test/table_test
+	test/thread_test
+	test/time_test
 '''
 
 def build(bld):
@@ -121,7 +122,7 @@ def build(bld):
 		for i in tests.split():
 			obj = bld.new_task_gen('cxx', 'program')
 			obj.source       = i + '.cpp'
-			obj.includes     = '..'
+			obj.includes     = ['.', './src']
 			obj.uselib_local = 'libraul_static'
 			obj.uselib       = 'GLIB GLIBMM'
 			obj.libs         = 'gcov'
