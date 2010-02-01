@@ -12,9 +12,7 @@ main()
 	TimeUnit  unit(TimeUnit::BEATS, 19200);
 	TimeSlice ts(48000, 19200, 120.0);
 
-	double in_double;
-	cout << "Beats: ";
-	cin >> in_double;
+	double in_double = 2.5;
 
 	TimeStamp t(unit, (uint32_t)in_double,
 			(uint32_t)((in_double - (uint32_t)in_double) * unit.ppt()));
