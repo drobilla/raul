@@ -25,8 +25,6 @@
 #include <string>
 #include <ostream>
 
-#define CUC(x) ((const unsigned char*)(x))
-
 namespace Raul {
 
 
