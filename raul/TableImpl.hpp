@@ -264,7 +264,7 @@ Table<K,T>::insert(const std::pair<K, T>& entry)
 	const K& key = entry.first;
 	const T& value = entry.second;
 
-	if (size() == 0 || (size() == 1 && key > _entries[0].first)) {
+	if (size() == 0 || (size() == 1 && _entries[0].first < key)) {
 		_entries.push_back(entry);
 		return std::make_pair(iterator(*this, size()-1), true);
 	} else if (size() == 1) {
@@ -291,7 +291,7 @@ Table<K,T>::insert(const std::pair<K, T>& entry)
 		if (elem.first == key) {
 			elem.second = value;
 			return std::make_pair(iterator(*this, i), false);
-		} else if (elem.first > key) {
+		} else if (key < elem.first) {
 			if (i == 0 || _entries[i-1].first < key)
 				break;
 			upper = i - 1;

@@ -19,8 +19,11 @@
 #define RAUL_URI_HPP
 
 #include <string>
+#include <cstring>
 #include <exception>
 #include <ostream>
+#include <glib.h>
+#include "raul/Atom.hpp"
 
 namespace Raul {
 
@@ -30,7 +33,7 @@ namespace Raul {
  * This "should" be used for proper URIs (RFC3986), but not much support or
  * validation is built-in yet.  The URI string MUST have a scheme though.
  */
-class URI : protected std::basic_string<char> {
+class URI {
 public:
 	class BadURI : public std::exception {
 	public:
@@ -46,7 +49,7 @@ public:
 	 * It is a fatal error to construct a URI from an invalid string,
 	 * use is_valid first to check.
 	 */
-	URI(const std::basic_string<char>& uri="nil:0") : std::basic_string<char>(uri) {
+	URI(const std::basic_string<char>& uri="nil:0") : _str(g_intern_string(uri.c_str())) {
 		if (!is_valid(uri))
 			throw BadURI(uri);
 	}
@@ -56,7 +59,7 @@ public:
 	 * It is a fatal error to construct a URI from an invalid string,
 	 * use is_valid first to check.
 	 */
-	URI(const char* uri) : std::basic_string<char>(uri) {
+	URI(const char* uri) : _str(g_intern_string(uri)) {
 		if (!is_valid(uri))
 			throw BadURI(uri);
 	}
@@ -65,7 +68,7 @@ public:
 		return uri.find(":") != std::string::npos;
 	}
 
-	/** Return path with every up to and including the first occurence of str */
+	/** Return path with everything up to and including the first occurence of str chopped */
 	inline const std::string chop_start(const std::string& str) const {
 		return substr(find(str) + str.length());
 	}
@@ -76,33 +79,33 @@ public:
 	/** Return the URI scheme (everything before the first ':') */
 	inline std::string scheme() const { return substr(0, find(":")); }
 
-	inline const std::string& str()   const { return *this; }
-	inline const char*        c_str() const { return str().c_str(); }
-
-	inline operator const std::string() const { return str(); }
-	inline operator       std::string()       { return str(); }
+	inline const std::string str()   const { return _str; }
+	inline const char*       c_str() const { return _str; }
 
 	inline std::string substr(size_t start, size_t end=std::string::npos) const {
 		return str().substr(start, end);
 	}
 
-	inline bool operator<(const URI& uri)  const { return str() <  uri; }
-	inline bool operator<=(const URI& uri) const { return str() <= uri; }
-	inline bool operator>(const URI& uri)  const { return str() >  uri; }
-	inline bool operator>=(const URI& uri) const { return str() >= uri; }
-	inline bool operator==(const URI& uri) const { return str() == uri; }
-	inline bool operator!=(const URI& uri) const { return str() != uri; }
+	inline bool operator<(const URI& uri)  const { return strcmp(_str, uri.c_str()) < 0; }
+	inline bool operator<=(const URI& uri) const { return (*this) == uri || (*this) < uri; }
+	inline bool operator==(const URI& uri) const { return _str == uri._str; }
+	inline bool operator!=(const URI& uri) const { return _str != uri._str; }
 
 	inline size_t length()                           const { return str().length(); }
 	inline size_t find(const std::string& s)         const { return str().find(s); }
-	inline size_t find_last_of(const std::string& s) const { return str().find_last_of(s); }
+	inline size_t find_last_of(char c) const { return str().find_last_of(c); }
+
+	inline operator Raul::Atom() const { return Raul::Atom(_str, 12345); }
+
+private:
+	const char* _str;
 };
 
 static inline
 std::ostream&
 operator<<(std::ostream& os, const URI& uri)
 {
-	return (os << uri.str());
+	return (os << uri.c_str());
 }
 
 } // namespace Raul

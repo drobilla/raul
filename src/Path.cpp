@@ -24,7 +24,7 @@ namespace Raul {
 const string Path::scheme     = "path";
 const string Path::prefix     = Path::scheme + ":";
 const size_t Path::prefix_len = prefix.length();
-const string Path::root_uri   = Path::prefix + "/";
+const Path   Path::root   = Path::prefix + "/";
 
 bool
 Path::is_valid(const std::basic_string<char>& path_str)
@@ -73,7 +73,7 @@ string
 Path::pathify(const std::basic_string<char>& str)
 {
 	if (str.length() == 0)
-		return root_uri; // this might not be wise?
+		return root.str(); // this might not be wise?
 
 	string path  = (str.substr(0, prefix_len) == prefix) ? str : prefix + str;
 	size_t start = prefix_len + 1;

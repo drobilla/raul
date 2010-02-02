@@ -23,6 +23,7 @@
 #include <string>
 #include <cstring>
 #include <cassert>
+#include <glib.h>
 
 namespace Raul {
 
@@ -38,16 +39,15 @@ namespace Raul {
  *
  * \ingroup raul
  */
-class Symbol : public std::basic_string<char> {
+class Symbol {
 public:
-
 	/** Construct a Symbol from an std::string.
 	 *
 	 * It is a fatal error to construct a Symbol from an invalid string,
 	 * use is_valid first to check.
 	 */
 	Symbol(const std::basic_string<char>& symbol)
-		: std::basic_string<char>(symbol)
+		: _str(g_intern_string(symbol.c_str()))
 	{
 		assert(is_valid(symbol));
 	}
@@ -59,17 +59,35 @@ public:
 	 * use is_valid first to check.
 	 */
 	Symbol(const char* csymbol)
-		: std::basic_string<char>(csymbol)
+		: _str(g_intern_string(csymbol))
 	{
 		assert(is_valid(csymbol));
 	}
 
-	static bool is_valid(const std::basic_string<char>& path);
+	inline const char* c_str() const { return _str; }
+
+	inline bool operator==(const Symbol& other) const {
+		return _str == other._str;
+	}
+
+	inline bool operator!=(const Symbol& other) const {
+		return _str != other._str;
+	}
+
+	static bool is_valid(const std::basic_string<char>& symbol);
 
 	static std::string symbolify(const std::basic_string<char>& str);
+
+private:
+	const char* _str;
 };
 
 
 } // namespace Raul
+
+static inline std::ostream& operator<<(std::ostream& os, const Raul::Symbol& symbol)
+{
+	return (os << symbol.c_str());
+}
 
 #endif // RAUL_SYMBOL_HPP

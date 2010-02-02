@@ -85,7 +85,7 @@ Configuration::set_value_from_string(Configuration::Option& option, const std::s
 		}
 		break;
 	case Atom::STRING:
-		option.value = Atom(Atom::STRING, value);
+		option.value = Atom(value.c_str());
 		break;
 	default:
 		throw CommandLineError(string("bad option type `--") + option.name + "'");

@@ -58,10 +58,10 @@ public:
 	static const std::string scheme;
 	static const std::string prefix;
 	static const size_t      prefix_len;
-	static const std::string root_uri;
+	static const Path        root;
 
 	/** Construct an uninitialzed path, because the STL is annoying. */
-	Path() : URI(root_uri) {}
+	Path() : URI(root) {}
 
 	/** Construct a Path from an std::string.
 	 *
@@ -99,40 +99,38 @@ public:
 
 	static void replace_invalid_chars(std::string& str, size_t start, bool replace_slash = false);
 
-	bool is_root() const { return str() == root_uri; }
+	bool is_root() const { return (*this) == root; }
 
 	bool is_child_of(const Path& parent) const;
 	bool is_parent_of(const Path& child) const;
 
 	Path child(const std::string& s) const {
 		if (is_valid(s))
-			return std::string(base()) + Path(s).chop_scheme().substr(1);
+			return base() + Path(s).chop_scheme().substr(1);
 		else
-			return std::string(base()) + s;
+			return base() + s;
+	}
+
+	Path child(const Path& p) const {
+		return base() + p.chop_scheme().substr(1);
 	}
 
 	Path operator+(const Path& p) const { return child(p); }
 
-	/** Return the name of this object (everything after the last '/').
-	 * This is the "method name" for OSC paths.
-	 * The empty string may be returned (if the path is "/").
+	/** Return the symbol of this path (everything after the last '/').
+	 * This is e.g. the "method name" for OSC paths, the filename
+	 * for filesystem paths, etc.
+	 * The empty string may be returned (if the path is the root path).
 	 */
-	inline std::string name() const {
-		if (str() == root_uri)
-			return "";
-		else
-			return substr(find_last_of("/")+1);
+	inline const char* symbol() const {
+		if ((*this) != root) {
+			const char* last_slash = strrchr(c_str(), '/');
+			if (last_slash) {
+				return last_slash + 1;
+			}
+		}
+		return "";
 	}
-
-
-	/** Return the name of this object (everything after the last '/').
-	 * This is the "method name" for OSC paths.
-	 * Note it is illegal to call this method on the path "/".
-	 */
-	inline Symbol symbol() const {
-		return substr(find_last_of("/")+1);
-	}
-
 
 	/** Return the parent's path.
 	 *
@@ -140,19 +138,27 @@ public:
 	 * This is the (deepest) "container path" for OSC paths.
 	 */
 	inline Path parent() const {
-		if (str() == root_uri) {
-			return str();
+		if ((*this) == root) {
+			return *this;
 		} else {
-			size_t last_slash = find_last_of("/");
-			return (last_slash == prefix_len) ? root_uri : substr(0, last_slash);
+			const std::string str(this->str());
+			const size_t last_slash = str.find_last_of('/');
+			return (last_slash == prefix_len) ? root : str.substr(0, last_slash);
 		}
+	}
+
+
+	/** Return the path's child with the given name (symbol)
+	 */
+	inline Path child(const Raul::Symbol& symbol) const {
+		return base() + symbol.c_str();
 	}
 
 
 	/** Return path relative to some base path (chop prefix)
 	 */
 	inline Path relative_to_base(const Path& base) const {
-		if (str() == base) {
+		if ((*this) == base) {
 			return "/";
 		} else {
 			assert(length() > base.length());
@@ -167,10 +173,11 @@ public:
 	 * child path can be made using parent.base() + child_name.
 	 */
 	inline const std::string base() const {
-		if (str() == root_uri)
-			return str();
+		std::string ret = str();
+		if ((*this) == root && ret[ret.length() - 1] == '/')
+			return ret;
 		else
-			return str() + "/";
+			return ret + '/';
 	}
 
 	/** Return path with a trailing "/".
@@ -187,7 +194,7 @@ public:
 	static bool descendant_comparator(const Path& parent, const Path& child) {
 		return ( child == parent || (child.length() > parent.length() &&
 				(!std::strncmp(parent.c_str(), child.c_str(), parent.length())
-						&& (parent.str() == root_uri || child[parent.length()] == '/'))) );
+						&& (parent == root || child.str()[parent.length()] == '/'))) );
 	}
 };
 

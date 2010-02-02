@@ -24,9 +24,11 @@
 #include <cstring>
 #include <string>
 #include <ostream>
+#include <glib.h>
 
 namespace Raul {
 
+class URI;
 
 /** A piece of data with some type.
  *
@@ -54,17 +56,17 @@ public:
 	Atom(bool val)        : _type(BOOL),   _bool_val(val)           {}
 	Atom(const char* val) : _type(STRING), _string_val(strdup(val)) {}
 
-	Atom(Type t, const std::string& val) : _type(t), _string_val(strdup(val.c_str())) {}
+	Atom(const std::string& val) : _type(STRING), _string_val(strdup(val.c_str())) {}
+
+	/** URI constructor (@a t must be URI) */
+	Atom(Type t, const std::string& val) : _type(t), _string_val(g_intern_string(val.c_str())) {
+		assert(t == URI);
+	}
 
 	Atom(const char* type_uri, size_t size, void* val)
 		: _type(BLOB), _blob_val(new BlobValue(type_uri, size, val)) {}
 
-	~Atom() {
-		if (_type == URI || _type == STRING)
-			free(_string_val);
-		else if (_type == BLOB)
-			delete _blob_val;
-	}
+	~Atom() { dealloc(); }
 
 	Atom(const Atom& copy)
 		: _type(copy._type)
@@ -74,18 +76,14 @@ public:
 		case INT:    _int_val    = copy._int_val;                  break;
 		case FLOAT:  _float_val  = copy._float_val;                break;
 		case BOOL:   _bool_val   = copy._bool_val;                 break;
-		case URI:
+		case URI:    _string_val = copy._string_val;               break;
 		case STRING: _string_val = strdup(copy._string_val);       break;
 		case BLOB:   _blob_val   = new BlobValue(*copy._blob_val); break;
 		}
 	}
 
 	Atom& operator=(const Atom& other) {
-		if (_type == BLOB)
-			delete _blob_val;
-		else if (_type == STRING)
-			free(_string_val);
-
+		dealloc();
 		_type = other._type;
 
 		switch (_type) {
@@ -93,7 +91,7 @@ public:
 		case INT:    _int_val    = other._int_val;                  break;
 		case FLOAT:  _float_val  = other._float_val;                break;
 		case BOOL:   _bool_val   = other._bool_val;                 break;
-		case URI:
+		case URI:    _string_val = other._string_val;               break;
 		case STRING: _string_val = strdup(other._string_val);       break;
 		case BLOB:   _blob_val   = new BlobValue(*other._blob_val); break;
 		}
@@ -107,7 +105,7 @@ public:
 			case INT:    return _int_val    == other._int_val;
 			case FLOAT:  return _float_val  == other._float_val;
 			case BOOL:   return _bool_val   == other._bool_val;
-			case URI:
+			case URI:    return _string_val == other._string_val;
 			case STRING: return strcmp(_string_val, other._string_val) == 0;
 			case BLOB:   return _blob_val == other._blob_val;
 			}
@@ -164,6 +162,24 @@ public:
 private:
 	Type _type;
 
+	friend class Raul::URI;
+	Atom(const char* str, uint32_t magic) : _type(URI), _string_val(str) {
+		assert(magic == 12345);
+		assert(g_intern_string(str) == str);
+	}
+
+	inline void dealloc() {
+		switch (_type) {
+		case STRING:
+			free(const_cast<char*>(_string_val));
+			break;
+		case BLOB:
+			delete _blob_val;
+		default:
+			break;
+		}
+	}
+
 	class BlobValue {
 	public:
 		BlobValue(const char* type, size_t size, void* data)
@@ -196,11 +212,11 @@ private:
 	};
 
 	union {
-		int32_t    _int_val;
-		float      _float_val;
-		bool       _bool_val;
-		char*      _string_val;
-		BlobValue* _blob_val;
+		int32_t     _int_val;
+		float       _float_val;
+		bool        _bool_val;
+		const char* _string_val;
+		BlobValue*  _blob_val;
 	};
 };
 
