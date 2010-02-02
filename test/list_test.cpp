@@ -35,7 +35,7 @@ main()
 	// Remove 4
 	for (List<int>::iterator i = l.begin(); i != l.end(); ++i) {
 		if ((*i) == 4) {
-			l.erase(i);
+			delete l.erase(i);
 			break;
 		}
 	}
@@ -52,7 +52,7 @@ main()
 	// Remove 1 (head)
 	for (List<int>::iterator i = l.begin(); i != l.end(); ++i) {
 		if ((*i) == 1) {
-			l.erase(i);
+			delete l.erase(i);
 			break;
 		}
 	}
@@ -69,7 +69,7 @@ main()
 	// Remove 8 (tail)
 	for (List<int>::iterator i = l.begin(); i != l.end(); ++i) {
 		if ((*i) == 8) {
-			l.erase(i);
+			delete l.erase(i);
 			break;
 		}
 	}
@@ -88,7 +88,7 @@ main()
 	// Create, push, erase (should get empty list)
 	List<int> r;
 	r.push_back(new List<int>::Node(9));
-	r.erase(r.begin());
+	delete r.erase(r.begin());
 	CHECK(r.size() == 0);
 	CHECK(r.empty());
 
