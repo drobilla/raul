@@ -23,8 +23,7 @@
 #include <cassert>
 #include <cstring>
 #include <string>
-#include <sstream>
-#include <iostream>
+#include <ostream>
 
 #define CUC(x) ((const unsigned char*)(x))
 
