@@ -74,6 +74,10 @@ public:
 		return _str != other._str;
 	}
 
+	inline bool operator<(const Symbol& other) const {
+		return strcmp(_str, other._str) < 0;
+	}
+
 	static bool is_valid(const std::basic_string<char>& symbol);
 
 	static std::string symbolify(const std::basic_string<char>& str);
