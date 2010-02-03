@@ -23,6 +23,7 @@
 #include <cassert>
 #include <cstring>
 #include <string>
+#include <map>
 #include <ostream>
 #include <glib.h>
 
@@ -47,7 +48,8 @@ public:
 		BOOL,
 		URI,
 		STRING,
-		BLOB
+		BLOB,
+		DICT
 	};
 
 	Atom()                : _type(NIL),    _blob_val(0)             {}
@@ -66,6 +68,9 @@ public:
 	Atom(const char* type_uri, size_t size, void* val)
 		: _type(BLOB), _blob_val(new BlobValue(type_uri, size, val)) {}
 
+	typedef std::map<Raul::Atom, Raul::Atom> DictValue;
+	Atom(const DictValue& dict) : _type(DICT), _dict_val(new DictValue(dict)) {}
+
 	~Atom() { dealloc(); }
 
 	Atom(const Atom& copy)
@@ -79,6 +84,7 @@ public:
 		case URI:    _string_val = copy._string_val;               break;
 		case STRING: _string_val = strdup(copy._string_val);       break;
 		case BLOB:   _blob_val   = new BlobValue(*copy._blob_val); break;
+		case DICT:   _dict_val   = new DictValue(*copy._dict_val); break;
 		}
 	}
 
@@ -94,6 +100,7 @@ public:
 		case URI:    _string_val = other._string_val;               break;
 		case STRING: _string_val = strdup(other._string_val);       break;
 		case BLOB:   _blob_val   = new BlobValue(*other._blob_val); break;
+		case DICT:   _dict_val   = new DictValue(*other._dict_val); break;
 		}
 		return *this;
 	}
@@ -108,6 +115,7 @@ public:
 			case URI:    return _string_val == other._string_val;
 			case STRING: return strcmp(_string_val, other._string_val) == 0;
 			case BLOB:   return _blob_val == other._blob_val;
+			case DICT:   return *_dict_val == *other._dict_val;
 			}
 		}
 		return false;
@@ -123,8 +131,12 @@ public:
 			case FLOAT:  return _float_val  < other._float_val;
 			case BOOL:   return _bool_val   < other._bool_val;
 			case URI:
+				if (_string_val == other._string_val) {
+					return false;
+				} // else fall through to STRING
 			case STRING: return strcmp(_string_val, other._string_val) < 0;
 			case BLOB:   return _blob_val   < other._blob_val;
+			case DICT:   return *_dict_val  < *other._dict_val;
 			}
 		}
 		return _type < other.type();
@@ -139,6 +151,7 @@ public:
 		case URI:
 		case STRING: return strlen(_string_val);
 		case BLOB:   return _blob_val->size();
+		case DICT:   return 0; // FIXME ?
 		}
 		return 0;
 	}
@@ -158,6 +171,8 @@ public:
 
 	inline const char* get_blob_type() const { assert(_type == BLOB); return _blob_val->type(); }
 	inline const void* get_blob()      const { assert(_type == BLOB); return _blob_val->data(); }
+
+	inline const DictValue& get_dict() const { assert(_type == DICT); return *_dict_val; }
 
 private:
 	Type _type;
@@ -212,11 +227,12 @@ private:
 	};
 
 	union {
-		int32_t     _int_val;
-		float       _float_val;
-		bool        _bool_val;
-		const char* _string_val;
-		BlobValue*  _blob_val;
+		int32_t          _int_val;
+		float            _float_val;
+		bool             _bool_val;
+		const char*      _string_val;
+		BlobValue*       _blob_val;
+		const DictValue* _dict_val;
 	};
 };
 
@@ -233,6 +249,14 @@ static inline std::ostream& operator<<(std::ostream& os, const Raul::Atom& atom)
 	case Raul::Atom::URI:    return os << "<" << atom.get_uri() << ">";
 	case Raul::Atom::STRING: return os << atom.get_string();
 	case Raul::Atom::BLOB:   return os << atom.get_blob();
+	case Raul::Atom::DICT:
+		os << "{";
+		for (Raul::Atom::DictValue::const_iterator i = atom.get_dict().begin();
+				i != atom.get_dict().end(); ++i) {
+			os << " " << i->first << " " << i->second << ";";
+		}
+		os << " }";
+		return os;
 	}
 	return os;
 }
@@ -247,6 +271,7 @@ static inline std::ostream& operator<<(std::ostream& os, Raul::Atom::Type type)
 	case Raul::Atom::URI:    return os << "URI";
 	case Raul::Atom::STRING: return os << "String";
 	case Raul::Atom::BLOB:   return os << "Blob";
+	case Raul::Atom::DICT:   return os << "Dict";
 	}
 	return os;
 }
