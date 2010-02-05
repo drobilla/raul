@@ -135,7 +135,7 @@ main()
 	vector<WriteThread*> writers(NUM_WRITERS, new WriteThread());
 
 	for (unsigned i=0; i < NUM_WRITERS; ++i) {
-		writers[i]->set_name(string("Writer ") + (char)('0' + i));
+		writers[i]->set_name(string("Writer ") + static_cast<char>('0' + i));
 		writers[i]->start();
 	}
 

@@ -124,7 +124,7 @@ SMFWriter::write_event(Raul::TimeStamp      time,
 	}
 
 	assert(delta_ticks <= VAR_LEN_MAX);
-	stamp_size = write_var_len((uint32_t)delta_ticks);
+	stamp_size = write_var_len(static_cast<uint32_t>(delta_ticks));
 	fwrite(ev, 1, ev_size, _fd);
 
 	_last_ev_time = time;

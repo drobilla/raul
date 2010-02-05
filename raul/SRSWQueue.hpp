@@ -72,7 +72,7 @@ SRSWQueue<T>::SRSWQueue(size_t size)
 	: _front(0)
 	, _back(0)
 	, _size(size+1)
-	, _objects((T*)calloc(_size, sizeof(T)))
+	, _objects(static_cast<T*>(calloc(_size, sizeof(T))))
 {
 	assert(size > 1);
 }

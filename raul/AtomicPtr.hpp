@@ -26,15 +26,15 @@ namespace Raul {
 template<typename T>
 class AtomicPtr {
 public:
-
 	inline AtomicPtr()
-		{ g_atomic_pointer_set((volatile gpointer*)&_val, NULL); }
+		{ g_atomic_pointer_set(static_cast<volatile gpointer*>(&_val), NULL); }
 
 	inline AtomicPtr(const AtomicPtr& copy)
-		{ g_atomic_pointer_set((volatile gpointer*)(&_val), (gpointer)copy.get()); }
+		{ g_atomic_pointer_set(static_cast<volatile gpointer*>(&_val),
+				static_cast<gpointer>(copy.get())); }
 
 	inline T* get() const
-		{ return (T*)g_atomic_pointer_get((volatile gpointer*)(&_val)); }
+		{ return static_cast<T*>(g_atomic_pointer_get(static_cast<volatile gpointer*>(&_val))); }
 
 	inline void operator=(T* val)
 		{ g_atomic_pointer_set(&_val, static_cast<gpointer>(val)); }

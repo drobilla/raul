@@ -17,15 +17,18 @@ read_write_test(EventRingBuffer& rb, unsigned offset)
 	unsigned char write_buf[5];
 	unsigned char read_buf[5];
 
-	snprintf((char*)write_buf, 5, "%d", offset);
-	size = strlen((char*)write_buf);
+	snprintf(static_cast<char*>(write_buf), 5, "%d", offset);
+	size = strlen(static_cast<const char*>(write_buf));
 
 	const size_t written = rb.write(t, size, write_buf);
 	assert(written == size);
 
 	rb.read(&t, &size, read_buf);
 
-	return (strncmp((const char*)write_buf, (const char*)read_buf, size));
+	return strncmp(
+			static_cast<const char*>(write_buf),
+			static_cast<const char*>(read_buf),
+			size);
 }
 
 

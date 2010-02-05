@@ -25,24 +25,23 @@ namespace Raul {
 
 class AtomicInt {
 public:
-
 	inline AtomicInt(int val)
-		{ g_atomic_int_set(static_cast<volatile gint*>(&_val), (gint)val); }
+		{ g_atomic_int_set(static_cast<volatile gint*>(&_val), val); }
 
 	inline AtomicInt(const AtomicInt& copy)
-		{ g_atomic_int_set(static_cast<volatile gint*>(&_val), (gint)copy.get()); }
+		{ g_atomic_int_set(static_cast<volatile gint*>(&_val), copy.get()); }
 
 	inline int get() const
 		{ return g_atomic_int_get(static_cast<volatile gint*>(&_val)); }
 
 	inline void operator=(int val)
-		{ g_atomic_int_set(static_cast<volatile gint*>(&_val), (gint)val); }
+		{ g_atomic_int_set(static_cast<volatile gint*>(&_val), val); }
 
 	inline void operator+=(int val)
-		{ g_atomic_int_add(static_cast<volatile gint*>(&_val), (gint)val); }
+		{ g_atomic_int_add(static_cast<volatile gint*>(&_val), val); }
 
 	inline void operator-=(int val)
-		{ g_atomic_int_add(static_cast<volatile gint*>(&_val), (gint)-val); }
+		{ g_atomic_int_add(static_cast<volatile gint*>(&_val), -val); }
 
 	inline bool operator==(int val) const
 		{ return get() == val; }

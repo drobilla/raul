@@ -74,7 +74,7 @@ Thread::get()
 void*
 Thread::_static_run(void* thread)
 {
-	Thread* me = (Thread*)thread;
+	Thread* me = static_cast<Thread*>(thread);
 	pthread_setspecific(me->_thread_key, thread);
 	me->_run();
 	me->_pthread_exists = false;

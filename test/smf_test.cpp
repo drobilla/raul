@@ -55,7 +55,7 @@ main(int argc, char** argv)
 			cout << ":\t";
 			cout.flags(ios::hex);
 			for (uint32_t i=0; i < ev_size; ++i) {
-				cout << "0x" << (int)buf[i] << " ";
+				cout << "0x" << static_cast<int>(buf[i]) << " ";
 			}
 			cout.flags(ios::dec);
 			cout << endl;

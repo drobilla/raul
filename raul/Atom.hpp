@@ -203,7 +203,7 @@ private:
 			, _buf(malloc(_type_length + _size))
 		{
 			memcpy(_buf, type, _type_length);
-			memcpy((char*)_buf + _type_length, data, size);
+			memcpy(static_cast<char*>(_buf) + _type_length, data, size);
 		}
 
 		BlobValue(const BlobValue& copy)
@@ -217,8 +217,8 @@ private:
 
 		~BlobValue() { free(_buf); }
 
-		inline const char* type() const { return (const char*)_buf; }
-		inline const void* data() const { return (const char*)_buf + _type_length; }
+		inline const char* type() const { return static_cast<const char*>(_buf); }
+		inline const void* data() const { return static_cast<const char*>(_buf) + _type_length; }
 		inline size_t      size() const { return _size; }
 	private:
 		size_t _type_length; ///< Length of type string (first part of buffer, inc. \0)

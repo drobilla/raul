@@ -186,7 +186,7 @@ main(int argc, char** argv)
 			t.insert(make_pair(val, ((val + 3) * 17)));
 		}
 
-		for (int i=0; i < (int)table_size; ++i) {
+		for (size_t i=0; i < table_size; ++i) {
 			int val = rand()%100;
 			Table<int, int>::iterator iter = t.find(val);
 			assert(iter == t.end() || iter->second == (val + 3) * 17);
@@ -281,7 +281,7 @@ benchmark(size_t n)
 	gettimeofday(&t1, NULL);
 
 	for (size_t i=0; i < n; ++i)
-		useless_accumulator += (int)(*s.find(values[i]))[0];
+		useless_accumulator += static_cast<int>((*s.find(values[i]))[0]);
 
 	gettimeofday(&t2, NULL);
 

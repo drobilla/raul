@@ -85,7 +85,7 @@ public:
 	{}
 
 	inline TimeStamp(TimeUnit unit, double dec)
-		: _ticks((uint32_t)floor(dec))
+		: _ticks(static_cast<uint32_t>(floor(dec)))
 		, _subticks((dec - floor(dec)) * unit.ppt())
 		, _unit(unit)
 	{
@@ -98,7 +98,7 @@ public:
 	inline uint32_t subticks() const { return _subticks; }
 
 	inline double to_double() const {
-		return _ticks + (_subticks / (double)_unit.ppt());
+		return _ticks + (_subticks / static_cast<double>(_unit.ppt()));
 	}
 
 	inline bool is_zero() const {

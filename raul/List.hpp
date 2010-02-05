@@ -90,7 +90,7 @@ public:
 	void clear();
 
 	/// Valid only in the write thread
-	unsigned size() const { return (unsigned)_size.get(); }
+	unsigned size() const { return static_cast<unsigned>(_size.get()); }
 
 	/// Valid for any thread
 	bool empty() { return (_head.get() == NULL); }

@@ -14,8 +14,8 @@ main()
 
 	double in_double = 2.5;
 
-	TimeStamp t(unit, (uint32_t)in_double,
-			(uint32_t)((in_double - (uint32_t)in_double) * unit.ppt()));
+	TimeStamp t(unit, static_cast<uint32_t>(in_double),
+			static_cast<uint32_t>((in_double - static_cast<uint32_t>(in_double)) * unit.ppt()));
 
 	cout << "\tSeconds: ";
 	cout << ts.beats_to_seconds(t);

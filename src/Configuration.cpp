@@ -76,7 +76,7 @@ Configuration::set_value_from_string(Configuration::Option& option, const std::s
 	char* endptr = NULL;
 	switch (option.type) {
 	case Atom::INT:
-		intval = (int)strtol(value.c_str(), &endptr, 10);
+		intval = static_cast<int>(strtol(value.c_str(), &endptr, 10));
 		if (endptr && *endptr == '\0') {
 			option.value = intval;
 		} else {

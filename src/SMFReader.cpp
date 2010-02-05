@@ -244,7 +244,7 @@ SMFReader::read_event(size_t    buf_len,
 		last_size = *ev_size;
 	}
 
-	buf[0] = (uint8_t)status;
+	buf[0] = static_cast<uint8_t>(status);
 
 	if (status == 0xFF) {
 		*ev_size = 0;
@@ -253,7 +253,7 @@ SMFReader::read_event(size_t    buf_len,
 		uint8_t type = fgetc(_fd);
 		const uint32_t size = read_var_len(_fd);
 
-		if ((uint8_t)type == 0x2F) {
+		if (type == 0x2F) {
 			return -1; // we hit the logical EOF anyway...
 		} else {
 			fseek(_fd, size, SEEK_CUR);
