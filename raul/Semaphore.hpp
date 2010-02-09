@@ -53,7 +53,7 @@ public:
 
 	/** Wait until count is > 0, then decrement.
 	 *
-	 * Note that sem_wait always returns 0 in practise.  It returns nonzero
+	 * Note that sem_wait always returns 0 in practice.  It returns nonzero
 	 * when run in GDB, so the while is necessary to allow debugging.
 	 *
 	 * Obviously not realtime safe.
