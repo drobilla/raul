@@ -19,7 +19,8 @@
 #define RAUL_ARRAY_HPP
 
 #include <cassert>
-#include <cstdlib>
+#include <cstddef>
+#include <algorithm>
 #include "Deletable.hpp"
 
 namespace Raul {
@@ -43,17 +44,15 @@ public:
 	Array(size_t size, T initial_value) : _size(size), _top(0), _elems(NULL) {
 		if (size > 0) {
 			_elems = new T[size];
-			for (size_t i=0; i < size; ++i)
+			for (size_t i = 0; i < size; ++i)
 				_elems[i] = initial_value;
 		}
 	}
 
-	Array(size_t size, const Array<T>& contents) : _size(size), _top(size+1) {
+	Array(size_t size, const Array<T>& contents) : _size(size), _top(size + 1) {
 		_elems = new T[size];
-		if (size <= contents.size())
-			memcpy(_elems, contents._elems, size * sizeof(T));
-		else
-			memcpy(_elems, contents._elems, contents.size() * sizeof(T));
+		for (size_t i = 0; i < std::min(size, contents.size()); ++i)
+			_elems[i] = contents[i];
 	}
 
 	~Array() {
@@ -78,7 +77,7 @@ public:
 		_top = 0;
 
 		_elems = new T[num_elems];
-		for (size_t i=0; i < _size; ++i)
+		for (size_t i = 0; i < _size; ++i)
 			_elems[i] = initial_value;
 	}
 
