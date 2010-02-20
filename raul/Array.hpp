@@ -36,12 +36,12 @@ template <class T>
 class Array : public Deletable
 {
 public:
-	Array(size_t size = 0) : _size(size), _top(0), _elems(NULL) {
+	Array(size_t size = 0) : _size(size), _elems(NULL) {
 		if (size > 0)
 			_elems = new T[size];
 	}
 
-	Array(size_t size, T initial_value) : _size(size), _top(0), _elems(NULL) {
+	Array(size_t size, T initial_value) : _size(size), _elems(NULL) {
 		if (size > 0) {
 			_elems = new T[size];
 			for (size_t i = 0; i < size; ++i)
@@ -49,41 +49,44 @@ public:
 		}
 	}
 
-	Array(size_t size, const Array<T>& contents) : _size(size), _top(size + 1) {
+	Array(size_t size, const Array<T>& contents) : _size(size) {
+		assert(contents.size() >= size);
 		_elems = new T[size];
 		for (size_t i = 0; i < std::min(size, contents.size()); ++i)
 			_elems[i] = contents[i];
+	}
+
+	Array(size_t size, const Array<T>& contents, T initial_value=T()) : _size(size) {
+		_elems = new T[size];
+		const size_t end = std::min(size, contents.size());
+		for (size_t i = 0; i < end; ++i)
+			_elems[i] = contents[i];
+		for (size_t i = end; i < size; ++i)
+			_elems[i] = initial_value;
 	}
 
 	~Array() {
 		delete[] _elems;
 	}
 
-	void alloc(size_t num_elems) {
+	virtual void alloc(size_t num_elems) {
 		assert(num_elems > 0);
 
 		delete[] _elems;
 		_size = num_elems;
-		_top = 0;
 
 		_elems = new T[num_elems];
 	}
 
-	void alloc(size_t num_elems, T initial_value) {
+	virtual void alloc(size_t num_elems, T initial_value) {
 		assert(num_elems > 0);
 
 		delete[] _elems;
 		_size = num_elems;
-		_top = 0;
 
 		_elems = new T[num_elems];
 		for (size_t i = 0; i < _size; ++i)
 			_elems[i] = initial_value;
-	}
-
-	void push_back(T n) {
-		assert(_top < _size);
-		_elems[_top++] = n;
 	}
 
 	inline size_t size() const  { return _size; }
@@ -94,7 +97,6 @@ public:
 
 private:
 	size_t _size;
-	size_t _top; // points to empty element above "top" element
 	T*     _elems;
 };
 

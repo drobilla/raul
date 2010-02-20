@@ -4,7 +4,7 @@ import Options
 import os
 
 # Version of this package (even if built as a child)
-RAUL_VERSION = '0.6.3'
+RAUL_VERSION = '0.6.4'
 
 # Library version (UNIX style major, minor, micro)
 # major increment <=> incompatible changes
@@ -18,7 +18,8 @@ RAUL_VERSION = '0.6.3'
 #   0.6.1 = 4,0,0 (unreleased)
 #   0.6.2 = 5,0,0 (unreleased)
 #   0.6.3 = 6,0,0 (unreleased)
-RAUL_LIB_VERSION = '6.0.0'
+#   0.6.4 = 7,0,0 (unreleased)
+RAUL_LIB_VERSION = '7.0.0'
 
 # Variables for 'waf dist'
 APPNAME = 'raul'
