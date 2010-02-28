@@ -19,7 +19,6 @@
 #define RAUL_SRSW_QUEUE_HPP
 
 #include <cassert>
-#include <cstdlib>
 #include <boost/utility.hpp>
 #include "raul/AtomicInt.hpp"
 
@@ -27,6 +26,9 @@ namespace Raul {
 
 
 /** Realtime-safe single-reader single-writer queue (aka lock-free ringbuffer)
+ *
+ * This is appropriate for a cross-thread queue of fixed size object.  If you
+ * need to do variable sized reads and writes, use Raul::RingBuffer instead.
  *
  * Implemented as a dequeue in a fixed array.  This is read/write thread-safe,
  * pushing and popping may occur simultaneously by seperate threads, but
@@ -39,6 +41,7 @@ template <typename T>
 class SRSWQueue : boost::noncopyable
 {
 public:
+	/** @param size Size in number of elements */
 	SRSWQueue(size_t size);
 	~SRSWQueue();
 
@@ -71,8 +74,8 @@ template<typename T>
 SRSWQueue<T>::SRSWQueue(size_t size)
 	: _front(0)
 	, _back(0)
-	, _size(size+1)
-	, _objects(static_cast<T*>(calloc(_size, sizeof(T))))
+	, _size(size + 1)
+	, _objects(new T[_size])
 {
 	assert(size > 1);
 }
@@ -81,7 +84,7 @@ SRSWQueue<T>::SRSWQueue(size_t size)
 template <typename T>
 SRSWQueue<T>::~SRSWQueue()
 {
-	free(_objects);
+	delete[] _objects;
 }
 
 

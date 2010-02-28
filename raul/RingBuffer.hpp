@@ -20,6 +20,7 @@
 
 #include <cassert>
 #include <cstring>
+#include <cstdlib>
 #include <iostream>
 #include <glib.h>
 #include "raul/log.hpp"
@@ -34,12 +35,11 @@ namespace Raul {
 template <typename T>
 class RingBuffer {
 public:
-
 	/** @param size Size in bytes.
 	 */
 	RingBuffer(size_t size)
 		: _size(size)
-		, _buf(new T[size])
+		, _buf(static_cast<char*>(malloc(size)))
 	{
 		reset();
 		assert(read_space() == 0);
@@ -47,7 +47,7 @@ public:
 	}
 
 	virtual ~RingBuffer() {
-		delete[] _buf;
+		free(_buf);
 	}
 
 	/** Reset(empty) the ringbuffer.
@@ -99,7 +99,7 @@ protected:
 	mutable int _read_ptr;
 
 	size_t _size; ///< Size (capacity) in bytes
-	T*     _buf;  ///< size, event, size, event...
+	char*  _buf;  ///< Contents
 };
 
 
@@ -190,7 +190,7 @@ bool
 RingBuffer<T>::skip(size_t size)
 {
 	if (read_space() < size) {
-		warn << "Attempt to skip past end of MIDI ring buffer" << std::endl;
+		warn << "Attempt to skip past end of RingBuffer" << std::endl;
 		return false;
 	}
 
