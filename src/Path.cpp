@@ -21,19 +21,53 @@ using namespace std;
 
 namespace Raul {
 
-const string Path::scheme     = "path";
-const string Path::prefix     = Path::scheme + ":";
-const size_t Path::prefix_len = prefix.length();
-const Path   Path::root   = Path::prefix + "/";
+static URI root_uri("path:/");
+
+const Path Path::root()                         { return Path(true, root_uri); }
+void       Path::set_root(const Raul::URI& uri) { root_uri = uri.str(); }
+
+bool
+Path::is_path(const Raul::URI& uri)
+{
+	return uri.length() >= root_uri.length()
+			&& uri.substr(0, root_uri.length()) == root_uri.str()
+			&& Path::is_valid(uri.str());
+}
+
+
+Path::Path(const std::basic_string<char>& path)
+	: URI(path[0] == '/' ? root_uri.str() + path.substr(1) : path)
+{
+	if (!is_valid(str()))
+		throw BadPath(str());
+}
+
+
+Path::Path(const char* cpath)
+	: URI(cpath[0] == '/' ? root_uri.str() + (cpath + 1) : cpath)
+{
+	if (!is_valid(str()))
+		throw BadPath(str());
+}
+
 
 bool
 Path::is_valid(const std::basic_string<char>& path_str)
 {
-	const size_t colon = path_str.find(":");
-	const string path = (colon == string::npos) ? path_str : path_str.substr(colon + 1);
-
-	if (path.length() == 0)
+	if (path_str.length() == 0)
 		return false;
+
+	if (path_str == root_uri.str())
+		return true;
+
+	if (path_str[0] != '/' &&
+			(path_str.length() < root_uri.length()
+				|| path_str.substr(0, root_uri.length()) != root_uri.str()))
+		return false;
+
+	const string path = (path_str[0] == '/')
+			? path_str
+			: path_str.substr(root_uri.length() - 1);
 
 	// Must start with a /
 	if (path[0] != '/')
@@ -66,29 +100,32 @@ Path::is_valid(const std::basic_string<char>& path_str)
 
 /** Convert a string to a valid full path.
  *
- * This will make a best effort at turning @a str into a complete, valid
- * Path, and will always return one.
+ * The returned string is a valid relative path without the root prefix,
+ * i.e. the returned string starts with '/' followed by valid symbols,
+ * each separated by '/'.
  */
 string
 Path::pathify(const std::basic_string<char>& str)
 {
 	if (str.length() == 0)
-		return root.str(); // this might not be wise?
+		return root().chop_scheme(); // this might not be wise?
 
-	string path  = (str.substr(0, prefix_len) == prefix) ? str : prefix + str;
-	size_t start = prefix_len + 1;
+	const size_t first_slash = str.find('/');
+	string path = (first_slash == string::npos)
+			? string("/").append(str)
+			: str.substr(first_slash);
 
 	// Must start with a /
-	if (path.at(start) != '/')
+	if (path.empty() || path[0] != '/')
 		path = string("/").append(path);
 
 	// Must not end with a slash unless "/"
-	if (path.length() > prefix_len + 1 && path.at(path.length()-1) == '/')
-		path = path.substr(0, path.length()-1); // chop trailing slash
+	if (path != "/" && path[path.length() - 1] == '/')
+		path = path.substr(0, path.length() - 1); // chop trailing slash
 
-	assert(path.find_last_of("/") != string::npos);
+	assert(path.find_last_of('/') != string::npos);
 
-	replace_invalid_chars(path, start, false);
+	replace_invalid_chars(path, 0, false);
 
 	assert(is_valid(path));
 

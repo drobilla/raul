@@ -32,15 +32,14 @@ namespace Raul {
 
 /** A URI which is a path (for example a filesystem or OSC path).
  *
- * A Path always has the special URI scheme "path:".
- *
  * This enforces that a Path is a valid path, where each fragment is a valid
  * Symbol, separated by exactly one slash (/).
  *
  * A path is divided by slashes (/).  The first character MUST be a slash, and
  * the last character MUST NOT be a slash (except in the special case of the
- * root path "/", which is the only valid single-character path).  The path:
- * scheme is added automatically (since a Patch is actually a URI).
+ * root path "/", which is the only valid single-character path).  A Path
+ * is actually a URI, the relative path is appended to the root URI
+ * automatically, so a Patch can always be used as a URI.
  *
  * \ingroup raul
  */
@@ -55,37 +54,55 @@ public:
 		std::string _path;
 	};
 
-	static const std::string scheme;
-	static const std::string prefix;
-	static const size_t      prefix_len;
-	static const Path        root;
+	/** Return the root path.
+	 * The default root path is the URI "path:/"
+	 *
+	 * A Path is either the root path, or a child of a root path (i.e. the root
+	 * path followed by a sequence of Symbols separated by '/')
+	 */
+	static const Path root();
+
+	/** Set the root path.
+	 * The default root path is the URI "path:/"
+	 *
+	 * Note this should be done on application start up.  Changing the root
+	 * path while any Path objects exist will break things horribly; don't!
+	 *
+	 * The root can be set to any URI, there are no restrictions on valid
+	 * characters and such like there are for relative paths (but it must be
+	 * a valid URI, i.e. begin with a scheme, and in particular not begin
+	 * with '/').  Relative paths are appended to the root path's URI,
+	 * i.e. every Path, as a string, begins with the root URI.  The part after
+	 * that is a strict path (a sequence of Symbols separated by '/').
+	 */
+	static void set_root(const Raul::URI& uri);
+
+	static bool is_path(const Raul::URI& uri);
 
 	/** Construct an uninitialzed path, because the STL is annoying. */
-	Path() : URI(root) {}
+	Path() : URI(root()) {}
 
 	/** Construct a Path from an std::string.
 	 *
 	 * It is a fatal error to construct a Path from an invalid string,
 	 * use is_valid first to check.
 	 */
-	Path(const std::basic_string<char>& path)
-		: URI((path.find(":") == std::string::npos) ? prefix + path : path)
-	{
-		if (!is_valid(str()))
-			throw BadPath(str());
-	}
+	Path(const std::basic_string<char>& path);
 
 	/** Construct a Path from a C string.
 	 *
 	 * It is a fatal error to construct a Path from an invalid string,
 	 * use is_valid first to check.
 	 */
-	Path(const char* cpath)
-		: URI((std::string(cpath).find(":") == std::string::npos) ? prefix + cpath : cpath)
-	{
-		if (!is_valid(str()))
-			throw BadPath(str());
-	}
+	Path(const char* cpath);
+
+
+	/** Construct a Path from another path.
+	 *
+	 * This is faster than constructing a path from the other path's string
+	 * representation, since validity checking is avoided.
+	 */
+	Path(const Path& copy) : URI(copy) {}
 
 	static bool is_valid(const std::basic_string<char>& path);
 
@@ -99,7 +116,7 @@ public:
 
 	static void replace_invalid_chars(std::string& str, size_t start, bool replace_slash = false);
 
-	bool is_root() const { return (*this) == root; }
+	bool is_root() const { return (*this) == root(); }
 
 	bool is_child_of(const Path& parent) const;
 	bool is_parent_of(const Path& child) const;
@@ -123,7 +140,7 @@ public:
 	 * The empty string may be returned (if the path is the root path).
 	 */
 	inline const char* symbol() const {
-		if ((*this) != root) {
+		if ((*this) != root()) {
 			const char* last_slash = strrchr(c_str(), '/');
 			if (last_slash) {
 				return last_slash + 1;
@@ -138,12 +155,13 @@ public:
 	 * This is the (deepest) "container path" for OSC paths.
 	 */
 	inline Path parent() const {
-		if ((*this) == root) {
+		if ((*this) == root()) {
 			return *this;
 		} else {
 			const std::string str(this->str());
-			const size_t last_slash = str.find_last_of('/');
-			return (last_slash == prefix_len) ? root : str.substr(0, last_slash);
+			const size_t first_slash = str.find('/');
+			const size_t last_slash  = str.find_last_of('/');
+			return (first_slash == last_slash) ? root() : str.substr(0, last_slash);
 		}
 	}
 
@@ -174,7 +192,7 @@ public:
 	 */
 	inline const std::string base() const {
 		std::string ret = str();
-		if ((*this) == root && ret[ret.length() - 1] == '/')
+		if ((*this) == root() && ret[ret.length() - 1] == '/')
 			return ret;
 		else
 			return ret + '/';
@@ -194,8 +212,11 @@ public:
 	static bool descendant_comparator(const Path& parent, const Path& child) {
 		return ( child == parent || (child.length() > parent.length() &&
 				(!std::strncmp(parent.c_str(), child.c_str(), parent.length())
-						&& (parent == root || child.str()[parent.length()] == '/'))) );
+						&& (parent == root() || child.str()[parent.length()] == '/'))) );
 	}
+
+private:
+	inline Path(bool unchecked, const URI& uri) : URI(uri) {}
 };
 
 
