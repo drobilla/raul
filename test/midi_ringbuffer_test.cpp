@@ -17,8 +17,8 @@ read_write_test(EventRingBuffer& rb, unsigned offset)
 	unsigned char write_buf[5];
 	unsigned char read_buf[5];
 
-	snprintf(static_cast<char*>(write_buf), 5, "%d", offset);
-	size = strlen(static_cast<const char*>(write_buf));
+	snprintf(reinterpret_cast<char*>(write_buf), 5, "%d", offset);
+	size = strlen(reinterpret_cast<const char*>(write_buf));
 
 	const size_t written = rb.write(t, size, write_buf);
 	assert(written == size);
@@ -26,8 +26,8 @@ read_write_test(EventRingBuffer& rb, unsigned offset)
 	rb.read(&t, &size, read_buf);
 
 	return strncmp(
-			static_cast<const char*>(write_buf),
-			static_cast<const char*>(read_buf),
+			reinterpret_cast<const char*>(write_buf),
+			reinterpret_cast<const char*>(read_buf),
 			size);
 }
 
