@@ -32,7 +32,6 @@ pthread_key_t  Thread::_thread_key;
 
 Thread::Thread(const std::string& name)
 	: _exit_flag(false)
-	, _context(0)
 	, _name(name)
 	, _pthread_exists(false)
 	, _own_thread(true)
@@ -45,7 +44,6 @@ Thread::Thread(const std::string& name)
 /** Must be called from thread */
 Thread::Thread(pthread_t thread, const std::string& name)
 	: _exit_flag(false)
-	, _context(0)
 	, _name(name)
 	, _pthread_exists(true)
 	, _own_thread(false)

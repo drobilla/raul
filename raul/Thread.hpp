@@ -18,6 +18,7 @@
 #ifndef RAUL_THREAD_HPP
 #define RAUL_THREAD_HPP
 
+#include <set>
 #include <string>
 #include <iostream>
 #include <pthread.h>
@@ -59,8 +60,8 @@ public:
 	const std::string& name() const { return _name; }
 	void set_name(const std::string& name) { _name = name; }
 
-	unsigned context() const               { return _context; }
-	void     set_context(unsigned context) { _context = context; }
+	bool is_context(unsigned context) const { return _contexts.find(context) != _contexts.end(); }
+	void set_context(unsigned context) { _contexts.insert(context); }
 
 protected:
 	Thread(const std::string& name="");
@@ -92,11 +93,11 @@ private:
 	/* Once-only initialisation of the key */
 	static pthread_once_t _thread_key_once;
 
-	unsigned    _context;
-	std::string _name;
-	bool        _pthread_exists;
-	bool        _own_thread;
-	pthread_t   _pthread;
+	std::set<unsigned> _contexts;
+	std::string        _name;
+	bool               _pthread_exists;
+	bool               _own_thread;
+	pthread_t          _pthread;
 };
 
 
