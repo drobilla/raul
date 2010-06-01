@@ -63,7 +63,6 @@ def configure(conf):
 	autowaf.check_header(conf, 'boost/weak_ptr.hpp', mandatory=True)
 	autowaf.check_header(conf, 'boost/utility.hpp', mandatory=True)
 	
-	autowaf.print_summary(conf)
 	autowaf.display_msg(conf, "Unit tests", str(conf.env['BUILD_TESTS']))
 	print
 	
