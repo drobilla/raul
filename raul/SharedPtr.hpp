@@ -1,5 +1,5 @@
 /* A Reference Counting Smart Pointer.
- * Copyright (C) 2007-2009 Dave Robillard <http://drobilla.net>
+ * Copyright (C) 2007-2009 David Robillard <http://drobilla.net>
  *
  * This is free software; you can redistribute it and/or modify it under the
  * terms of the GNU General Public License as published by the Free Software
@@ -53,7 +53,7 @@ namespace boost {
 
 #ifdef BOOST_AC_USE_PTHREADS
 #error "Boost is using mutex locking for pointer reference counting."
-#error "This is VERY slow.  Please report your platform to dave@drobilla.net"
+#error "This is VERY slow.  Please report your platform to d@drobilla.net"
 #endif
 
 template <typename T> void NullDeleter(T* ptr) {}

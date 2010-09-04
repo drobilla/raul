@@ -10,7 +10,7 @@
     doap:license <http://usefulinc.com/doap/licenses/gpl> ;
     doap:developer [
         a foaf:Person ;
-        foaf:name "Dave Robillard" ;
+        foaf:name "David Robillard" ;
         foaf:homepage <http://drobilla.net/> ;
         rdfs:seeAlso <http://drobilla.net/drobilla.rdf>
     ] ;
