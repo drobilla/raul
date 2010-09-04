@@ -1,3 +1,22 @@
+raul (0.7.0) unstable; urgency=low
+
+  * Add several unit tests
+  * Use malloc'd memory for RingBuffer/SRSWQueue (instead of a new'd array)
+  * Fancy coloured console/logging I/O (raul/log.hpp)
+  * More flexible Path and better URI support
+  * Atom updates, including new "Blank" Atom for storing dictionaries
+    with URI keys (ala JavaScript "objects", but RDF compatible)
+  * Remove stack stuff from Array and create new ArrayStack
+  * Make Symbol and URI more opaque and use Glib string interning
+  * Add Configuration class for app command line option handling
+  * Use < operator in TableImpl instead of > so it needn't be defined
+  * Add IntrusivePtr, a trivial #define of boost::intrusive_ptr which is
+    useful for hard realtime things (since adding and dropping refs is
+    realtime safe, which is not true of shared_ptr)
+  * Remove TimeSlice
+
+ -- Dave Robillard <dave@drobilla.net>  Fri, 03 Sep 2010 20:24:36 -0400
+
 raul (0.6.0) unstable; urgency=low
 
   * Switch to waf build system
@@ -10,20 +29,20 @@ raul (0.6.0) unstable; urgency=low
   * Fix type wackiness for glib atomic functions on PPC
   * Remove misguided LASH stuff
   * Depend on glib (instead of glibmm)
-  
+
  -- Dave Robillard <dave@drobilla.net>  Tue, 08 Dec 2009 19:20:37 -0500
 
 raul (0.5.1) unstable; urgency=low
 
   * OSC blob fixes
   * Use true atomic integers for Queue indexes
- 
+
  -- Dave Robillard <dave@drobilla.net>  Sun, 07 Sep 2008 14:10:32 -0400
 
 
 raul (0.5.0) unstable; urgency=low
 
   * Initial Debian release
- 
+
  -- Dave Robillard <dave@drobilla.net>  Sun, 06 Jul 2008 15:56:20 -0400
 
