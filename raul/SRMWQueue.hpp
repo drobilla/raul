@@ -52,7 +52,7 @@ template <typename T>
 class SRMWQueue : boost::noncopyable
 {
 public:
-	SRMWQueue(size_t size);
+	explicit SRMWQueue(size_t size);
 	~SRMWQueue();
 
 

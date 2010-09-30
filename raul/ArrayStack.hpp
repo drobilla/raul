@@ -33,7 +33,7 @@ template <class T>
 class ArrayStack : public Array<T>
 {
 public:
-	ArrayStack(size_t size = 0) : Array<T>(size), _top(0) {}
+	explicit ArrayStack(size_t size = 0) : Array<T>(size), _top(0) {}
 
 	ArrayStack(size_t size, T initial_value) : Array<T>(size, initial_value), _top(0) {}
 

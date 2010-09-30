@@ -36,7 +36,7 @@ template <class T>
 class Array : public Deletable
 {
 public:
-	Array(size_t size = 0) : _size(size), _elems(NULL) {
+	explicit Array(size_t size = 0) : _size(size), _elems(NULL) {
 		if (size > 0)
 			_elems = new T[size];
 	}

@@ -36,7 +36,7 @@ public:
 
 	/** @param capacity Ringbuffer capacity in bytes.
 	 */
-	EventRingBuffer(size_t capacity)
+	explicit EventRingBuffer(size_t capacity)
 		: RingBuffer<uint8_t>(capacity)
 	{}
 

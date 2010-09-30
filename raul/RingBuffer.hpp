@@ -37,7 +37,7 @@ class RingBuffer {
 public:
 	/** @param size Size in bytes.
 	 */
-	RingBuffer(size_t size)
+	explicit RingBuffer(size_t size)
 		: _size(size)
 		, _buf(static_cast<char*>(malloc(size)))
 	{

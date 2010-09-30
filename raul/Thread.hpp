@@ -64,7 +64,7 @@ public:
 	void set_context(unsigned context) { _contexts.insert(context); }
 
 protected:
-	Thread(const std::string& name="");
+	explicit Thread(const std::string& name="");
 	Thread(pthread_t thread, const std::string& name="");
 
 	/** Thread function to execute.

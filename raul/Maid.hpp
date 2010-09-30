@@ -46,7 +46,7 @@ namespace Raul {
 class Maid : boost::noncopyable
 {
 public:
-	Maid(size_t size);
+	explicit Maid(size_t size);
 	~Maid();
 
 	/** Push a raw pointer to be deleted when cleanup() is called next.

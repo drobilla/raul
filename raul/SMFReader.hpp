@@ -42,7 +42,7 @@ public:
 		const char* what() const throw() { return "Unsupported time stamp type (SMPTE)"; }
 	};
 
-	SMFReader(const std::string filename="");
+	explicit SMFReader(const std::string filename="");
 	~SMFReader();
 
 	bool open(const std::string& filename) throw (std::logic_error, UnsupportedTime);

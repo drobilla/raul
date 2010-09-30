@@ -42,7 +42,7 @@ class SRSWQueue : boost::noncopyable
 {
 public:
 	/** @param size Size in number of elements */
-	SRSWQueue(size_t size);
+	explicit SRSWQueue(size_t size);
 	~SRSWQueue();
 
 	// Any thread:

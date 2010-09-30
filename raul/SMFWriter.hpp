@@ -29,7 +29,7 @@ namespace Raul {
  */
 class SMFWriter : public Raul::MIDISink {
 public:
-	SMFWriter(TimeUnit unit);
+	explicit SMFWriter(TimeUnit unit);
 	~SMFWriter();
 
 	bool start(const std::string& filename,

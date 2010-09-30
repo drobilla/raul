@@ -47,11 +47,11 @@ public:
 	 */
 	class Node : public Raul::Deletable {
 	public:
-		Node(T elem) : _elem(elem) {}
+		explicit Node(T elem) : _elem(elem) {}
 		virtual ~Node() {}
 
 		template <typename Y>
-		Node(const typename List<Y>::Node& copy)
+		explicit Node(const typename List<Y>::Node& copy)
 			: _elem(copy._elem), _prev(copy._prev), _next(copy._next)
 		{}
 
@@ -100,7 +100,7 @@ public:
 	/** Realtime safe const iterator for a List. */
 	class const_iterator {
 	public:
-		const_iterator(const List<T>* const list);
+		explicit const_iterator(const List<T>* const list);
 		const_iterator(const iterator& i)
 		: _list(i._list), _listnode(i._listnode) {}
 
@@ -126,7 +126,7 @@ public:
 	/** Realtime safe iterator for a List. */
 	class iterator {
 	public:
-		iterator(List<T>* const list);
+		explicit iterator(List<T>* const list);
 
 		inline T&        operator*();
 		inline T*        operator->();

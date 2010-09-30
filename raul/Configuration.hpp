@@ -49,7 +49,7 @@ public:
 	void print_usage(const std::string& program, std::ostream& os);
 
 	struct CommandLineError : public std::exception {
-		CommandLineError(const std::string& m) : msg(m) {}
+		explicit CommandLineError(const std::string& m) : msg(m) {}
 		~CommandLineError() throw() {}
 		const char* what() const throw() { return msg.c_str(); }
 		std::string msg;
