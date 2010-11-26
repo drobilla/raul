@@ -144,7 +144,7 @@ public:
 		typename List<T>::Node* _listnode;
 	};
 
-	void chop_front(List<T>& front, size_t front_size, Node* new_head);
+	void chop_front(List<T>& front, size_t front_size, Node* front_tail);
 
 	Node* erase(const iterator iter);
 

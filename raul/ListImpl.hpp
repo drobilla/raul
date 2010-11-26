@@ -128,15 +128,15 @@ List<T>::append(List<T>& list)
 
 	// Appending to an empty list
 	if (my_head == NULL && my_tail == NULL) {
-		_head = other_head;
 		_tail = other_tail;
+		_head = other_head;
 		_size = list._size;
 	} else if (other_head != NULL && other_tail != NULL) {
 
 		other_head->prev(my_tail);
 
 		// FIXME: atomicity an issue? _size < true size is probably fine...
-		// no gurantee an iteration runs exactly size times though.  verify/document this.
+		// no guarantee an iteration runs exactly size times though.  verify/document this.
 		// assuming comment above that says tail is writer only, this is fine
 		my_tail->next(other_head);
 		_tail = other_tail;
@@ -151,8 +151,7 @@ List<T>::append(List<T>& list)
 
 /** Find an element in the list.
  *
- * This will only return the first element found.  If there are duplicated,
- * another call to find() will return the next, etc.
+ * This will return the first element equal to @a val found in the list.
  */
 template <typename T>
 typename List<T>::iterator
@@ -177,6 +176,8 @@ template <typename T>
 typename List<T>::Node*
 List<T>::erase(const iterator iter)
 {
+	assert((_head.get() && _tail.get()) || (!_head.get() && !_tail.get()));
+
 	Node* const n = iter._listnode;
 
 	if (n) {
@@ -207,29 +208,25 @@ List<T>::erase(const iterator iter)
 
 template <typename T>
 void
-List<T>::chop_front(List<T>& front, size_t front_size, Node* new_head)
+List<T>::chop_front(List<T>& front, size_t front_size, Node* front_tail)
 {
-	assert(new_head != _head.get());
+	assert(front_tail);
 	assert((front._head.get() && front._tail.get()) || (!front._head.get() && !front._tail.get()));
 	assert((_head.get() && _tail.get()) || (!_head.get() && !_tail.get()));
-	if (!new_head) {
-		assert(front_size == static_cast<size_t>(_size.get()));
-		front._size = _size;
-		front._head = _head;
-		front._tail = _tail;
-		_size = 0;
+	front._size = front_size;
+	front._head = _head;
+	front._tail = front_tail;
+	Node* new_head = front_tail->next();
+	if (new_head) {
+		new_head->prev(NULL);
+		_head = new_head;
+	} else {
+		// FIXME: race?
 		_head = NULL;
 		_tail = NULL;
-	} else {
-		front._size = front_size;
-		front._head = _head;
-		front._tail = new_head->prev();
-		if (new_head->prev())
-			new_head->prev()->next(NULL);
-		_head = new_head;
-		new_head->prev(NULL);
-		_size -= front_size;
 	}
+	_size -= front_size;
+	front_tail->next(NULL);
 	assert((front._head.get() && front._tail.get()) || (!front._head.get() && !front._tail.get()));
 	assert((_head.get() && _tail.get()) || (!_head.get() && !_tail.get()));
 }
