@@ -137,7 +137,6 @@ def build(bld):
 
 	# Documentation
 	autowaf.build_dox(bld, 'RAUL', RAUL_VERSION, top, out)
-	#bld.install_files('${HTMLDIR}', bld.path.ant_glob(out + '/default/doc/html/*'))
 
 def test(ctx):
 	autowaf.run_tests(ctx, APPNAME, tests.split())
