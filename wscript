@@ -29,10 +29,10 @@ APPNAME = 'raul'
 VERSION = RAUL_VERSION
 
 # Mandatory variables
-srcdir = '.'
-blddir = 'build'
+top = '.'
+out = 'build'
 
-def set_options(opt):
+def options(opt):
 	autowaf.set_options(opt)
 	opt.add_option('--test', action='store_true', default=False, dest='build_tests',
 			help="Build unit tests")
@@ -57,7 +57,7 @@ def configure(conf):
 	if Options.options.log_debug:
 		conf.define('LOG_DEBUG', 1)
 	
-	conf.write_config_header('raul-config.h')
+	conf.write_config_header('raul-config.h', remove=False)
 
 	# Boost headers
 	autowaf.check_header(conf, 'boost/shared_ptr.hpp', mandatory=True)
@@ -84,8 +84,8 @@ tests = '''
 
 def build(bld):
 	# Headers
-	bld.install_files('${INCLUDEDIR}/raul', 'raul/*.hpp')
-	bld.install_files('${INCLUDEDIR}/raul', 'raul/*.h')
+	bld.install_files('${INCLUDEDIR}/raul', bld.path.ant_glob('raul/*.hpp'))
+	bld.install_files('${INCLUDEDIR}/raul', bld.path.ant_glob('raul/*.h'))
 
 	# Pkgconfig file
 	autowaf.build_pc(bld, 'RAUL', RAUL_VERSION, 'GLIBMM GTHREAD')
@@ -102,46 +102,46 @@ def build(bld):
 	'''
 
 	# Library
-	obj = bld.new_task_gen('cxx', 'shlib')
-	obj.export_incdirs = ['.']
-	obj.source       = lib_source
-	obj.includes     = ['.', './src']
-	obj.name         = 'libraul'
-	obj.target       = 'raul'
-	obj.uselib       = 'GLIBMM GTHREAD'
-	obj.install_path = '${LIBDIR}'
-	obj.vnum         = RAUL_LIB_VERSION
+	obj = bld(features = 'cxx cxxshlib')
+	obj.export_includes = ['.']
+	obj.source          = lib_source
+	obj.includes        = ['.', './src']
+	obj.name            = 'libraul'
+	obj.target          = 'raul'
+	obj.uselib          = 'GLIBMM GTHREAD'
+	obj.install_path    = '${LIBDIR}'
+	obj.vnum            = RAUL_LIB_VERSION
 	
 	if bld.env['BUILD_TESTS']:
 		# Static library (for unit test code coverage)
-		obj = bld.new_task_gen('cxx', 'staticlib')
+		obj = bld(features = 'cxx cxxstaticlib')
 		obj.source       = lib_source
 		obj.includes     = ['.', './src']
 		obj.name         = 'libraul_static'
 		obj.target       = 'raul_static'
 		obj.uselib       = 'GLIBMM GTHREAD'
 		obj.install_path = ''
-		obj.cxxflags      = [ '-fprofile-arcs',  '-ftest-coverage' ]
+		obj.cxxflags     = [ '-fprofile-arcs',  '-ftest-coverage' ]
 
 		# Unit tests
 		for i in tests.split():
-			obj = bld.new_task_gen('cxx', 'program')
+			obj = bld(features = 'cxx cxxprogram')
 			obj.source       = i + '.cpp'
 			obj.includes     = ['.', './src']
-			obj.uselib_local = 'libraul_static'
+			obj.use          = 'libraul_static'
 			obj.uselib       = 'GLIB GLIBMM'
 			obj.libs         = 'gcov'
 			obj.target       = i
 			obj.install_path = ''
-			obj.cxxflags      = [ '-fprofile-arcs',  '-ftest-coverage' ]
+			obj.cxxflags     = [ '-fprofile-arcs',  '-ftest-coverage' ]
 
 	# Documentation
-	autowaf.build_dox(bld, 'RAUL', RAUL_VERSION, srcdir, blddir)
-	bld.install_files('${HTMLDIR}', blddir + '/default/doc/html/*')
+	autowaf.build_dox(bld, 'RAUL', RAUL_VERSION, top, out)
+	#bld.install_files('${HTMLDIR}', bld.path.ant_glob(out + '/default/doc/html/*'))
 
 def test(ctx):
 	autowaf.run_tests(ctx, APPNAME, tests.split())
 
-def shutdown():
+def shutdown(self):
 	autowaf.shutdown()
 
