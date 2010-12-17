@@ -135,18 +135,18 @@ public:
 				|| (_ticks == rhs._ticks && _subticks < rhs._subticks));
 	}
 
-	inline bool operator<=(const TimeStamp& rhs) const {
+	inline bool operator>(const TimeStamp& rhs) const {
 		assert(_unit == rhs._unit);
-		return (_ticks <= rhs._ticks
-				|| (_ticks == rhs._ticks && _subticks <= rhs._subticks));
+		return (_ticks > rhs._ticks
+				|| (_ticks == rhs._ticks && _subticks > rhs._subticks));
+	}
+
+	inline bool operator<=(const TimeStamp& rhs) const {
+		return (*this == rhs) || ((*this) < rhs);
 	}
 
 	inline bool operator>=(const TimeStamp& rhs) const {
-		return ! (rhs < *this);
-	}
-
-	inline bool operator>(const TimeStamp& rhs) const {
-		return ! (rhs <= *this);
+		return (*this == rhs) || ((*this) > rhs);
 	}
 
 	inline TimeStamp& operator+=(const TimeStamp& rhs) {
