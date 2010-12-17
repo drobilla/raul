@@ -138,9 +138,7 @@ def build(bld):
 	# Documentation
 	autowaf.build_dox(bld, 'RAUL', RAUL_VERSION, top, out)
 
+	bld.add_post_fun(autowaf.run_ldconfig)
+
 def test(ctx):
 	autowaf.run_tests(ctx, APPNAME, tests.split())
-
-def shutdown(self):
-	autowaf.shutdown()
-
