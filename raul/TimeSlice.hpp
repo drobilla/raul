@@ -100,7 +100,7 @@ public:
 	}
 
 	inline TimeStamp beats_to_ticks(TimeStamp beats) const {
-		return TimeStamp(ticks_unit(), beats.to_double() / (double)_beat_rate * _tick_rate);
+		return TimeStamp(ticks_unit(), beats.to_double() * (double)_beat_rate * _tick_rate);
 	}
 
 	inline TimeStamp ticks_to_seconds(TimeStamp ticks) const {
