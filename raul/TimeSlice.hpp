@@ -77,13 +77,13 @@ public:
 		_length_beats = ticks_to_beats(_length_ticks);
 	}
 
-	bool contains(TimeStamp time) {
+	bool contains(TimeStamp time) const {
 		return (time >= start_ticks() && time < start_ticks() + length_ticks());
 	}
 
-	double tick_rate() { return _tick_rate; }
-	double beat_rate() { return _beat_rate; }
-	double bpm()       { return 60/_beat_rate; }
+	double tick_rate() const { return _tick_rate; }
+	double beat_rate() const { return _beat_rate; }
+	double bpm()       const { return 60/_beat_rate; }
 
 	void set_tick_rate(double tick_rate) {
 		_tick_rate = tick_rate;
