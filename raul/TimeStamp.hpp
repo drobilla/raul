@@ -106,10 +106,9 @@ public:
 	}
 
 	inline TimeStamp& operator=(const TimeStamp& rhs) {
-		//assert(_unit == rhs._unit);
 		_ticks = rhs._ticks;
 		_subticks = rhs._subticks;
-		//_unit = rhs._unit;
+		_unit = rhs._unit;
 		return *this;
 	}
 
