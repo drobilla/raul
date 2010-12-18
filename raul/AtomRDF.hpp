@@ -18,16 +18,17 @@
 #ifndef RAUL_ATOM_RDF_HPP
 #define RAUL_ATOM_RDF_HPP
 
-#include <cstring>
-#include <string>
-#include <sstream>
 #include <cmath>
+#include <cstring>
+#include <sstream>
+#include <string>
 #include <utility>
-#include "raul/log.hpp"
+
 #include "raul/Atom.hpp"
+#include "raul/log.hpp"
+#include "redlandmm/Model.hpp"
 #include "redlandmm/Node.hpp"
 #include "redlandmm/World.hpp"
-#include "redlandmm/Model.hpp"
 
 #define CUC(x) ((const unsigned char*)(x))
 
@@ -35,7 +36,7 @@ namespace Raul {
 
 /** Conversion between Raul Atoms and Redlandmm RDF nodes.
  * This code (in header raul/AtomRDF.hpp) depends on redlandmm, only apps
- * which directly depend on both raul and liblo should include it.
+ * which directly depend on both raul and redlandmm should include it.
  */
 namespace AtomRDF {
 
