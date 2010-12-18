@@ -46,9 +46,11 @@ def configure(conf):
 	autowaf.display_header('Raul Configuration')
 	conf.check_tool('compiler_cxx')
 	autowaf.check_pkg(conf, 'glib-2.0', atleast_version='2.2',
-			uselib_store='GLIB', mandatory=True)
+					  uselib_store='GLIB', mandatory=True)
+	autowaf.check_pkg(conf, 'glibmm-2.4', uselib_store='GLIBMM',
+					  atleast_version='2.14.0', mandatory=True)
 	autowaf.check_pkg(conf, 'gthread-2.0', atleast_version='2.14.0',
-			uselib_store='GTHREAD', mandatory=True)
+					  uselib_store='GTHREAD', mandatory=True)
 	
 	conf.env['BUILD_TESTS'] = Options.options.build_tests
 
