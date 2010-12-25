@@ -18,11 +18,15 @@
 #ifndef RAUL_RING_BUFFER_HPP
 #define RAUL_RING_BUFFER_HPP
 
+#include <stdint.h>
+
 #include <cassert>
 #include <cstring>
 #include <cstdlib>
 #include <iostream>
+
 #include <glib.h>
+
 #include "raul/log.hpp"
 
 namespace Raul {
@@ -36,9 +40,9 @@ class RingBuffer {
 public:
 	/** @param size Size in bytes.
 	 */
-	explicit RingBuffer(size_t size)
-		: _size(size)
-		, _buf(static_cast<char*>(malloc(size)))
+	explicit RingBuffer(uint32_t size)
+		: _buf(static_cast<char*>(malloc(size)))
+		, _size(size)
 	{
 		reset();
 		assert(read_space() == 0);
@@ -57,9 +61,9 @@ public:
 		g_atomic_int_set(&_read_ptr, 0);
 	}
 
-	size_t write_space() const {
-		const size_t w = g_atomic_int_get(&_write_ptr);
-		const size_t r = g_atomic_int_get(&_read_ptr);
+	uint32_t write_space() const {
+		const uint32_t w = g_atomic_int_get(&_write_ptr);
+		const uint32_t r = g_atomic_int_get(&_read_ptr);
 
 		if (w > r) {
 			return ((r - w + _size) % _size) - 1;
@@ -70,9 +74,9 @@ public:
 		}
 	}
 
-	size_t read_space() const {
-		const size_t w = g_atomic_int_get(&_write_ptr);
-		const size_t r = g_atomic_int_get(&_read_ptr);
+	uint32_t read_space() const {
+		const uint32_t w = g_atomic_int_get(&_write_ptr);
+		const uint32_t r = g_atomic_int_get(&_read_ptr);
 
 		if (w > r) {
 			return w - r;
@@ -81,24 +85,24 @@ public:
 		}
 	}
 
-	size_t capacity() const { return _size; }
+	uint32_t capacity() const { return _size; }
 
-	size_t peek(size_t size, void* dst);
-	bool   full_peek(size_t size, void* dst);
+	uint32_t peek(uint32_t size, void* dst);
+	bool     full_peek(uint32_t size, void* dst);
 
-	size_t read(size_t size, void* dst);
-	bool   full_read(size_t size, void* dst);
+	uint32_t read(uint32_t size, void* dst);
+	bool     full_read(uint32_t size, void* dst);
 
-	bool   skip(size_t size);
+	bool     skip(uint32_t size);
 
-	void   write(size_t size, const void* src);
+	void     write(uint32_t size, const void* src);
 
 protected:
-	mutable int _write_ptr;
-	mutable int _read_ptr;
+	mutable uint32_t _write_ptr;
+	mutable uint32_t _read_ptr;
 
-	size_t _size; ///< Size (capacity) in bytes
-	char*  _buf;  ///< Contents
+	char*    _buf;  ///< Contents
+	uint32_t _size; ///< Size (capacity) in bytes
 };
 
 
@@ -108,12 +112,12 @@ protected:
  * Caller must check return value and call again if necessary, or use the
  * full_peek method which does this automatically.
  */
-inline size_t
-RingBuffer::peek(size_t size, void* dst)
+inline uint32_t
+RingBuffer::peek(uint32_t size, void* dst)
 {
-	const size_t priv_read_ptr = g_atomic_int_get(&_read_ptr);
+	const uint32_t priv_read_ptr = g_atomic_int_get(&_read_ptr);
 
-	const size_t read_size = (priv_read_ptr + size < _size)
+	const uint32_t read_size = (priv_read_ptr + size < _size)
 			? size
 			: _size - priv_read_ptr;
 
@@ -124,13 +128,13 @@ RingBuffer::peek(size_t size, void* dst)
 
 
 inline bool
-RingBuffer::full_peek(size_t size, void* dst)
+RingBuffer::full_peek(uint32_t size, void* dst)
 {
 	if (read_space() < size) {
 		return false;
 	}
 
-	const size_t read_size = peek(size, dst);
+	const uint32_t read_size = peek(size, dst);
 
 	if (read_size < size) {
 		peek(size - read_size, (char*)dst + read_size);
@@ -146,12 +150,12 @@ RingBuffer::full_peek(size_t size, void* dst)
  * Caller must check return value and call again if necessary, or use the
  * full_read method which does this automatically.
  */
-inline size_t
-RingBuffer::read(size_t size, void* dst)
+inline uint32_t
+RingBuffer::read(uint32_t size, void* dst)
 {
-	const size_t priv_read_ptr = g_atomic_int_get(&_read_ptr);
+	const uint32_t priv_read_ptr = g_atomic_int_get(&_read_ptr);
 
-	const size_t read_size = (priv_read_ptr + size < _size)
+	const uint32_t read_size = (priv_read_ptr + size < _size)
 			? size
 			: _size - priv_read_ptr;
 
@@ -164,13 +168,13 @@ RingBuffer::read(size_t size, void* dst)
 
 
 inline bool
-RingBuffer::full_read(size_t size, void* dst)
+RingBuffer::full_read(uint32_t size, void* dst)
 {
 	if (read_space() < size) {
 		return false;
 	}
 
-	const size_t read_size = read(size, dst);
+	const uint32_t read_size = read(size, dst);
 
 	if (read_size < size) {
 		read(size - read_size, (char*)dst + read_size);
@@ -181,14 +185,14 @@ RingBuffer::full_read(size_t size, void* dst)
 
 
 inline bool
-RingBuffer::skip(size_t size)
+RingBuffer::skip(uint32_t size)
 {
 	if (read_space() < size) {
 		warn << "Attempt to skip past end of RingBuffer" << std::endl;
 		return false;
 	}
 
-	const size_t priv_read_ptr = g_atomic_int_get(&_read_ptr);
+	const uint32_t priv_read_ptr = g_atomic_int_get(&_read_ptr);
 	g_atomic_int_set(&_read_ptr, (priv_read_ptr + size) % _size);
 
 	return true;
@@ -196,15 +200,15 @@ RingBuffer::skip(size_t size)
 
 
 inline void
-RingBuffer::write(size_t size, const void* src)
+RingBuffer::write(uint32_t size, const void* src)
 {
-	const size_t priv_write_ptr = g_atomic_int_get(&_write_ptr);
+	const uint32_t priv_write_ptr = g_atomic_int_get(&_write_ptr);
 
 	if (priv_write_ptr + size <= _size) {
 		memcpy(&_buf[priv_write_ptr], src, size);
 		g_atomic_int_set(&_write_ptr, (priv_write_ptr + size) % _size);
 	} else {
-		const size_t this_size = _size - priv_write_ptr;
+		const uint32_t this_size = _size - priv_write_ptr;
 		assert(this_size < size);
 		assert(priv_write_ptr + this_size <= _size);
 		memcpy(&_buf[priv_write_ptr], src, this_size);
