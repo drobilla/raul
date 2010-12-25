@@ -32,7 +32,6 @@ namespace Raul {
  * Read/Write realtime safe.
  * Single-reader Single-writer thread safe.
  */
-template <typename T>
 class RingBuffer {
 public:
 	/** @param size Size in bytes.
@@ -84,15 +83,15 @@ public:
 
 	size_t capacity() const { return _size; }
 
-	size_t peek(size_t size, T* dst);
-	bool   full_peek(size_t size, T* dst);
+	size_t peek(size_t size, void* dst);
+	bool   full_peek(size_t size, void* dst);
 
-	size_t read(size_t size, T* dst);
-	bool   full_read(size_t size, T* dst);
+	size_t read(size_t size, void* dst);
+	bool   full_read(size_t size, void* dst);
 
 	bool   skip(size_t size);
 
-	void   write(size_t size, const T* src);
+	void   write(size_t size, const void* src);
 
 protected:
 	mutable int _write_ptr;
@@ -109,9 +108,8 @@ protected:
  * Caller must check return value and call again if necessary, or use the
  * full_peek method which does this automatically.
  */
-template<typename T>
-size_t
-RingBuffer<T>::peek(size_t size, T* dst)
+inline size_t
+RingBuffer::peek(size_t size, void* dst)
 {
 	const size_t priv_read_ptr = g_atomic_int_get(&_read_ptr);
 
@@ -125,9 +123,8 @@ RingBuffer<T>::peek(size_t size, T* dst)
 }
 
 
-template<typename T>
-bool
-RingBuffer<T>::full_peek(size_t size, T* dst)
+inline bool
+RingBuffer::full_peek(size_t size, void* dst)
 {
 	if (read_space() < size) {
 		return false;
@@ -136,7 +133,7 @@ RingBuffer<T>::full_peek(size_t size, T* dst)
 	const size_t read_size = peek(size, dst);
 
 	if (read_size < size) {
-		peek(size - read_size, dst + read_size);
+		peek(size - read_size, (char*)dst + read_size);
 	}
 
 	return true;
@@ -149,9 +146,8 @@ RingBuffer<T>::full_peek(size_t size, T* dst)
  * Caller must check return value and call again if necessary, or use the
  * full_read method which does this automatically.
  */
-template<typename T>
-size_t
-RingBuffer<T>::read(size_t size, T* dst)
+inline size_t
+RingBuffer::read(size_t size, void* dst)
 {
 	const size_t priv_read_ptr = g_atomic_int_get(&_read_ptr);
 
@@ -167,9 +163,8 @@ RingBuffer<T>::read(size_t size, T* dst)
 }
 
 
-template<typename T>
-bool
-RingBuffer<T>::full_read(size_t size, T* dst)
+inline bool
+RingBuffer::full_read(size_t size, void* dst)
 {
 	if (read_space() < size) {
 		return false;
@@ -178,16 +173,15 @@ RingBuffer<T>::full_read(size_t size, T* dst)
 	const size_t read_size = read(size, dst);
 
 	if (read_size < size) {
-		read(size - read_size, dst + read_size);
+		read(size - read_size, (char*)dst + read_size);
 	}
 
 	return true;
 }
 
 
-template<typename T>
-bool
-RingBuffer<T>::skip(size_t size)
+inline bool
+RingBuffer::skip(size_t size)
 {
 	if (read_space() < size) {
 		warn << "Attempt to skip past end of RingBuffer" << std::endl;
@@ -201,9 +195,8 @@ RingBuffer<T>::skip(size_t size)
 }
 
 
-template<typename T>
 inline void
-RingBuffer<T>::write(size_t size, const T* src)
+RingBuffer::write(size_t size, const void* src)
 {
 	const size_t priv_write_ptr = g_atomic_int_get(&_write_ptr);
 
@@ -215,7 +208,7 @@ RingBuffer<T>::write(size_t size, const T* src)
 		assert(this_size < size);
 		assert(priv_write_ptr + this_size <= _size);
 		memcpy(&_buf[priv_write_ptr], src, this_size);
-		memcpy(&_buf[0], src+this_size, size - this_size);
+		memcpy(&_buf[0], (char*)src + this_size, size - this_size);
 		g_atomic_int_set(&_write_ptr, size - this_size);
 	}
 }

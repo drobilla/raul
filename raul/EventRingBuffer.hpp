@@ -31,13 +31,13 @@ namespace Raul {
  * This packs a timestamp, size, and size bytes of data flat into the buffer.
  * Useful for MIDI events, OSC messages, etc.
  */
-class EventRingBuffer : private Raul::RingBuffer<uint8_t> {
+class EventRingBuffer : private Raul::RingBuffer {
 public:
 
 	/** @param capacity Ringbuffer capacity in bytes.
 	 */
 	explicit EventRingBuffer(size_t capacity)
-		: RingBuffer<uint8_t>(capacity)
+		: RingBuffer(capacity)
 	{}
 
 	size_t capacity() const { return _size; }
@@ -50,11 +50,11 @@ public:
 inline bool
 EventRingBuffer::read(TimeStamp* time, size_t* size, uint8_t* buf)
 {
-	bool success = RingBuffer<uint8_t>::full_read(sizeof(TimeStamp), (uint8_t*)time);
+	bool success = RingBuffer::full_read(sizeof(TimeStamp), (uint8_t*)time);
 	if (success)
-		success = RingBuffer<uint8_t>::full_read(sizeof(size_t), (uint8_t*)size);
+		success = RingBuffer::full_read(sizeof(size_t), (uint8_t*)size);
 	if (success)
-		success = RingBuffer<uint8_t>::full_read(*size, buf);
+		success = RingBuffer::full_read(*size, buf);
 
 	return success;
 }
@@ -68,9 +68,9 @@ EventRingBuffer::write(TimeStamp time, size_t size, const uint8_t* buf)
 	if (write_space() < (sizeof(TimeStamp) + sizeof(size_t) + size)) {
 		return 0;
 	} else {
-		RingBuffer<uint8_t>::write(sizeof(TimeStamp), (uint8_t*)&time);
-		RingBuffer<uint8_t>::write(sizeof(size_t), (uint8_t*)&size);
-		RingBuffer<uint8_t>::write(size, buf);
+		RingBuffer::write(sizeof(TimeStamp), (uint8_t*)&time);
+		RingBuffer::write(sizeof(size_t), (uint8_t*)&size);
+		RingBuffer::write(size, buf);
 		return size;
 	}
 }
