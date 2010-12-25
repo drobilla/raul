@@ -101,8 +101,8 @@ protected:
 	mutable uint32_t _write_ptr;
 	mutable uint32_t _read_ptr;
 
-	char*    _buf;  ///< Contents
-	uint32_t _size; ///< Size (capacity) in bytes
+	char* const    _buf;  ///< Contents
+	const uint32_t _size; ///< Size (capacity) in bytes
 };
 
 
