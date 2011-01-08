@@ -96,7 +96,6 @@ public:
 	 */
 	Path(const char* cpath);
 
-
 	/** Construct a Path from another path.
 	 *
 	 * This is faster than constructing a path from the other path's string

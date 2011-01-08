@@ -18,8 +18,10 @@
 #ifndef RAUL_ATOM_LIBLO_HPP
 #define RAUL_ATOM_LIBLO_HPP
 
-#include <iostream>
 #include <lo/lo.h>
+
+#include <iostream>
+
 #include "raul/log.hpp"
 #include "raul/Atom.hpp"
 

@@ -20,10 +20,12 @@
 
 #include <cstddef>
 #include <cassert>
+
 #include <boost/utility.hpp>
-#include "raul/Deletable.hpp"
-#include "raul/AtomicPtr.hpp"
+
 #include "raul/AtomicInt.hpp"
+#include "raul/AtomicPtr.hpp"
+#include "raul/Deletable.hpp"
 
 namespace Raul {
 

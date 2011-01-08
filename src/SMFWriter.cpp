@@ -14,16 +14,21 @@
  * with this program; if not, write to the Free Software Foundation, Inc.,
  * 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA
  */
-#include <stdio.h>
-#include <stdint.h>
-#include <cassert>
-#include <cstring>
-#include <cstdio>
+
 #include <glib.h>
+#include <stdint.h>
+#include <stdio.h>
+
+#include <cassert>
+#include <cstdio>
+#include <cstring>
+#include <limits>
+#include <string>
+
 #include "raul/log.hpp"
 #include "raul/SMFWriter.hpp"
 
-using namespace std;
+using std::endl;
 
 namespace Raul {
 
@@ -63,10 +68,10 @@ SMFWriter::~SMFWriter()
  */
 bool
 SMFWriter::start(const std::string& filename,
-                 Raul::TimeStamp    start_time) throw (logic_error)
+                 Raul::TimeStamp    start_time) throw (std::logic_error)
 {
 	if (_fd)
-		throw logic_error("Attempt to start new write while write in progress.");
+		throw std::logic_error("Attempt to start new write while write in progress.");
 
 	info << "Opening SMF file " << filename << " for writing." << endl;
 
@@ -94,14 +99,14 @@ SMFWriter::start(const std::string& filename,
 void
 SMFWriter::write_event(Raul::TimeStamp      time,
                        size_t               ev_size,
-                       const unsigned char* ev) throw (logic_error)
+                       const unsigned char* ev) throw (std::logic_error)
 {
 	if (time < _start_time)
-		throw logic_error("Event time is before file start time");
+		throw std::logic_error("Event time is before file start time");
 	else if (time < _last_ev_time)
-		throw logic_error("Event time not monotonically increasing");
+		throw std::logic_error("Event time not monotonically increasing");
 	else if (time.unit() != _unit)
-		throw logic_error("Event has unexpected time unit");
+		throw std::logic_error("Event has unexpected time unit");
 
 	Raul::TimeStamp delta_time = time;
 	delta_time -= _start_time;
@@ -141,10 +146,10 @@ SMFWriter::flush()
 
 
 void
-SMFWriter::finish() throw (logic_error)
+SMFWriter::finish() throw (std::logic_error)
 {
 	if (!_fd)
-		throw logic_error("Attempt to finish write with no write in progress.");
+		throw std::logic_error("Attempt to finish write with no write in progress.");
 
 	write_footer();
 	fclose(_fd);

@@ -18,10 +18,12 @@
 #ifndef RAUL_THREAD_HPP
 #define RAUL_THREAD_HPP
 
+#include <iostream>
 #include <set>
 #include <string>
-#include <iostream>
+
 #include <pthread.h>
+
 #include <boost/utility.hpp>
 
 namespace Raul {

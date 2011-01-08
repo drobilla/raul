@@ -16,12 +16,14 @@
  */
 
 #include <cstring>
+#include <string>
+
 #include "raul/log.hpp"
 #include "raul/Thread.hpp"
 
 #define LOG(s) s << "[" << _name << "] "
 
-using namespace std;
+using std::endl;
 
 namespace Raul {
 

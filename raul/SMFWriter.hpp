@@ -19,6 +19,8 @@
 #define RAUL_SMF_WRITER_HPP
 
 #include <stdexcept>
+#include <string>
+
 #include "raul/MIDISink.hpp"
 #include "raul/TimeStamp.hpp"
 

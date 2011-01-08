@@ -19,7 +19,9 @@
 #define RAUL_SRSW_QUEUE_HPP
 
 #include <cassert>
+
 #include <boost/utility.hpp>
+
 #include "raul/AtomicInt.hpp"
 
 namespace Raul {

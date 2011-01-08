@@ -15,15 +15,18 @@
  * 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
+#include <glib.h>
+
 #include <cstdio>
 #include <cassert>
 #include <cstring>
-#include <glib.h>
+#include <string>
+
 #include "raul/log.hpp"
 #include "raul/SMFReader.hpp"
 #include "raul/midi_events.h"
 
-using namespace std;
+using std::endl;
 
 namespace Raul {
 
@@ -90,10 +93,10 @@ SMFReader::~SMFReader()
 
 
 bool
-SMFReader::open(const std::string& filename) throw (logic_error, UnsupportedTime)
+SMFReader::open(const std::string& filename) throw (std::logic_error, UnsupportedTime)
 {
 	if (_fd)
-		throw logic_error("Attempt to start new read while write in progress.");
+		throw std::logic_error("Attempt to start new read while write in progress.");
 
 	info << "Opening SMF file " << filename << " for reading." << endl;
 
@@ -148,10 +151,10 @@ bool
 SMFReader::seek_to_track(unsigned track) throw (std::logic_error)
 {
 	if (track == 0)
-		throw logic_error("Seek to track 0 out of range (must be >= 1)");
+		throw std::logic_error("Seek to track 0 out of range (must be >= 1)");
 
 	if (!_fd)
-		throw logic_error("Attempt to seek to track on unopened SMF file.");
+		throw std::logic_error("Attempt to seek to track on unopened SMF file.");
 
 	unsigned track_pos = 0;
 
@@ -210,7 +213,7 @@ SMFReader::read_event(size_t    buf_len,
 		throw (std::logic_error, PrematureEOF, CorruptFile)
 {
 	if (_track == 0)
-		throw logic_error("Attempt to read from unopened SMF file");
+		throw std::logic_error("Attempt to read from unopened SMF file");
 
 	if (!_fd || feof(_fd)) {
 		return -1;

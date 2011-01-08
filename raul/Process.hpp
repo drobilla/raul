@@ -18,12 +18,15 @@
 #ifndef RAUL_PROCESS_HPP
 #define RAUL_PROCESS_HPP
 
-#include <string>
-#include <iostream>
-#include <unistd.h>
-#include <sys/time.h>
 #include <sys/resource.h>
+#include <sys/time.h>
+#include <unistd.h>
+
+#include <iostream>
+#include <string>
+
 #include <boost/utility.hpp>
+
 #include "raul/log.hpp"
 
 namespace Raul {

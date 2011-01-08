@@ -18,10 +18,13 @@
 #ifndef RAUL_TABLE_IMPL_HPP
 #define RAUL_TABLE_IMPL_HPP
 
-#include <cassert>
-#include <stdexcept>
 #include <algorithm>
+#include <cassert>
 #include <iostream>
+#include <stdexcept>
+#include <utility>
+#include <vector>
+
 #include "raul/Table.hpp"
 
 namespace Raul {

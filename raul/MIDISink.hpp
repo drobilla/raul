@@ -31,7 +31,7 @@ class MIDISink : public Deletable {
 public:
 	virtual void write_event(TimeStamp      time,
 	                         size_t         ev_size,
-	                         const uint8_t* ev) throw (std::logic_error) = 0;
+	                         const uint8_t* ev) = 0;
 };
 
 

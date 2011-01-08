@@ -21,8 +21,8 @@
 #include <stdint.h>
 
 #include <cassert>
-#include <cstring>
 #include <cstdlib>
+#include <cstring>
 #include <iostream>
 
 #include <glib.h>

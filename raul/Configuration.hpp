@@ -18,11 +18,12 @@
 #ifndef RAUL_CONFIGURATION_HPP
 #define RAUL_CONFIGURATION_HPP
 
-#include <map>
-#include <string>
-#include <list>
-#include <ostream>
 #include <exception>
+#include <list>
+#include <map>
+#include <ostream>
+#include <string>
+
 #include "raul/Atom.hpp"
 
 namespace Raul {

@@ -18,10 +18,13 @@
 #ifndef RAUL_TABLE_HPP
 #define RAUL_TABLE_HPP
 
-#include <vector>
 #include <algorithm>
+#include <utility>
+#include <vector>
+
 #include <boost/utility.hpp>
-#include "SharedPtr.hpp"
+
+#include "raul/SharedPtr.hpp"
 
 //#define TABLE_SORT_DEBUG
 

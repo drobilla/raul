@@ -18,11 +18,12 @@
 #ifndef RAUL_SYMBOL_HPP
 #define RAUL_SYMBOL_HPP
 
-#include <iostream>
-#include <cctype>
-#include <string>
-#include <cstring>
 #include <cassert>
+#include <cctype>
+#include <cstring>
+#include <iostream>
+#include <string>
+
 #include <glib.h>
 
 namespace Raul {

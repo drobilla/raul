@@ -18,11 +18,12 @@
 #ifndef RAUL_ARRAYSTACK_HPP
 #define RAUL_ARRAYSTACK_HPP
 
-#include "raul/Array.hpp"
+#include <algorithm>
 #include <cassert>
 #include <cstddef>
-#include <algorithm>
-#include "Deletable.hpp"
+
+#include "raul/Array.hpp"
+#include "raul/Deletable.hpp"
 
 namespace Raul {
 

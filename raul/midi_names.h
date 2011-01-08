@@ -20,7 +20,7 @@
 #ifndef RAUL_MIDI_NAMES_H
 #define RAUL_MIDI_NAMES_H
 
-#include "midi_events.h"
+#include "raul/midi_events.h"
 
 #ifdef __cplusplus
 namespace Raul {

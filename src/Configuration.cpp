@@ -15,9 +15,13 @@
  * 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
+#include <algorithm>
+#include <string>
+
 #include "raul/Configuration.hpp"
 
-using namespace std;
+using std::endl;
+using std::string;
 
 namespace Raul {
 

@@ -20,7 +20,9 @@
 
 #include <cassert>
 #include <cmath>
+
 #include <boost/utility.hpp>
+
 #include "raul/TimeStamp.hpp"
 
 namespace Raul {
