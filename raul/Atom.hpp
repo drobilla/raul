@@ -19,13 +19,14 @@
 #define RAUL_ATOM_HPP
 
 #include <stdint.h>
-#include <cstdlib>
+#include <glib.h>
+
 #include <cassert>
+#include <cstdlib>
 #include <cstring>
-#include <string>
 #include <map>
 #include <ostream>
-#include <glib.h>
+#include <string>
 
 namespace Raul {
 
@@ -149,7 +150,7 @@ public:
 		case FLOAT:  return sizeof(float);
 		case BOOL:   return sizeof(bool);
 		case URI:
-		case STRING: return strlen(_string_val);
+		case STRING: return strlen(_string_val) + 1;
 		case BLOB:   return _blob_val->size();
 		case DICT:   return 0; // FIXME ?
 		}
