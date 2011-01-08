@@ -22,7 +22,7 @@ print_buf(size_t size, char* buf)
 int
 main()
 {
-	RingBuffer<char> rb(5);
+	RingBuffer rb(5);
 
 	char ev[] = { 'a', 'b', 'c' };
 

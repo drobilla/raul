@@ -47,8 +47,6 @@ def configure(conf):
 	conf.check_tool('compiler_cxx')
 	autowaf.check_pkg(conf, 'glib-2.0', atleast_version='2.2',
 					  uselib_store='GLIB', mandatory=True)
-	autowaf.check_pkg(conf, 'glibmm-2.4', uselib_store='GLIBMM',
-					  atleast_version='2.14.0', mandatory=True)
 	autowaf.check_pkg(conf, 'gthread-2.0', atleast_version='2.14.0',
 					  uselib_store='GTHREAD', mandatory=True)
 	
@@ -90,7 +88,7 @@ def build(bld):
 	bld.install_files('${INCLUDEDIR}/raul', bld.path.ant_glob('raul/*.h'))
 
 	# Pkgconfig file
-	autowaf.build_pc(bld, 'RAUL', RAUL_VERSION, 'GLIBMM GTHREAD')
+	autowaf.build_pc(bld, 'RAUL', RAUL_VERSION, 'GLIB GTHREAD')
 
 	lib_source = '''
 		src/Configuration.cpp
@@ -110,18 +108,18 @@ def build(bld):
 	obj.includes        = ['.', './src']
 	obj.name            = 'libraul'
 	obj.target          = 'raul'
-	obj.uselib          = 'GLIBMM GTHREAD'
+	obj.uselib          = 'GLIB GTHREAD'
 	obj.install_path    = '${LIBDIR}'
 	obj.vnum            = RAUL_LIB_VERSION
 	
 	if bld.env['BUILD_TESTS']:
 		# Static library (for unit test code coverage)
-		obj = bld(features = 'cxx cxxstaticlib')
+		obj = bld(features = 'cxx cxxstlib')
 		obj.source       = lib_source
 		obj.includes     = ['.', './src']
 		obj.name         = 'libraul_static'
 		obj.target       = 'raul_static'
-		obj.uselib       = 'GLIBMM GTHREAD'
+		obj.uselib       = 'GLIB GTHREAD'
 		obj.install_path = ''
 		obj.cxxflags     = [ '-fprofile-arcs',  '-ftest-coverage' ]
 
@@ -131,8 +129,8 @@ def build(bld):
 			obj.source       = i + '.cpp'
 			obj.includes     = ['.', './src']
 			obj.use          = 'libraul_static'
-			obj.uselib       = 'GLIB GLIBMM'
-			obj.libs         = 'gcov'
+			obj.uselib       = 'GLIB GTHREAD'
+			obj.linkflags    = '-lgcov'
 			obj.target       = i
 			obj.install_path = ''
 			obj.cxxflags     = [ '-fprofile-arcs',  '-ftest-coverage' ]
