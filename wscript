@@ -55,9 +55,9 @@ def configure(conf):
 	conf.env['BUILD_TESTS'] = Options.options.build_tests
 
 	if Options.options.log_colour:
-		autowaf.define(conf, 'LOG_COLOUR', 1)
+		autowaf.define(conf, 'RAUL_LOG_COLOUR', 1)
 	if Options.options.log_debug:
-		autowaf.define(conf, 'LOG_DEBUG', 1)
+		autowaf.define(conf, 'RAUL_LOG_DEBUG', 1)
 	
 	conf.write_config_header('raul-config.h', remove=False)
 

@@ -20,29 +20,29 @@
 
 namespace Raul {
 
-#ifdef LOG_COLOUR
+#ifdef RAUL_LOG_COLOUR
 
 LogBuffer info_buffer("", LogBuffer::GREEN);
 LogBuffer warn_buffer("", LogBuffer::YELLOW);
 LogBuffer error_buffer("", LogBuffer::RED);
-#ifdef LOG_DEBUG
+#ifdef RAUL_LOG_DEBUG
 LogBuffer debug_buffer("", LogBuffer::CYAN);
 #else
 NullBuffer debug_buffer;
 #endif
 
-#else // !LOG_COLOUR
+#else // !RAUL_LOG_COLOUR
 
 LogBuffer info_buffer("INFO: ");
 LogBuffer warn_buffer("WARNING: ");
 LogBuffer error_buffer("ERROR: ");
-#ifdef LOG_DEBUG
+#ifdef RAUL_LOG_DEBUG
 LogBuffer debug_buffer("DEBUG: ");
 #else
 NullBuffer debug_buffer;
 #endif
 
-#endif // LOG_COLOUR
+#endif // RAUL_LOG_COLOUR
 
 std::ostream info(&info_buffer);
 std::ostream warn(&warn_buffer);
