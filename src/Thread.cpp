@@ -115,6 +115,12 @@ Thread::stop()
 }
 
 void
+Thread::join()
+{
+	pthread_join(_pthread, NULL);
+}
+
+void
 Thread::set_scheduling(int policy, unsigned int priority)
 {
 	sched_param sp;

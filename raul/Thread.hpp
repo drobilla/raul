@@ -57,6 +57,8 @@ public:
 	virtual void start();
 	virtual void stop();
 
+	virtual void join();
+
 	void set_scheduling(int policy, unsigned int priority);
 
 	const std::string& name() const { return _name; }
