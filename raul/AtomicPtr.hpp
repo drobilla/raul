@@ -23,6 +23,9 @@
 namespace Raul {
 
 
+/** Atomic pointer.
+ * \ingroup raul
+ */
 template<typename T>
 class AtomicPtr {
 public:

@@ -30,6 +30,7 @@ namespace Raul {
  *
  * This packs a timestamp, size, and size bytes of data flat into the buffer.
  * Useful for MIDI events, OSC messages, etc.
+ * \ingroup raul
  */
 class EventRingBuffer : private Raul::RingBuffer {
 public:

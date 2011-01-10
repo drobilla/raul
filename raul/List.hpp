@@ -35,6 +35,7 @@ namespace Raul {
  * Elements can be added safely while another thread is reading the list.
  * Like a typical ringbuffer, this is single-reader single-writer threadsafe
  * only.  See documentation for specific functions for specifics.
+ * \ingroup raul 
  */
 template <typename T>
 class List : public Raul::Deletable, public boost::noncopyable

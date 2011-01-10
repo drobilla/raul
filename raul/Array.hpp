@@ -31,6 +31,7 @@ namespace Raul {
  * Has a stack-like push_back(), but is NOT a resizeable array (the size given
  * to the constructor or alloc method is the maximum number of elements which
  * can be pushed).
+ * \ingroup raul
  */
 template <class T>
 class Array : public Deletable

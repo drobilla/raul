@@ -8,3 +8,5 @@ programming, biased towards audio applications.
 See the class heirarchy for an index of the available functionality.
 
 */
+
+/** @defgroup raul Realtime Audio Utility Library */

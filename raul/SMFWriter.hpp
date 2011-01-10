@@ -28,6 +28,7 @@ namespace Raul {
 
 
 /** Standard Midi File (Type 0) Writer
+ * \ingroup raul 
  */
 class SMFWriter : public Raul::MIDISink {
 public:

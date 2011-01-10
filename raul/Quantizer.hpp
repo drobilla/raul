@@ -23,7 +23,9 @@
 
 namespace Raul {
 
-
+/** Quantizer.
+ * \ingroup raul 
+ */
 class Quantizer {
 public:
 	inline static TimeStamp quantize(TimeStamp q, TimeStamp t) {

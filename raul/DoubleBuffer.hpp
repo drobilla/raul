@@ -31,6 +31,7 @@ namespace Raul {
  * Read/Write realtime safe, many writers safe - but set calls may fail.
  *
  * Space:  2*sizeof(T) + sizeof(int) + sizeof(void*)
+ * \ingroup raul
  */
 template<typename T>
 class DoubleBuffer {

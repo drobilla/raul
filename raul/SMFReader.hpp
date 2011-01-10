@@ -29,6 +29,7 @@ namespace Raul {
 /** Standard Midi File (Type 0) Reader
  *
  * Currently this only reads SMF files with tempo-based timing.
+ * \ingroup raul 
  */
 class SMFReader {
 public:

@@ -29,6 +29,7 @@ namespace Raul {
 
 
 /** An array that can also be used as a stack (with a fixed maximum size).
+ * \ingroup raul
  */
 template <class T>
 class ArrayStack : public Array<T>

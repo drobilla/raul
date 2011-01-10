@@ -23,6 +23,9 @@
 namespace Raul {
 
 
+/** Atomic integer.
+ * \ingroup raul
+ */
 class AtomicInt {
 public:
 	inline AtomicInt(int val)
