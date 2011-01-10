@@ -50,13 +50,17 @@ def configure(conf):
 	autowaf.check_pkg(conf, 'gthread-2.0', atleast_version='2.14.0',
 					  uselib_store='GTHREAD', mandatory=True)
 	
+	if Options.platform == 'darwin':
+		conf.check(framework_name='CoreServices')
+		conf.env['FRAMEWORK_RAUL'] = ['CoreServices']
+
 	conf.env['BUILD_TESTS'] = Options.options.build_tests
 
 	if Options.options.log_colour:
 		autowaf.define(conf, 'RAUL_LOG_COLOUR', 1)
 	if Options.options.log_debug:
 		autowaf.define(conf, 'RAUL_LOG_DEBUG', 1)
-	
+
 	conf.write_config_header('raul-config.h', remove=False)
 
 	# Boost headers
@@ -104,10 +108,9 @@ def build(bld):
 		src/log.cpp
 	'''
 
-	def set_link_flags(obj):
-		obj.linkflags = []
-		if Options.platform == 'darwin':
-			obj.linkflags = ['-framework', 'CoreServices']
+	framework = ''
+	if Options.platform == 'darwin':
+		framework = ' CoreServices '
 
 	# Library
 	obj = bld(features = 'cxx cxxshlib')
@@ -117,9 +120,9 @@ def build(bld):
 	obj.name            = 'libraul'
 	obj.target          = 'raul'
 	obj.uselib          = 'GLIB GTHREAD'
+	obj.framework       = framework
 	obj.install_path    = '${LIBDIR}'
 	obj.vnum            = RAUL_LIB_VERSION
-	set_link_flags(obj)
 
 	if bld.env['BUILD_TESTS']:
 		# Static library (for unit test code coverage)
@@ -129,9 +132,9 @@ def build(bld):
 		obj.name         = 'libraul_static'
 		obj.target       = 'raul_static'
 		obj.uselib       = 'GLIB GTHREAD'
+		obj.framework    = framework
 		obj.install_path = ''
 		obj.cxxflags     = [ '-fprofile-arcs',  '-ftest-coverage' ]
-		set_link_flags(obj)
 
 		# Unit tests
 		for i in tests.split():
@@ -140,11 +143,11 @@ def build(bld):
 			obj.includes     = ['.', './src']
 			obj.use          = 'libraul_static'
 			obj.uselib       = 'GLIB GTHREAD'
+			obj.framework    = framework
 			obj.target       = i
 			obj.install_path = ''
 			obj.cxxflags     = [ '-fprofile-arcs',  '-ftest-coverage' ]
-			set_link_flags(obj)
-			obj.linkflags += ['-lgcov']
+			obj.linkflags    = ['-lgcov']
 
 	# Documentation
 	autowaf.build_dox(bld, 'RAUL', RAUL_VERSION, top, out)
