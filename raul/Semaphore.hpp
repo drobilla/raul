@@ -52,6 +52,10 @@ public:
 		#endif
 	}
 
+	/** Destroy and reset the semaphore to an initial value.
+	 *
+	 * This must not be called while there are any waiters.
+	 */
 	inline void reset(unsigned int initial) {
 		#ifdef __APPLE__
 		MPDeleteSemaphore(_sem);
@@ -60,15 +64,6 @@ public:
 		sem_destroy(&_sem);
 		sem_init(&_sem, 0, initial);
 		#endif
-	}
-
-	inline bool has_waiter() {
-		int val;
-		#ifdef __APPLE__
-		#else
-		sem_getvalue(&_sem, &val);
-		#endif
-		return (val <= 0);
 	}
 
 	/** Increment (and signal any waiters).
