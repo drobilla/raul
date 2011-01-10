@@ -88,7 +88,7 @@ def build(bld):
 	bld.install_files('${INCLUDEDIR}/raul', bld.path.ant_glob('raul/*.h'))
 
 	# Pkgconfig file
-	dict = {}
+	dict = {'RAUL_PC_LIBS': ' '}
 	if Options.platform == 'darwin':
 		dict = {'RAUL_PC_LIBS': '-framework CoreServices'}
 	autowaf.build_pc(bld, 'RAUL', RAUL_VERSION, 'GLIB GTHREAD', subst_dict=dict)
