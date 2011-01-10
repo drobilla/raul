@@ -18,30 +18,56 @@
 #ifndef RAUL_SEMAPHORE_HPP
 #define RAUL_SEMAPHORE_HPP
 
+#ifdef __APPLE__
+#include <limits.h>
+#include <CoreServices/CoreServices.h>
+#else
 #include <semaphore.h>
+#endif
+
 #include <boost/utility.hpp>
 
 namespace Raul {
 
 
-/** Trivial wrapper around POSIX semaphores (zero memory overhead).
+/** Counting semaphore.
  *
  * \ingroup raul
  */
 class Semaphore : boost::noncopyable {
 public:
-	inline Semaphore(unsigned int initial) { sem_init(&_sem, 0, initial); }
+	inline Semaphore(unsigned int initial) {
+		#ifdef __APPLE__
+		MPCreateSemaphore(UINT_MAX, initial, &_sem);
+		#else
+		sem_init(&_sem, 0, initial);
+		#endif
+	}
 
-	inline ~Semaphore() { sem_destroy(&_sem); }
+	inline ~Semaphore() {
+		#ifdef __APPLE__
+		MPDeleteSemaphore(_sem);
+		#else
+		sem_destroy(&_sem);
+		#endif
+	}
 
 	inline void reset(unsigned int initial) {
+		#ifdef __APPLE__
+		MPDeleteSemaphore(_sem);
+		MPCreateSemaphore(UINT_MAX, initial, &_sem);
+		#else
 		sem_destroy(&_sem);
 		sem_init(&_sem, 0, initial);
+		#endif
 	}
 
 	inline bool has_waiter() {
 		int val;
+		#ifdef __APPLE__
+		#else
 		sem_getvalue(&_sem, &val);
+		#endif
 		return (val <= 0);
 	}
 
@@ -49,16 +75,29 @@ public:
 	 *
 	 * Realtime safe.
 	 */
-	inline void post() { sem_post(&_sem); }
+	inline void post() {
+		#ifdef __APPLE__
+		MPSignalSemaphore(_sem);
+		#else
+		sem_post(&_sem);
+		#endif
+	}
 
 	/** Wait until count is > 0, then decrement.
 	 *
-	 * Note that sem_wait always returns 0 in practice.  It returns nonzero
-	 * when run in GDB, so the while is necessary to allow debugging.
-	 *
 	 * Obviously not realtime safe.
 	 */
-	inline void wait() { while (sem_wait(&_sem) != 0) {} }
+	inline void wait() {
+		#ifdef __APPLE__
+		MPWaitOnSemaphore(_sem, kDurationForever);
+		#else
+		/* Note that sem_wait always returns 0 in practice, except in
+		   gdb (at least), where it returns nonzero, so the while is
+		   necessary (and is the correct/safe solution in any case).
+		*/
+		while (sem_wait(&_sem) != 0) {}
+		#endif
+	}
 
 	/** Non-blocking version of wait().
 	 *
@@ -66,10 +105,20 @@ public:
 	 *
 	 * Realtime safe?
 	 */
-	inline bool try_wait() { return (sem_trywait(&_sem) == 0); }
+	inline bool try_wait() {
+		#ifdef __APPLE__
+		return MPWaitOnSemaphore(_sem, kDurationImmediate) == noErr;
+ 		#else
+		return (sem_trywait(&_sem) == 0);
+		#endif
+	}
 
 private:
+	#ifdef __APPLE__
+	MPSemaphoreID _sem;
+	#else
 	sem_t _sem;
+	#endif
 };
 
 

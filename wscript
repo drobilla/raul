@@ -88,7 +88,10 @@ def build(bld):
 	bld.install_files('${INCLUDEDIR}/raul', bld.path.ant_glob('raul/*.h'))
 
 	# Pkgconfig file
-	autowaf.build_pc(bld, 'RAUL', RAUL_VERSION, 'GLIB GTHREAD')
+	dict = {}
+	if Options.platform == 'darwin':
+		dict = {'RAUL_PC_LIBS': '-framework CoreServices'}
+	autowaf.build_pc(bld, 'RAUL', RAUL_VERSION, 'GLIB GTHREAD', subst_dict=dict)
 
 	lib_source = '''
 		src/Configuration.cpp
@@ -101,6 +104,11 @@ def build(bld):
 		src/log.cpp
 	'''
 
+	def set_link_flags(obj):
+		obj.linkflags = []
+		if Options.platform == 'darwin':
+			obj.linkflags = ['-framework', 'CoreServices']
+
 	# Library
 	obj = bld(features = 'cxx cxxshlib')
 	obj.export_includes = ['.']
@@ -111,7 +119,8 @@ def build(bld):
 	obj.uselib          = 'GLIB GTHREAD'
 	obj.install_path    = '${LIBDIR}'
 	obj.vnum            = RAUL_LIB_VERSION
-	
+	set_link_flags(obj)
+
 	if bld.env['BUILD_TESTS']:
 		# Static library (for unit test code coverage)
 		obj = bld(features = 'cxx cxxstlib')
@@ -122,6 +131,7 @@ def build(bld):
 		obj.uselib       = 'GLIB GTHREAD'
 		obj.install_path = ''
 		obj.cxxflags     = [ '-fprofile-arcs',  '-ftest-coverage' ]
+		set_link_flags(obj)
 
 		# Unit tests
 		for i in tests.split():
@@ -130,10 +140,11 @@ def build(bld):
 			obj.includes     = ['.', './src']
 			obj.use          = 'libraul_static'
 			obj.uselib       = 'GLIB GTHREAD'
-			obj.linkflags    = '-lgcov'
 			obj.target       = i
 			obj.install_path = ''
 			obj.cxxflags     = [ '-fprofile-arcs',  '-ftest-coverage' ]
+			set_link_flags(obj)
+			obj.linkflags += ['-lgcov']
 
 	# Documentation
 	autowaf.build_dox(bld, 'RAUL', RAUL_VERSION, top, out)
