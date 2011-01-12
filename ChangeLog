@@ -1,3 +1,25 @@
+raul (0.8.0) unstable, urgency=low
+
+  * Implement Semaphore for Darwin
+  * Remove unused/trivial/inappropriate Command and Stateful
+  * Remove pointless templateification of RingBuffer
+  * Use uint32_t consistently for sizes in RingBuffer
+  * Fix off-by-one allocation of Atom strings
+  * Add all classes to 'raul' doxygen group
+  * Make single-argument constructors explicit
+  * Fix incorrect TimeSlice::beats_to_ticks
+  * Fix crash bug in List::chop_front
+  * Fix TimeStamp comparison operators
+  * Rename LOG_* defines RAUL_LOG_*
+  * Remove "using namespace" declarations
+  * Add missing #includes
+  * Add missing COPYING file to distribution
+  * Upgrade to waf 1.6.2
+  * Fix accidental build system dependency on glibmm (now glib only)
+  * Better documentation generation via waf tool
+
+ -- David Robillard <d@drobilla.net>  Tue, 11 Jan 2011 17:42:07 -0500
+
 raul (0.7.0) unstable; urgency=low
 
   * Add several unit tests

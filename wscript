@@ -21,8 +21,9 @@ RAUL_VERSION = '0.8.0'
 #   0.6.4 = 7,0,0 (unreleased)
 #   0.6.5 = 8,0,0 (unreleased)
 #   0.6.6 = 9,0,0 (unreleased)
-#   0.8.0 = 9,0,0
-RAUL_LIB_VERSION = '9.0.0'
+#   0.7.0 = 9,0,0
+#   0.8.0 = 10,0,0
+RAUL_LIB_VERSION = '10.0.0'
 
 # Variables for 'waf dist'
 APPNAME = 'raul'
