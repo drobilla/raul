@@ -20,8 +20,10 @@ read_write_test(EventRingBuffer& rb, unsigned offset)
 	snprintf(reinterpret_cast<char*>(write_buf), 5, "%d", offset);
 	size = strlen(reinterpret_cast<const char*>(write_buf));
 
+#ifndef NDEBUG
 	const size_t written = rb.write(t, size, write_buf);
 	assert(written == size);
+#endif
 
 	rb.read(&t, &size, read_buf);
 
