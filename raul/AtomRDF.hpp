@@ -117,7 +117,7 @@ atom_to_node(Redland::Model& model, const Atom& atom)
 		break;
 	case Atom::URI:
 		str = atom.get_uri();
-		node = librdf_new_node_from_uri_string(world.world(), CUC(world.expand_uri(str).c_str()));
+		node = librdf_new_node_from_uri_string(world.world(), CUC(str.c_str()));
 		break;
 	case Atom::STRING:
 		str = atom.get_string();
