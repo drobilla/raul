@@ -45,7 +45,7 @@ node_to_atom(Sord::Model& model, const Sord::Node& node)
 {
 	if (node.is_bool()) {
 		return Atom(bool(node.to_bool()));
-	} else if (node.is_resource()) {
+	} else if (node.is_uri()) {
 		return Atom(Atom::URI, node.to_c_string());
 	} else if (node.is_float()) {
 		return Atom(node.to_float());
