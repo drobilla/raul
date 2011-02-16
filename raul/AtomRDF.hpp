@@ -26,23 +26,22 @@
 
 #include "raul/Atom.hpp"
 #include "raul/log.hpp"
-#include "redlandmm/Model.hpp"
-#include "redlandmm/Node.hpp"
-#include "redlandmm/World.hpp"
+
+#include "sord/sordmm.hpp"
 
 #define CUC(x) ((const unsigned char*)(x))
 
 namespace Raul {
 
-/** Conversion between Raul Atoms and Redlandmm RDF nodes.
- * This code (in header raul/AtomRDF.hpp) depends on redlandmm, only apps
- * which directly depend on both raul and redlandmm should include it.
+/** Conversion between Raul Atoms and Sord RDF nodes.
+ * This code (in header raul/AtomRDF.hpp) depends on sord, only apps
+ * which directly depend on both raul and sord should include it.
  */
 namespace AtomRDF {
 
-/** Convert a Redland::Node to a Raul::Atom */
+/** Convert a Sord::Node to a Raul::Atom */
 inline Atom
-node_to_atom(Redland::Model& model, const Redland::Node& node)
+node_to_atom(Sord::Model& model, const Sord::Node& node)
 {
 	if (node.is_bool()) {
 		return Atom(bool(node.to_bool()));
@@ -54,20 +53,12 @@ node_to_atom(Redland::Model& model, const Redland::Node& node)
 		return Atom(node.to_int());
 	} else if (node.is_blank()) {
 		Atom::DictValue dict;
-		librdf_statement* pattern = librdf_new_statement_from_nodes(
-				model.world().c_obj(),
-				const_cast<librdf_node*>(node.c_obj()),
-				NULL,
-				NULL);
-		librdf_stream* results = librdf_model_find_statements(
-				const_cast<librdf_model*>(model.c_obj()),
-				pattern);
-		while (!librdf_stream_end(results)) {
-			librdf_statement* s = librdf_stream_get_object(results);
-			Redland::Node predicate(model.world(), librdf_statement_get_predicate(s));
-			Redland::Node object(model.world(), librdf_statement_get_object(s));
-			dict.insert(std::make_pair(node_to_atom(model, predicate), node_to_atom(model, object)));
-			librdf_stream_next(results);
+		Sord::Node nil;
+		for (Sord::Iter i = model.find(node, nil, nil); !i.end(); ++i) {
+			Sord::Node predicate = i.get_predicate();
+			Sord::Node object    = i.get_object();
+			dict.insert(std::make_pair(node_to_atom(model, predicate),
+			                           node_to_atom(model, object)));
 		}
 		return Atom(dict);
 	} else {
@@ -75,26 +66,27 @@ node_to_atom(Redland::Model& model, const Redland::Node& node)
 	}
 }
 
+#define RAUL_NS_XSD "http://www.w3.org/2001/XMLSchema#"
 
-/** Convert a Raul::Atom to a Redland::Node
+/** Convert a Raul::Atom to a Sord::Node
  * Note that not all Atoms are serialisable, the returned node should
  * be checked (can be treated as a bool) before use. */
-inline Redland::Node
-atom_to_node(Redland::Model& model, const Atom& atom)
+inline Sord::Node
+atom_to_node(Sord::Model& model, const Atom& atom)
 {
-	Redland::World& world = model.world();
+	Sord::World& world = model.world();
 
 	std::ostringstream os;
 	std::string        str;
-	librdf_uri*        type = NULL;
-	librdf_node*       node = NULL;
+	SordNode           type = NULL;
+	SordNode           node = NULL;
 
 	switch (atom.type()) {
 	case Atom::INT:
 		os << atom.get_int32();
 		str = os.str();
 		// xsd:integer -> pretty integer literals in Turtle
-		type = librdf_new_uri(world.world(), CUC("http://www.w3.org/2001/XMLSchema#integer"));
+		type = sord_new_uri(world.world(), CUC(RAUL_NS_XSD "integer"));
 		break;
 	case Atom::FLOAT:
 		if (std::isnan(atom.get_float()) || std::isinf(atom.get_float()))
@@ -105,7 +97,7 @@ atom_to_node(Redland::Model& model, const Atom& atom)
 		if (str.find(".") == std::string::npos)
 			str += ".0";
 		// xsd:decimal -> pretty decimal (float) literals in Turtle
-		type = librdf_new_uri(world.world(), CUC("http://www.w3.org/2001/XMLSchema#decimal"));
+		type = sord_new_uri(world.world(), CUC(RAUL_NS_XSD "decimal"));
 		break;
 	case Atom::BOOL:
 		// xsd:boolean -> pretty boolean literals in Turtle
@@ -113,24 +105,26 @@ atom_to_node(Redland::Model& model, const Atom& atom)
 			str = "true";
 		else
 			str = "false";
-		type = librdf_new_uri(world.world(), CUC("http://www.w3.org/2001/XMLSchema#boolean"));
+		type = sord_new_uri(world.world(), CUC(RAUL_NS_XSD "boolean"));
 		break;
 	case Atom::URI:
 		str = atom.get_uri();
-		node = librdf_new_node_from_uri_string(world.world(), CUC(str.c_str()));
+		node = sord_new_uri(world.world(), CUC(str.c_str()));
 		break;
 	case Atom::STRING:
 		str = atom.get_string();
 		break;
-	case Atom::DICT:
-		node = librdf_new_node(world.world());
+	case Atom::DICT: {
+		Sord::Node blank = Sord::Node::blank_id(model.world());
 		for (Atom::DictValue::const_iterator i = atom.get_dict().begin();
 				i != atom.get_dict().end(); ++i) {
-			model.add_statement(Redland::Node(world, node),
-					atom_to_node(model, i->first),
-					atom_to_node(model, i->second));
+			model.add_statement(blank,
+			                    atom_to_node(model, i->first),
+			                    atom_to_node(model, i->second));
 		}
+		node = blank.c_obj();
 		break;
+	}
 	case Atom::BLOB:
 	case Atom::NIL:
 	default:
@@ -139,9 +133,9 @@ atom_to_node(Redland::Model& model, const Atom& atom)
 	}
 
 	if (!node && str != "")
-		node = librdf_new_node_from_typed_literal(world.world(), CUC(str.c_str()), NULL, type);
+		node = sord_new_literal(world.world(), type, CUC(str.c_str()), NULL);
 
-	return Redland::Node(world, node);
+	return Sord::Node(world, node);
 }
 
 
