@@ -12,9 +12,9 @@
 using namespace std;
 using namespace Raul;
 
-static const unsigned NUM_DATA = 10;
-static const unsigned QUEUE_SIZE = 128;
-static const unsigned NUM_WRITERS = 2;
+static const unsigned NUM_DATA             = 10;
+static const unsigned QUEUE_SIZE           = 128;
+static const unsigned NUM_WRITERS          = 2;
 static const unsigned PUSHES_PER_ITERATION = 3;
 
 // Data to read/write using actions pumped through the queue
@@ -47,9 +47,6 @@ SRMWQueue<WriteAction> queue(QUEUE_SIZE);
 class WriteThread : public Thread {
 protected:
 	void _run() {
-		// Wait for everything to get ready
-		sleep(1);
-
 		while (true) {
 			for (unsigned j=0; j < PUSHES_PER_ITERATION; ++j) {
 				unsigned i = rand() % NUM_DATA;
@@ -138,8 +135,6 @@ main()
 		writers[i]->set_name(string("Writer ") + static_cast<char>('0' + i));
 		writers[i]->start();
 	}
-
-	sleep(1);
 
 	// Read
 	unsigned count = 0;

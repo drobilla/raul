@@ -39,7 +39,7 @@ main()
 {
 	EventRingBuffer rb(32);
 
-	for (size_t i = 0; i < 1000000; ++i)
+	for (size_t i = 0; i < 100000; ++i)
 		if (read_write_test(rb, i))
 			return 1;
 

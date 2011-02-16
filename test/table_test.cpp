@@ -4,6 +4,8 @@
 #include <map>
 #include <set>
 #include <sys/time.h>
+
+#include "raul/log.hpp"
 #include "raul/PathTable.hpp"
 #include "raul/Table.hpp"
 #include "raul/TableImpl.hpp"
@@ -33,6 +35,12 @@ void benchmark(size_t n);
 int
 main(int argc, char** argv)
 {
+	#define CHECK(cond) \
+	do { if (!(cond)) { \
+		error << "Test failed: " << (cond) << endl; \
+		return 1; \
+	} } while (0)
+
 	if (argc == 3 && !strcmp(argv[1], "-b")) {
 		benchmark(atoi(argv[2]));
 		return 0;
@@ -115,12 +123,12 @@ main(int argc, char** argv)
 	pt.insert(make_pair("/foo", 'a'));
 	pt.insert(make_pair("/bar", 'a'));
 	pt.insert(make_pair("/bar/baz", 'b'));
-	pt.insert(make_pair("/bar/bazz/NO", 'c'));
-	pt.insert(make_pair("/bar/baz/YEEEAH", 'c'));
-	pt.insert(make_pair("/bar/baz/YEEEAH/BOOOEEEEE", 'c'));
+	pt.insert(make_pair("/bar/bazz/ME", 'c'));
+	pt.insert(make_pair("/bar/baz/YOU", 'c'));
+	pt.insert(make_pair("/bar/baz/US", 'c'));
 	pt.insert(make_pair("/bar/buzz", 'b'));
-	pt.insert(make_pair("/bar/buzz/WHAT", 'c'));
-	pt.insert(make_pair("/bar/buzz/WHHHhhhhhAT", 'c'));
+	pt.insert(make_pair("/bar/buzz/THEM", 'c'));
+	pt.insert(make_pair("/bar/buzz/ONE", 'c'));
 	pt.insert(make_pair("/quux", 'a'));
 
 	cout << "Paths: " << endl;
@@ -134,11 +142,14 @@ main(int argc, char** argv)
 		++descendants_begin;
 
 	cout << "\nDescendants of " << descendants_begin->first << endl;
-	PathTable<char>::const_iterator descendants_end = pt.find_descendants_end(descendants_begin);
-
-	for (PathTable<char>::const_iterator i = pt.begin(); i != descendants_end; ++i)
+	PathTable<char>::const_iterator descendants_end =
+		pt.find_descendants_end(descendants_begin);
+	for (PathTable<char>::const_iterator i = descendants_begin;
+	     i != descendants_end; ++i) {
 		cout << i->first << " ";
-	cout << endl;
+		CHECK(Path::descendant_comparator(descendants_begin->first, i->first));
+	}
+	cout << endl << endl;
 
 	const Path yank_path("/bar");
 	PathTable<char>::iterator quux = pt.find(yank_path);
@@ -176,17 +187,17 @@ main(int argc, char** argv)
 		cout << i->first << " ";
 	cout << endl;
 
-	for (int i = 0; i < 1000; ++i) {
+	for (int i = 0; i < 500; ++i) {
 		Table<int, int> t;
 
-		size_t table_size = (rand() % 1000) + 1;
+		size_t table_size = (rand() % 500) + 1;
 
-		for (size_t i=0; i < table_size; ++i) {
+		for (size_t i = 0; i < table_size; ++i) {
 			int val = rand()%100;
 			t.insert(make_pair(val, ((val + 3) * 17)));
 		}
 
-		for (size_t i=0; i < table_size; ++i) {
+		for (size_t i = 0; i < table_size; ++i) {
 			int val = rand()%100;
 			Table<int, int>::iterator iter = t.find(val);
 			assert(iter == t.end() || iter->second == (val + 3) * 17);
