@@ -113,7 +113,9 @@ public:
 	static std::string pathify(const std::basic_string<char>& str);
 	static std::string nameify(const std::basic_string<char>& str);
 
-	static void replace_invalid_chars(std::string& str, size_t start, bool replace_slash = false);
+	static void replace_invalid_chars(std::string& str,
+	                                  size_t       start,
+	                                  bool         replace_slash = false);
 
 	bool is_root() const { return (*this) == root(); }
 
@@ -164,13 +166,11 @@ public:
 		}
 	}
 
-
 	/** Return the path's child with the given name (symbol)
 	 */
 	inline Path child(const Raul::Symbol& symbol) const {
 		return base() + symbol.c_str();
 	}
-
 
 	/** Return path relative to some base path (chop prefix)
 	 */
@@ -178,11 +178,10 @@ public:
 		if ((*this) == base) {
 			return "/";
 		} else {
-			assert(length() > base.length());
-			return substr(base.length() - 1);
+			assert(length() > base.base().length());
+			return substr(base.base().length() - 1);
 		}
 	}
-
 
 	/** Return path with a trailing "/".
 	 *
@@ -205,7 +204,6 @@ public:
 	inline const std::string base_no_scheme() const {
 		return base().substr(find(":") + 1);
 	}
-
 
 	/** Return true if \a child is equal to, or a descendant of \a parent */
 	static bool descendant_comparator(const Path& parent, const Path& child) {
