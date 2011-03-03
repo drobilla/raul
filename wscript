@@ -70,7 +70,7 @@ def configure(conf):
 	autowaf.check_header(conf, 'boost/utility.hpp', mandatory=True)
 	
 	autowaf.display_msg(conf, "Unit tests", str(conf.env['BUILD_TESTS']))
-	print
+	print()
 	
 tests = '''
 	test/atom_test
