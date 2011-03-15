@@ -1,7 +1,8 @@
 #!/usr/bin/env python
-import autowaf
-import Options
 import os
+
+from waflib.extras import autowaf as autowaf
+import waflib.Options as Options
 
 # Version of this package (even if built as a child)
 RAUL_VERSION = '0.8.0'
@@ -45,7 +46,7 @@ def options(opt):
 def configure(conf):
 	autowaf.configure(conf)
 	autowaf.display_header('Raul Configuration')
-	conf.check_tool('compiler_cxx')
+	conf.load('compiler_cxx')
 	autowaf.check_pkg(conf, 'glib-2.0', atleast_version='2.2',
 					  uselib_store='GLIB', mandatory=True)
 	autowaf.check_pkg(conf, 'gthread-2.0', atleast_version='2.14.0',
