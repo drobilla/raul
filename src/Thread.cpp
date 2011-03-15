@@ -108,7 +108,7 @@ Thread::stop()
 			pthread_cancel(_pthread);
 			pthread_join(_pthread, NULL);
 		}
-		_pthread = NULL;
+		_pthread = 0;
 		_pthread_exists = false;
 		LOG(info) << "Exiting thread" << endl;
 	}
