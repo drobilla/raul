@@ -1,10 +1,10 @@
 /* Definitions to ease working with raw MIDI.
- * Copyright (C) 2005-2011 David Robillard <http://drobilla.net>
+ * Copyright 2005-2011 David Robillard <http://drobilla.net>
  *
  * Adapted from ALSA's asounddef.h
- * Copyright (C) 1998-2001 Jaroslav Kysela <perex@perex.cz>
- *                         Abramo Bagnara <abramo@alsa-project.org>
- *                         Takashi Iwai <tiwai@suse.de>
+ * Copyright 1998-2001 Jaroslav Kysela <perex@perex.cz>
+ *                     Abramo Bagnara <abramo@alsa-project.org>
+ *                     Takashi Iwai <tiwai@suse.de>
  *
  * This library is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
