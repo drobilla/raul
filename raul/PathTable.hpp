@@ -24,7 +24,7 @@
 namespace Raul {
 
 /** Table of Paths.
- * \ingroup raul 
+ * \ingroup raul
  */
 template <typename T>
 class PathTable : public Table<Path, T> {

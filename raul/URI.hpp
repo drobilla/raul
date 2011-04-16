@@ -32,7 +32,7 @@ namespace Raul {
  *
  * This "should" be used for proper URIs (RFC3986), but not much support or
  * validation is built-in yet.  The URI string MUST have a scheme though.
- * \ingroup raul 
+ * \ingroup raul
  */
 class URI {
 public:

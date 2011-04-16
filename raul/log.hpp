@@ -25,7 +25,7 @@
 namespace Raul {
 
 /** Buffer for (possibly coloured) log printing.
- * \ingroup raul 
+ * \ingroup raul
  */
 class LogBuffer : public std::streambuf
 {

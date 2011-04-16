@@ -24,7 +24,7 @@
 namespace Raul {
 
 /** Quantizer.
- * \ingroup raul 
+ * \ingroup raul
  */
 class Quantizer {
 public:

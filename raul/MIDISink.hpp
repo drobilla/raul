@@ -26,7 +26,7 @@ namespace Raul {
 
 
 /** Pure virtual base for anything you can write MIDI to.
- * \ingroup raul 
+ * \ingroup raul
  */
 class MIDISink : public Deletable {
 public:

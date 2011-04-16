@@ -28,7 +28,7 @@ namespace Raul {
 
 
 /** A type of time stamp
- * \ingroup raul 
+ * \ingroup raul
  */
 class TimeUnit {
 public:

@@ -35,7 +35,7 @@ namespace Raul {
 /** A lock-free RingBuffer.
  * Read/Write realtime safe.
  * Single-reader Single-writer thread safe.
- * \ingroup raul 
+ * \ingroup raul
  */
 class RingBuffer {
 public:

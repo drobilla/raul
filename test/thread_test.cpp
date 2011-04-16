@@ -20,7 +20,7 @@ private:
 
 	Semaphore& _sem;
 };
-		
+
 int
 main()
 {
@@ -28,7 +28,7 @@ main()
 
 	Thread& this_thread = Thread::get();
 	this_thread.set_name("Main");
-	
+
 	Semaphore sem(0);
 	Waiter waiter(sem);
 	waiter.start();

@@ -36,7 +36,7 @@ namespace Raul {
  * This has the advantage over std::map that iterating over the collection
  * is fast and sorted.  Possibly also faster in some situations due to all
  * data being in a single chunk of memory, cache optimized, etc.
- * \ingroup raul 
+ * \ingroup raul
  */
 template <typename K, typename T>
 class Table : public boost::noncopyable {
