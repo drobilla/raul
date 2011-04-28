@@ -78,8 +78,8 @@ atom_to_node(Sord::Model& model, const Atom& atom)
 
 	std::ostringstream os;
 	std::string        str;
-	SordNode           type = NULL;
-	SordNode           node = NULL;
+	SordNode*          type = NULL;
+	SordNode*          node = NULL;
 
 	switch (atom.type()) {
 	case Atom::INT:
