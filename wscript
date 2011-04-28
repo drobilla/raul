@@ -122,6 +122,7 @@ def build(bld):
     obj.name            = 'libraul'
     obj.target          = 'raul'
     obj.uselib          = 'GLIB GTHREAD'
+    obj.linkflags       = ['-lpthread']
     obj.framework       = framework
     obj.install_path    = '${LIBDIR}'
     obj.vnum            = RAUL_LIB_VERSION

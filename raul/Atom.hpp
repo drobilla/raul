@@ -57,9 +57,9 @@ public:
 	Atom(int32_t val)     : _type(INT),    _int_val(val)            {}
 	Atom(float val)       : _type(FLOAT),  _float_val(val)          {}
 	Atom(bool val)        : _type(BOOL),   _bool_val(val)           {}
-	Atom(const char* val) : _type(STRING), _string_val(strdup(val)) {}
+	Atom(const char* val) : _type(STRING), _string_val(g_strdup(val)) {}
 
-	Atom(const std::string& val) : _type(STRING), _string_val(strdup(val.c_str())) {}
+	Atom(const std::string& val) : _type(STRING), _string_val(g_strdup(val.c_str())) {}
 
 	/** URI constructor (@a t must be URI) */
 	Atom(Type t, const std::string& val) : _type(t), _string_val(g_intern_string(val.c_str())) {
@@ -83,7 +83,7 @@ public:
 		case FLOAT:  _float_val  = copy._float_val;                break;
 		case BOOL:   _bool_val   = copy._bool_val;                 break;
 		case URI:    _string_val = copy._string_val;               break;
-		case STRING: _string_val = strdup(copy._string_val);       break;
+		case STRING: _string_val = g_strdup(copy._string_val);     break;
 		case BLOB:   _blob_val   = new BlobValue(*copy._blob_val); break;
 		case DICT:   _dict_val   = new DictValue(*copy._dict_val); break;
 		}
@@ -99,7 +99,7 @@ public:
 		case FLOAT:  _float_val  = other._float_val;                break;
 		case BOOL:   _bool_val   = other._bool_val;                 break;
 		case URI:    _string_val = other._string_val;               break;
-		case STRING: _string_val = strdup(other._string_val);       break;
+		case STRING: _string_val = g_strdup(other._string_val);     break;
 		case BLOB:   _blob_val   = new BlobValue(*other._blob_val); break;
 		case DICT:   _dict_val   = new DictValue(*other._dict_val); break;
 		}
@@ -187,7 +187,7 @@ private:
 	inline void dealloc() {
 		switch (_type) {
 		case STRING:
-			free(const_cast<char*>(_string_val));
+			g_free(const_cast<char*>(_string_val));
 			break;
 		case BLOB:
 			delete _blob_val;
