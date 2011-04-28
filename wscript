@@ -77,7 +77,6 @@ tests = '''
         test/atom_test
         test/atomic_test
         test/list_test
-        test/midi_ringbuffer_test
         test/path_test
         test/quantize_test
         test/queue_test
