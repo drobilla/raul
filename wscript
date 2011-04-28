@@ -96,7 +96,8 @@ def build(bld):
     dict = {'RAUL_PC_LIBS': ' '}
     if Options.platform == 'darwin':
         dict = {'RAUL_PC_LIBS': '-framework CoreServices'}
-    autowaf.build_pc(bld, 'RAUL', RAUL_VERSION, 'GLIB GTHREAD', subst_dict=dict)
+    autowaf.build_pc(bld, 'RAUL', RAUL_VERSION, '',
+                     'GLIB GTHREAD', subst_dict=dict)
 
     lib_source = '''
             src/Configuration.cpp
