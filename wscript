@@ -45,6 +45,7 @@ def options(opt):
 
 def configure(conf):
     autowaf.configure(conf)
+    conf.line_just = 40
     autowaf.display_header('Raul Configuration')
     conf.load('compiler_cxx')
     autowaf.check_pkg(conf, 'glib-2.0', atleast_version='2.2',
