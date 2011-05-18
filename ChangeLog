@@ -1,3 +1,13 @@
+raul (UNRELEASED) unstable, urgency=low
+
+  * Remove EventRingBuffer
+  * Use Sord instead of Redlandmm for AtomRDF
+  * Add INSTALL file
+  * Improve RingBuffer
+  * Improve test suite
+
+  -- David Robillard <d@drobilla.net>  UNRELEASED=
+
 raul (0.8.0) unstable, urgency=low
 
   * Implement Semaphore for Darwin
