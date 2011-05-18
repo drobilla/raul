@@ -237,7 +237,6 @@ private:
 	};
 };
 
-
 } // namespace Raul
 
 static inline std::ostream& operator<<(std::ostream& os, const Raul::Atom& atom)

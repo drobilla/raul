@@ -22,7 +22,6 @@
 
 namespace Raul {
 
-
 /** Atomic pointer.
  * \ingroup raul
  */
@@ -49,7 +48,6 @@ public:
 private:
 	mutable volatile gpointer _val;
 };
-
 
 } // namespace Raul
 

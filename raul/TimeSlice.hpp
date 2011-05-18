@@ -27,7 +27,6 @@
 
 namespace Raul {
 
-
 /* FIXME: all the conversion here is wrong now */
 
 /** A duration of time, with conversion between tick time and beat time.
@@ -153,7 +152,6 @@ private:
 
 	TimeDuration _offset_ticks; ///< Offset to global time (ie Jack sub-cycle offset)
 };
-
 
 } // namespace Raul
 

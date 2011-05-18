@@ -26,7 +26,6 @@
 
 namespace Raul {
 
-
 /** A type of time stamp
  * \ingroup raul
  */
@@ -66,7 +65,6 @@ private:
 	Type     _type;
 	uint32_t _ppt;
 };
-
 
 /** A real-time time stamp (possible units: frame, absolute (s), or beat).
  *
@@ -194,7 +192,6 @@ private:
 	TimeUnit _unit;
 };
 
-
 static inline std::ostream&
 operator<<(std::ostream& os, const TimeStamp& t)
 {
@@ -213,14 +210,12 @@ operator<<(std::ostream& os, const TimeStamp& t)
 	return os;
 }
 
-
 class FrameStamp : public TimeStamp {
 public:
 	inline FrameStamp(uint32_t rate, uint32_t ticks=0, uint32_t subticks=0)
 		: TimeStamp(TimeUnit(TimeUnit::FRAMES, rate), ticks, subticks)
 	{}
 };
-
 
 class BeatStamp : public TimeStamp {
 public:
@@ -229,11 +224,9 @@ public:
 	{}
 };
 
-
 /** Same thing as TimeStamp really, but makes code clearer and enforces
  * correct semantics via type safety */
 typedef TimeStamp TimeDuration;
-
 
 } // namespace Raul
 

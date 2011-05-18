@@ -27,7 +27,6 @@ namespace Raul {
 extern "C" {
 #endif
 
-
 /** Pass this a symbol defined in midi_events.h (e.g. MIDI_CTL_PAN) to get the
  * short name of a MIDI event/controller according to General MIDI.
  * \ingroup midi
@@ -227,11 +226,9 @@ inline static const char* midi_name(uint8_t status)
 	}
 }
 
-
 #ifdef __cplusplus
 } // extern "C"
 } // namespace Raul
 #endif
-
 
 #endif /* RAUL_MIDI_NAMES_H */

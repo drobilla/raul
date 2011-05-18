@@ -4,7 +4,6 @@
 using namespace std;
 using namespace Raul;
 
-
 int
 main()
 {

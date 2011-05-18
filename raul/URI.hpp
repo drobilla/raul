@@ -27,7 +27,6 @@
 
 namespace Raul {
 
-
 /** Simple wrapper around standard string with useful URI-specific methods.
  *
  * This "should" be used for proper URIs (RFC3986), but not much support or

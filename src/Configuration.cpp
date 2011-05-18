@@ -25,7 +25,6 @@ using std::string;
 
 namespace Raul {
 
-
 /** Add a configuration option.
  *
  * @param name Long name (without leading "--")
@@ -50,7 +49,6 @@ Configuration::add(
 	return *this;
 }
 
-
 void
 Configuration::print_usage(const std::string& program, std::ostream& os)
 {
@@ -70,7 +68,6 @@ Configuration::print_usage(const std::string& program, std::ostream& os)
 		os << option.desc << endl;
 	}
 }
-
 
 int
 Configuration::set_value_from_string(Configuration::Option& option, const std::string& value)
@@ -96,7 +93,6 @@ Configuration::set_value_from_string(Configuration::Option& option, const std::s
 	}
 	return EXIT_SUCCESS;
 }
-
 
 /** Parse command line arguments. */
 void
@@ -144,7 +140,6 @@ Configuration::parse(int argc, char** argv) throw (Configuration::CommandLineErr
 	}
 }
 
-
 void
 Configuration::print(std::ostream& os, const std::string mime_type) const
 {
@@ -153,7 +148,6 @@ Configuration::print(std::ostream& os, const std::string mime_type) const
 		os << o->first << " = " << option.value << endl;
 	}
 }
-
 
 const Raul::Atom&
 Configuration::option(const std::string& long_name)

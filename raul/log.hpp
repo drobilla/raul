@@ -78,7 +78,6 @@ private:
 	std::ostream& _out;
 };
 
-
 class NullBuffer : public std::streambuf
 {
 protected:
@@ -86,12 +85,10 @@ protected:
 	int      sync()               { return 0; }
 };
 
-
 extern std::ostream info;
 extern std::ostream warn;
 extern std::ostream error;
 extern std::ostream debug;
-
 
 } // namespace Raul
 

@@ -51,7 +51,6 @@ std::ostream warn(&warn_buffer);
 std::ostream error(&error_buffer);
 std::ostream debug(&debug_buffer);
 
-
 std::string
 Raul::LogBuffer::colour(Colour c)
 {
@@ -60,13 +59,11 @@ Raul::LogBuffer::colour(Colour c)
 	return ss.str();
 }
 
-
 std::string
 Raul::LogBuffer::plain()
 {
 	return "\033[0m";
 }
-
 
 void
 Raul::LogBuffer::emit()
@@ -82,6 +79,5 @@ Raul::LogBuffer::emit()
 	_out << std::endl;
 	_line.clear();
 }
-
 
 } // namespace Raul

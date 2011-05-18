@@ -20,13 +20,11 @@
 
 namespace Raul {
 
-
 template <typename T>
 List<T>::~List<T>()
 {
 	clear();
 }
-
 
 /** Clear the list, deleting all Nodes contained (but NOT their contents!)
  *
@@ -49,7 +47,6 @@ List<T>::clear()
 	_tail = 0;
 	_size = 0;
 }
-
 
 /** Add an element to the list.
  *
@@ -75,7 +72,6 @@ List<T>::push_back(Node* const ln)
 	}
 	++_size;
 }
-
 
 /** Add an element to the list.
  *
@@ -103,7 +99,6 @@ List<T>::push_back(T& elem)
 	}
 	++_size;
 }
-
 
 /** Append a list to this list.
  *
@@ -148,7 +143,6 @@ List<T>::append(List<T>& list)
 	list._size = 0;
 }
 
-
 /** Find an element in the list.
  *
  * This will return the first element equal to @a val found in the list.
@@ -163,7 +157,6 @@ List<T>::find(const T& val)
 
 	return end();
 }
-
 
 /** Remove an element from the list using an iterator.
  *
@@ -205,7 +198,6 @@ List<T>::erase(const iterator iter)
 	return n;
 }
 
-
 template <typename T>
 void
 List<T>::chop_front(List<T>& front, size_t front_size, Node* front_tail)
@@ -231,7 +223,6 @@ List<T>::chop_front(List<T>& front, size_t front_size, Node* front_tail)
 	assert((_head.get() && _tail.get()) || (!_head.get() && !_tail.get()));
 }
 
-
 //// Iterator stuff ////
 
 template <typename T>
@@ -241,7 +232,6 @@ List<T>::iterator::iterator(List<T>* list)
 {
 }
 
-
 template <typename T>
 T&
 List<T>::iterator::operator*()
@@ -250,7 +240,6 @@ List<T>::iterator::operator*()
 	return _listnode->elem();
 }
 
-
 template <typename T>
 T*
 List<T>::iterator::operator->()
@@ -258,7 +247,6 @@ List<T>::iterator::operator->()
 	assert(_listnode);
 	return &_listnode->elem();
 }
-
 
 template <typename T>
 inline typename List<T>::iterator&
@@ -270,14 +258,12 @@ List<T>::iterator::operator++()
 	return *this;
 }
 
-
 template <typename T>
 inline bool
 List<T>::iterator::operator!=(const iterator& iter) const
 {
 	return (_listnode != iter._listnode);
 }
-
 
 template <typename T>
 inline bool
@@ -286,7 +272,6 @@ List<T>::iterator::operator!=(const const_iterator& iter) const
 	return (_listnode != iter._listnode);
 }
 
-
 template <typename T>
 inline bool
 List<T>::iterator::operator==(const iterator& iter) const
@@ -294,14 +279,12 @@ List<T>::iterator::operator==(const iterator& iter) const
 	return (_listnode == iter._listnode);
 }
 
-
 template <typename T>
 inline bool
 List<T>::iterator::operator==(const const_iterator& iter) const
 {
 	return (_listnode == iter._listnode);
 }
-
 
 template <typename T>
 inline typename List<T>::iterator
@@ -314,7 +297,6 @@ List<T>::begin()
 	return iter;
 }
 
-
 template <typename T>
 inline const typename List<T>::iterator
 List<T>::end() const
@@ -322,10 +304,7 @@ List<T>::end() const
 	return _end_iter;
 }
 
-
-
 /// const_iterator stuff ///
-
 
 template <typename T>
 List<T>::const_iterator::const_iterator(const List<T>* const list)
@@ -333,7 +312,6 @@ List<T>::const_iterator::const_iterator(const List<T>* const list)
   _listnode(NULL)
 {
 }
-
 
 template <typename T>
 const T&
@@ -343,7 +321,6 @@ List<T>::const_iterator::operator*()
 	return _listnode->elem();
 }
 
-
 template <typename T>
 const T*
 List<T>::const_iterator::operator->()
@@ -351,7 +328,6 @@ List<T>::const_iterator::operator->()
 	assert(_listnode);
 	return &_listnode->elem();
 }
-
 
 template <typename T>
 inline typename List<T>::const_iterator&
@@ -363,14 +339,12 @@ List<T>::const_iterator::operator++()
 	return *this;
 }
 
-
 template <typename T>
 inline bool
 List<T>::const_iterator::operator!=(const const_iterator& iter) const
 {
 	return (_listnode != iter._listnode);
 }
-
 
 template <typename T>
 inline bool
@@ -379,14 +353,12 @@ List<T>::const_iterator::operator!=(const iterator& iter) const
 	return (_listnode != iter._listnode);
 }
 
-
 template <typename T>
 inline bool
 List<T>::const_iterator::operator==(const const_iterator& iter) const
 {
 	return (_listnode == iter._listnode);
 }
-
 
 template <typename T>
 inline bool
@@ -404,8 +376,6 @@ List<T>::begin() const
 	return iter;
 }
 
-
 } // namespace Raul
-
 
 #endif // RAUL_LIST_IMPL_HPP

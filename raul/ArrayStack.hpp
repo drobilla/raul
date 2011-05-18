@@ -27,7 +27,6 @@
 
 namespace Raul {
 
-
 /** An array that can also be used as a stack (with a fixed maximum size).
  * \ingroup raul
  */
@@ -69,7 +68,6 @@ public:
 private:
 	size_t _top; // Index of empty element following the top element
 };
-
 
 } // namespace Raul
 

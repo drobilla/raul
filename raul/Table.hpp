@@ -30,7 +30,6 @@
 
 namespace Raul {
 
-
 /** Slow insertion, fast lookup, cache optimized, super fast sorted iteration.
  *
  * This has the advantage over std::map that iterating over the collection
@@ -119,7 +118,6 @@ private:
 
 	std::vector<Entry> _entries;
 };
-
 
 } // namespace Raul
 

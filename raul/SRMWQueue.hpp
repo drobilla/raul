@@ -28,7 +28,6 @@
 
 namespace Raul {
 
-
 /** Realtime-safe single-reader multi-writer queue (aka lock-free ringbuffer)
  *
  * Implemented as a dequeue in a fixed array.  Both push and pop are realtime
@@ -57,17 +56,14 @@ public:
 	explicit SRMWQueue(size_t size);
 	~SRMWQueue();
 
-
 	// Any thread:
 
 	inline size_t capacity() const { return _size-1; }
-
 
 	// Write thread(s):
 
 	inline bool full() const;
 	inline bool push(const T& obj);
-
 
 	// Read thread:
 
@@ -89,7 +85,6 @@ private:
 	AtomicInt* const _valid; ///< Parallel array to _objects, whether loc is written or not
 };
 
-
 template<typename T>
 SRMWQueue<T>::SRMWQueue(size_t size)
 	: _front(0)
@@ -108,13 +103,11 @@ SRMWQueue<T>::SRMWQueue(size_t size)
 	}
 }
 
-
 template <typename T>
 SRMWQueue<T>::~SRMWQueue()
 {
 	free(_objects);
 }
-
 
 /** Return whether the queue is full.
  *
@@ -126,7 +119,6 @@ SRMWQueue<T>::full() const
 {
 	return (_write_space.get() <= 0);
 }
-
 
 /** Push an item onto the back of the SRMWQueue - realtime-safe, not thread-safe.
  *
@@ -169,7 +161,6 @@ SRMWQueue<T>::push(const T& elem)
 	}
 }
 
-
 /** Return whether the queue is empty.
  *
  * Read thread only.
@@ -180,7 +171,6 @@ SRMWQueue<T>::empty() const
 {
 	return (_valid[_front].get() == 0);
 }
-
 
 /** Return the element at the front of the queue without removing it.
  *
@@ -193,7 +183,6 @@ SRMWQueue<T>::front() const
 {
 	return _objects[_front];
 }
-
 
 /** Pop an item off the front of the queue - realtime-safe, NOT thread-safe.
  *
@@ -216,7 +205,6 @@ SRMWQueue<T>::pop()
 	else
 		++_write_space;
 }
-
 
 } // namespace Raul
 

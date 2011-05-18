@@ -29,7 +29,6 @@
 
 namespace Raul {
 
-
 /** A realtime safe, (partially) thread safe doubly-linked list.
  *
  * Elements can be added safely while another thread is reading the list.
@@ -70,7 +69,6 @@ public:
 		AtomicPtr<Node> _prev;
 		AtomicPtr<Node> _next;
 	};
-
 
 	List(size_t size=0, Node* head=NULL, Node* tail=NULL)
 		: _size(size)
@@ -125,7 +123,6 @@ public:
 		const typename List<T>::Node* _listnode;
 	};
 
-
 	/** Realtime safe iterator for a List. */
 	class iterator {
 	public:
@@ -170,7 +167,6 @@ private:
 	iterator        _end_iter;
 	const_iterator  _const_end_iter;
 };
-
 
 } // namespace Raul
 

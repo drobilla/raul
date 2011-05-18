@@ -29,7 +29,6 @@
 
 namespace Raul {
 
-
 /** A URI which is a path (for example a filesystem or OSC path).
  *
  * This enforces that a Path is a valid path, where each fragment is a valid
@@ -215,7 +214,6 @@ public:
 private:
 	inline Path(bool unchecked, const URI& uri) : URI(uri) {}
 };
-
 
 } // namespace Raul
 

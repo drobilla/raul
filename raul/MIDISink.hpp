@@ -24,7 +24,6 @@
 
 namespace Raul {
 
-
 /** Pure virtual base for anything you can write MIDI to.
  * \ingroup raul
  */
@@ -34,7 +33,6 @@ public:
 	                         size_t         ev_size,
 	                         const uint8_t* ev) = 0;
 };
-
 
 } // namespace Raul
 

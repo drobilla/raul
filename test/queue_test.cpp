@@ -27,7 +27,6 @@ struct Record {
 
 Record data[NUM_DATA];
 
-
 // Actions pumped through the queue to manipulate data
 struct WriteAction {
 	WriteAction(unsigned idx) : index(idx) {}
@@ -39,10 +38,8 @@ struct WriteAction {
 	unsigned index;
 };
 
-
 // The victim
 SRMWQueue<WriteAction> queue(QUEUE_SIZE);
-
 
 class WriteThread : public Thread {
 protected:
@@ -67,7 +64,6 @@ protected:
 	}
 };
 
-
 // Returns 0 if all read count/write count pairs are equal,
 // otherwise how far off total count was
 unsigned
@@ -82,7 +78,6 @@ data_is_sane()
 	return ret;
 }
 
-
 void
 dump_data()
 {
@@ -95,7 +90,6 @@ dump_data()
 			cout << "\t FAIL" << endl;
 	}
 }
-
 
 int
 main()
@@ -177,7 +171,6 @@ main()
 	if (leftovers > 0)
 		cout << "Processed " << leftovers << " leftovers." << endl;
 
-
 	//cout << "\n\n*********************************************\n\n";
 
 	cout << "Total processed: " << total_processed << endl;
@@ -185,7 +178,6 @@ main()
 		cout << "(Counter had to wrap)" << endl;
 	else
 		cout << "(Counter did NOT have to wrap)" << endl;
-
 
 	const unsigned diff = data_is_sane();
 
@@ -200,7 +192,6 @@ main()
 
 	return 0;
 }
-
 
 #if 0
 int main()

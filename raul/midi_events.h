@@ -25,13 +25,11 @@
 #ifndef RAUL_MIDI_EVENTS_H
 #define RAUL_MIDI_EVENTS_H
 
-
 /**
  * \defgroup midi MIDI Definitions
  * MIDI command and controller number definitions.
  * \{
  */
-
 
 // Controllers
 #define MIDI_CTL_MSB_BANK               0x00 /**< Bank Selection */
@@ -130,7 +128,6 @@
 #define MIDI_CMD_COMMON_RESET           0xFF /**< Reset */
 
 //@}
-
 
 /** \} */
 

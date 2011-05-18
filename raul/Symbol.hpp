@@ -28,7 +28,6 @@
 
 namespace Raul {
 
-
 /** A restricted string (C identifier, which is a component of a Path).
  *
  * A Symbol is a very restricted string suitable for use as an identifier.
@@ -52,7 +51,6 @@ public:
 	{
 		assert(is_valid(symbol));
 	}
-
 
 	/** Construct a Symbol from a C string.
 	 *
@@ -86,7 +84,6 @@ public:
 private:
 	const char* _str;
 };
-
 
 } // namespace Raul
 

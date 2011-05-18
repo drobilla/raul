@@ -7,7 +7,6 @@
 using namespace std;
 using namespace Raul;
 
-
 int
 main(int argc, char** argv)
 {
@@ -29,7 +28,6 @@ main(int argc, char** argv)
 	} else {
 		filename = argv[1];
 	}
-
 
 	SMFReader reader;
 	bool opened = reader.open(filename);

@@ -22,7 +22,6 @@
 
 namespace Raul {
 
-
 /** Atomic integer.
  * \ingroup raul
  */
@@ -79,7 +78,6 @@ public:
 private:
 	volatile mutable int _val;
 };
-
 
 } // namespace Raul
 

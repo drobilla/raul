@@ -138,7 +138,6 @@ atom_to_node(Sord::Model& model, const Atom& atom)
 	return Sord::Node(world, node);
 }
 
-
 } // namespace AtomRDF
 } // namespace Raul
 

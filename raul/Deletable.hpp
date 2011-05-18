@@ -20,7 +20,6 @@
 
 namespace Raul {
 
-
 /** Something with a virtual destructor.
  *
  * \ingroup raul
@@ -31,7 +30,6 @@ public:
 	Deletable()          {}
 	virtual ~Deletable() {}
 };
-
 
 } // namespace Raul
 

@@ -26,7 +26,6 @@
 
 namespace Raul {
 
-
 /** Standard Midi File (Type 0) Writer
  * \ingroup raul
  */
@@ -66,7 +65,6 @@ protected:
 	uint32_t        _track_size;
 	uint32_t        _header_size; ///< size of SMF header, including MTrk chunk header
 };
-
 
 } // namespace Raul
 

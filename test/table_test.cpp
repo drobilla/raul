@@ -224,7 +224,6 @@ random_string()
 	return ret;
 }
 
-
 void
 benchmark(size_t n)
 {
@@ -245,7 +244,6 @@ benchmark(size_t n)
 	timeval t2;
 	t2.tv_sec=0;
 	t2.tv_usec=0;
-
 
 	/** std::map **/
 
@@ -273,7 +271,6 @@ benchmark(size_t n)
 
 	cout << "std::map time to lookup " << n << " values: \t" << delta_t << endl;
 
-
 	/** std::set **/
 
 	std::set<std::string> s;
@@ -299,7 +296,6 @@ benchmark(size_t n)
 	delta_t = (t2.tv_sec - t1.tv_sec) + (t2.tv_usec - t1.tv_usec) * 0.000001f;
 
 	cout << "std::set time to lookup " << n << " values: \t" << delta_t << endl;
-
 
 	/** sorted std::vector **/
 
@@ -329,7 +325,6 @@ benchmark(size_t n)
 
 	cout << "std::vector (sorted) time to lookup " << n << " values: \t" << delta_t << endl;*/
 
-
 	/** Raul::Table **/
 
 	Raul::Table<string,int> t(n);
@@ -355,7 +350,6 @@ benchmark(size_t n)
 	delta_t = (t2.tv_sec - t1.tv_sec) + (t2.tv_usec - t1.tv_usec) * 0.000001f;
 
 	cout << "Raul::Table time to lookup " << n << " values: \t" << delta_t << endl;
-
 
 #ifdef WITH_TR1
 	/** boost::hash && std::unordered_map **/

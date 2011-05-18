@@ -28,7 +28,6 @@
 
 namespace Raul {
 
-
 /** Abstract base class for a thread.
  *
  * Extend this and override the _run method to easily create a thread
@@ -103,7 +102,6 @@ private:
 	bool               _own_thread;
 	pthread_t          _pthread;
 };
-
 
 } // namespace Raul
 

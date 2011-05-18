@@ -31,7 +31,6 @@
 
 namespace Raul {
 
-
 /** A child process.
  *
  * \ingroup raul
@@ -90,7 +89,6 @@ public:
 private:
 	Process() {}
 };
-
 
 } // namespace Raul
 

@@ -30,7 +30,6 @@ using std::endl;
 
 namespace Raul {
 
-
 /** Return the size of the given event NOT including the status byte,
  * or -1 if unknown (eg sysex)
  */
@@ -73,7 +72,6 @@ midi_event_size(unsigned char status)
 	return -1;
 }
 
-
 SMFReader::SMFReader(const std::string filename)
 	: _fd(NULL)
 	, _ppqn(0)
@@ -84,13 +82,11 @@ SMFReader::SMFReader(const std::string filename)
 		open(filename);
 }
 
-
 SMFReader::~SMFReader()
 {
 	if (_fd)
 		close();
 }
-
 
 bool
 SMFReader::open(const std::string& filename) throw (std::logic_error, UnsupportedTime)
@@ -143,7 +139,6 @@ SMFReader::open(const std::string& filename) throw (std::logic_error, Unsupporte
 	}
 }
 
-
 /** Seek to the start of a given track, starting from 1.
  * Returns true if specified track was found.
  */
@@ -190,7 +185,6 @@ SMFReader::seek_to_track(unsigned track) throw (std::logic_error)
 		return false;
 	}
 }
-
 
 /** Read an event from the current position in file.
  *
@@ -284,7 +278,6 @@ SMFReader::read_event(size_t    buf_len,
 	}
 }
 
-
 void
 SMFReader::close()
 {
@@ -293,7 +286,6 @@ SMFReader::close()
 
 	_fd = NULL;
 }
-
 
 uint32_t
 SMFReader::read_var_len(FILE* fd) throw (PrematureEOF)
@@ -315,7 +307,6 @@ SMFReader::read_var_len(FILE* fd) throw (PrematureEOF)
 
 	return value;
 }
-
 
 } // namespace Raul
 

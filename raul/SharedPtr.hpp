@@ -40,7 +40,6 @@ namespace boost {
 }
 #endif // BOOST_SP_ENABLE_DEBUG_HOOKS
 
-
 #include <boost/shared_ptr.hpp>
 
 #ifdef BOOST_AC_USE_PTHREADS

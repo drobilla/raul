@@ -31,7 +31,6 @@ namespace Raul {
 pthread_once_t Thread::_thread_key_once = PTHREAD_ONCE_INIT;
 pthread_key_t  Thread::_thread_key;
 
-
 Thread::Thread(const std::string& name)
 	: _exit_flag(false)
 	, _name(name)
@@ -41,7 +40,6 @@ Thread::Thread(const std::string& name)
 	pthread_once(&_thread_key_once, thread_key_alloc);
 	pthread_setspecific(_thread_key, this);
 }
-
 
 /** Must be called from thread */
 Thread::Thread(pthread_t thread, const std::string& name)
@@ -54,7 +52,6 @@ Thread::Thread(pthread_t thread, const std::string& name)
 	pthread_once(&_thread_key_once, thread_key_alloc);
 	pthread_setspecific(_thread_key, this);
 }
-
 
 /** Return the calling thread.
  * The return value of this should NOT be cached unless the thread is
@@ -70,7 +67,6 @@ Thread::get()
 	return *this_thread;
 }
 
-
 void*
 Thread::_static_run(void* thread)
 {
@@ -80,7 +76,6 @@ Thread::_static_run(void* thread)
 	me->_pthread_exists = false;
 	return NULL;
 }
-
 
 /** Launch and start the thread. */
 void
@@ -139,7 +134,6 @@ Thread::set_scheduling(int policy, unsigned int priority)
 			<< strerror(result) << ")" << endl;
 	}
 }
-
 
 } // namespace Raul
 

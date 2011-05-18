@@ -21,12 +21,10 @@
 
 namespace Raul {
 
-
 Maid::Maid(size_t size)
 	: _objects(size)
 {
 }
-
 
 Maid::~Maid()
 {
@@ -43,7 +41,6 @@ Maid::manage(SharedPtr<Raul::Deletable> ptr)
 	if (ptr)
 		_managed.push_back(new Raul::List<SharedPtr<Raul::Deletable> >::Node(ptr));
 }
-
 
 /** Free all the objects in the queue (passed by push()).
  */
@@ -69,6 +66,5 @@ Maid::cleanup()
 	}
 
 }
-
 
 } // namespace Raul

@@ -25,7 +25,6 @@
 
 namespace Raul {
 
-
 /** An array.
  *
  * Has a stack-like push_back(), but is NOT a resizeable array (the size given
@@ -100,7 +99,6 @@ private:
 	size_t _size;
 	T*     _elems;
 };
-
 
 } // namespace Raul
 

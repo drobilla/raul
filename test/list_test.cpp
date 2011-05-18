@@ -124,7 +124,6 @@ main()
 			CHECK(*i == idx + 1);
 	}
 
-
 	// Appending an empty list
 	l2.clear();
 	l.append(l2);

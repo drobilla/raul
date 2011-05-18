@@ -32,7 +32,6 @@ using std::endl;
 
 namespace Raul {
 
-
 /** Create a new SMF writer.
  *
  * @a unit must match the time stamp of ALL events passed to write, or
@@ -52,13 +51,11 @@ SMFWriter::SMFWriter(TimeUnit unit)
 		assert(unit.ppt() < std::numeric_limits<uint16_t>::max());
 }
 
-
 SMFWriter::~SMFWriter()
 {
 	if (_fd)
 		finish();
 }
-
 
 /** Start a write to an SMF file.
  *
@@ -88,7 +85,6 @@ SMFWriter::start(const std::string& filename,
 
 	return (_fd == 0) ? -1 : 0;
 }
-
 
 /** Write an event at the end of the file.
  *
@@ -136,14 +132,12 @@ SMFWriter::write_event(Raul::TimeStamp      time,
 	_track_size += stamp_size + ev_size;
 }
 
-
 void
 SMFWriter::flush()
 {
 	if (_fd)
 		fflush(_fd);
 }
-
 
 void
 SMFWriter::finish() throw (std::logic_error)
@@ -155,7 +149,6 @@ SMFWriter::finish() throw (std::logic_error)
 	fclose(_fd);
 	_fd = NULL;
 }
-
 
 void
 SMFWriter::write_header()
@@ -182,7 +175,6 @@ SMFWriter::write_header()
 	write_chunk_header("MTrk", _track_size);
 }
 
-
 void
 SMFWriter::write_footer()
 {
@@ -194,7 +186,6 @@ SMFWriter::write_footer()
 	fwrite(eot, 1, 4, _fd);
 }
 
-
 void
 SMFWriter::write_chunk_header(const char id[4], uint32_t length)
 {
@@ -204,7 +195,6 @@ SMFWriter::write_chunk_header(const char id[4], uint32_t length)
 	fwrite(&length_be, 4, 1, _fd);
 }
 
-
 void
 SMFWriter::write_chunk(const char id[4], uint32_t length, void* data)
 {
@@ -212,7 +202,6 @@ SMFWriter::write_chunk(const char id[4], uint32_t length, void* data)
 
 	fwrite(data, 1, length, _fd);
 }
-
 
 /** Write an SMF variable length value.
  *
@@ -242,7 +231,6 @@ SMFWriter::write_var_len(uint32_t value)
 
 	return ret;
 }
-
 
 } // namespace Raul
 

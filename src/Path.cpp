@@ -36,7 +36,6 @@ Path::is_path(const Raul::URI& uri)
 			&& Path::is_valid(uri.str());
 }
 
-
 Path::Path(const std::basic_string<char>& path)
 	: URI(path[0] == '/' ? root_uri.str() + path.substr(1) : path)
 {
@@ -44,14 +43,12 @@ Path::Path(const std::basic_string<char>& path)
 		throw BadPath(str());
 }
 
-
 Path::Path(const char* cpath)
 	: URI(cpath[0] == '/' ? root_uri.str() + (cpath + 1) : cpath)
 {
 	if (!is_valid(str()))
 		throw BadPath(str());
 }
-
 
 bool
 Path::is_valid(const std::basic_string<char>& path_str)
@@ -99,7 +96,6 @@ Path::is_valid(const std::basic_string<char>& path_str)
 	return true;
 }
 
-
 /** Convert a string to a valid full path.
  *
  * The returned string is a valid relative path without the root prefix,
@@ -134,7 +130,6 @@ Path::pathify(const std::basic_string<char>& str)
 	return path;
 }
 
-
 /** Convert a string to a valid name (or "method" - tokens between slashes)
  *
  * This will strip all slashes, etc, and always return a valid name/method.
@@ -153,7 +148,6 @@ Path::nameify(const std::basic_string<char>& str)
 
 	return name;
 }
-
 
 /** Replace any invalid characters in @a str with a suitable replacement.
  */
@@ -203,7 +197,6 @@ Path::replace_invalid_chars(std::string& str, size_t start, bool replace_slash)
 	str = prefix + str;
 }
 
-
 bool
 Path::is_child_of(const Path& parent) const
 {
@@ -211,13 +204,11 @@ Path::is_child_of(const Path& parent) const
 	return (substr(0, parent_base.length()) == parent_base);
 }
 
-
 bool
 Path::is_parent_of(const Path& child) const
 {
 	return child.is_child_of(*this);
 }
-
 
 } // namespace Raul
 

@@ -24,7 +24,6 @@ using std::string;
 
 namespace Raul {
 
-
 bool
 Symbol::is_valid(const std::basic_string<char>& symbol)
 {
@@ -50,7 +49,6 @@ Symbol::is_valid(const std::basic_string<char>& symbol)
 	return true;
 }
 
-
 /** Convert a string to a valid symbol.
  *
  * This will make a best effort at turning @a str into a complete, valid
@@ -70,7 +68,6 @@ Symbol::symbolify(const std::basic_string<char>& str)
 
 	return symbol;
 }
-
 
 } // namespace Raul
 

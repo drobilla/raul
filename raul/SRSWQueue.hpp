@@ -26,7 +26,6 @@
 
 namespace Raul {
 
-
 /** Realtime-safe single-reader single-writer queue (aka lock-free ringbuffer)
  *
  * This is appropriate for a cross-thread queue of fixed size object.  If you
@@ -51,12 +50,10 @@ public:
 
 	inline size_t capacity() const { return _size-1; }
 
-
 	// Write thread(s):
 
 	inline bool full() const;
 	inline bool push(const T& obj);
-
 
 	// Read thread:
 
@@ -71,7 +68,6 @@ private:
 	T* const     _objects; ///< Fixed array containing queued elements
 };
 
-
 template<typename T>
 SRSWQueue<T>::SRSWQueue(size_t size)
 	: _front(0)
@@ -82,13 +78,11 @@ SRSWQueue<T>::SRSWQueue(size_t size)
 	assert(size > 1);
 }
 
-
 template <typename T>
 SRSWQueue<T>::~SRSWQueue()
 {
 	delete[] _objects;
 }
-
 
 /** Return whether or not the queue is empty.
  */
@@ -99,7 +93,6 @@ SRSWQueue<T>::empty() const
 	return (_back.get() == _front.get());
 }
 
-
 /** Return whether or not the queue is full.
  */
 template <typename T>
@@ -109,7 +102,6 @@ SRSWQueue<T>::full() const
 	return (((_front.get() - _back.get() + _size) % _size) == 1);
 }
 
-
 /** Return the element at the front of the queue without removing it
  */
 template <typename T>
@@ -118,7 +110,6 @@ SRSWQueue<T>::front() const
 {
 	return _objects[_front.get()];
 }
-
 
 /** Push an item onto the back of the SRSWQueue - realtime-safe, not thread-safe.
  *
@@ -139,7 +130,6 @@ SRSWQueue<T>::push(const T& elem)
 	}
 }
 
-
 /** Pop an item off the front of the queue - realtime-safe, not thread-safe.
  *
  * It is a fatal error to call pop() when the queue is empty.
@@ -155,7 +145,6 @@ SRSWQueue<T>::pop()
 
 	_front = (_front.get() + 1) % (_size);
 }
-
 
 } // namespace Raul
 

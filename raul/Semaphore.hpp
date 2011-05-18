@@ -29,7 +29,6 @@
 
 namespace Raul {
 
-
 /** Counting semaphore.
  *
  * \ingroup raul
@@ -115,7 +114,6 @@ private:
 	sem_t _sem;
 	#endif
 };
-
 
 } // namespace Raul
 

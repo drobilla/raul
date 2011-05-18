@@ -43,7 +43,6 @@ public:
 	}
 };
 
-
 } // namespace Raul
 
 #endif // RAUL_QUANTIZER_HPP

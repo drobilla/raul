@@ -26,7 +26,6 @@
 
 namespace Raul {
 
-
 /** Explicitly driven garbage collector.
  *
  * This is used by realtime threads to allow hard realtime deletion of objects
@@ -68,7 +67,6 @@ private:
 	Objects _objects;
 	Managed _managed;
 };
-
 
 } // namespace Raul
 

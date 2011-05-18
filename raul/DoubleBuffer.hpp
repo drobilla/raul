@@ -97,7 +97,6 @@ private:
 	T            _vals[2];
 };
 
-
 } // namespace Raul
 
 #endif // RAUL_DOUBLE_BUFFER_HPP

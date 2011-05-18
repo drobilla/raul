@@ -69,7 +69,6 @@ lo_message_add_atom(lo_message m, const Atom& atom)
 	}
 }
 
-
 /** Convert a liblo argument to a Raul::Atom */
 inline Atom
 lo_arg_to_atom(char type, lo_arg* arg)
@@ -93,7 +92,6 @@ lo_arg_to_atom(char type, lo_arg* arg)
 		return Atom();
 	}
 }
-
 
 } // namespace AtomLiblo
 } // namespace Raul

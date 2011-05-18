@@ -25,7 +25,6 @@
 
 namespace Raul {
 
-
 /** Standard Midi File (Type 0) Reader
  *
  * Currently this only reads SMF files with tempo-based timing.
@@ -76,7 +75,6 @@ protected:
 	uint32_t    _track;
 	uint32_t    _track_size;
 };
-
 
 } // namespace Raul
 

@@ -51,7 +51,6 @@ Table<K,T>::is_sorted() const
 }
 #endif
 
-
 /** Binary search (O(log(n))) */
 template <typename K, typename T>
 typename Table<K,T>::const_iterator
@@ -59,7 +58,6 @@ Table<K,T>::find(const K& key) const
 {
 	return ((Table<K,T>*)this)->find(key);
 }
-
 
 /** Binary search (O(log(n))) */
 template <typename K, typename T>
@@ -69,7 +67,6 @@ Table<K,T>::find(const K& key)
 	return find(begin(), end(), key);
 }
 
-
 /** Binary search (O(log(end - start))) */
 template <typename K, typename T>
 typename Table<K,T>::const_iterator
@@ -77,7 +74,6 @@ Table<K,T>::find(const_iterator start, const_iterator finish, const K& key) cons
 {
 	return ((Table<K,T>*)this)->find(start, finish, key);
 }
-
 
 /** Binary search (O(log(end - start))) */
 template <typename K, typename T>
@@ -108,7 +104,6 @@ Table<K,T>::find(const_iterator start, const_iterator finish, const K& key)
 	return end();
 }
 
-
 /** Find the end of a range using a custom comparator.
  * Two entries a, b are considered in the range if comp(a, b) returns true.
  *
@@ -127,7 +122,6 @@ Table<K,T>::find_range_end(const_iterator start, bool (*comp)(const K&,const K&)
 {
 	return (const_cast<Table<K, T>&>(*this)).find_range_end(*((iterator*)&start), comp);
 }
-
 
 /** Find the end of a range using a custom comparator.
  * Two entries a, b are considered in the range if comp(a, b) returns true.
@@ -197,7 +191,6 @@ Table<K,T>::find_range_end(iterator start, bool (*comp)(const K&,const K&))
 	return iterator(*this, lower+1);
 }
 
-
 /** Erase and return a range of entries */
 template <typename K, typename T>
 SharedPtr< Table<K, T> >
@@ -209,7 +202,6 @@ Table<K, T>::yank(iterator start, iterator end)
 	erase(start, end);
 	return ret;
 }
-
 
 /** Cram a range of entries back in.
  * Range MUST follow the same ordering guidelines as find_range_end.
@@ -251,7 +243,6 @@ Table<K, T>::cram(const Table<K,T>& range)
 
 	return make_pair(iterator(*this, insert_index), true);
 }
-
 
 /** Add an item to the table, using \a entry.first as the search key.
  * An iterator to the element where value was set is returned, and a bool which
@@ -322,7 +313,6 @@ Table<K,T>::insert(const std::pair<K, T>& entry)
 	return std::make_pair(iterator(*this, i), true);
 }
 
-
 /** Insert an item, and return a reference to it's value.
  *
  * This may be used to insert values with pretty syntax:
@@ -344,14 +334,12 @@ Table<K, T>::operator[](const K& key)
 	}
 }
 
-
 template <typename K, typename T>
 void
 Table<K,T>::erase(const K& key)
 {
 	erase(find(key));
 }
-
 
 template <typename K, typename T>
 void
@@ -373,7 +361,6 @@ Table<K,T>::erase(iterator i)
 #endif
 }
 
-
 /** Erase a range of elements from \a first to \a last, including first but
  * not including last.
  */
@@ -386,7 +373,6 @@ Table<K,T>::erase(iterator first, iterator last)
 
 	Table<K,T>::erase_by_index(first_index, last_index);
 }
-
 
 /** Erase a range of elements from \a first_index to \a last_index, including
  * first_index but not including last_index.
@@ -407,7 +393,6 @@ Table<K,T>::erase_by_index(size_t first_index, size_t last_index)
 	assert(is_sorted());
 #endif
 }
-
 
 } // namespace Raul
 

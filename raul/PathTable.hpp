@@ -47,7 +47,6 @@ public:
 	}
 };
 
-
 } // namespace Raul
 
 #endif // RAUL_PATH_TABLE_HPP

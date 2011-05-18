@@ -24,7 +24,6 @@
 
 namespace Raul {
 
-
 /** Thread driven by (realtime safe) signals.
  *
  * Use this to perform some task in a separate thread you want to 'drive'
@@ -59,7 +58,6 @@ private:
 		}
 	}
 };
-
 
 } // namespace Raul
 
