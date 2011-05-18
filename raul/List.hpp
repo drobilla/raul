@@ -101,17 +101,35 @@ public:
 	/** Realtime safe const iterator for a List. */
 	class const_iterator {
 	public:
-		explicit const_iterator(const List<T>* const list);
-		const_iterator(const iterator& i)
-		: _list(i._list), _listnode(i._listnode) {}
+		explicit const_iterator(const List<T>* const list)
+			: _list(list)
+			, _listnode(NULL)
+		{}
 
-		inline const T&        operator*();
-		inline const T*        operator->();
-		inline const_iterator& operator++();
-		inline bool            operator!=(const const_iterator& iter) const;
-		inline bool            operator!=(const iterator& iter) const;
-		inline bool            operator==(const const_iterator& iter) const;
-		inline bool            operator==(const iterator& iter) const;
+		const_iterator(const iterator& i)
+			: _list(i._list)
+			, _listnode(i._listnode)
+		{}
+
+		inline const T&        operator*() { return _listnode->elem(); }
+		inline const T*        operator->() { return &_listnode->elem(); }
+		inline const_iterator& operator++() {
+			_listnode = _listnode->next();
+			return *this;
+		}
+
+		inline bool operator!=(const const_iterator& iter) const {
+			return (_listnode != iter._listnode);
+		}
+		inline bool operator!=(const iterator& iter) const {
+			return (_listnode != iter._listnode);
+		}
+		inline bool operator==(const const_iterator& iter) const {
+			return (_listnode == iter._listnode);
+		}
+		inline bool operator==(const iterator& iter) const {
+			return (_listnode == iter._listnode);
+		}
 
 		inline       typename List<T>::Node* node()       { return _listnode; }
 		inline const typename List<T>::Node* node() const { return _listnode; }
@@ -126,15 +144,30 @@ public:
 	/** Realtime safe iterator for a List. */
 	class iterator {
 	public:
-		explicit iterator(List<T>* const list);
+		explicit iterator(List<T>* const list)
+			: _list(list)
+			, _listnode(NULL)
+		{}
 
-		inline T&        operator*();
-		inline T*        operator->();
-		inline iterator& operator++();
-		inline bool      operator!=(const iterator& iter) const;
-		inline bool      operator!=(const const_iterator& iter) const;
-		inline bool      operator==(const iterator& iter) const;
-		inline bool      operator==(const const_iterator& iter) const;
+		inline T&        operator*()  { return _listnode->elem(); }
+		inline T*        operator->() { return &_listnode->elem(); }
+		inline iterator& operator++() {
+			_listnode = _listnode->next();
+			return *this;
+		}
+
+		inline bool operator!=(const const_iterator& iter) const {
+			return (_listnode != iter._listnode);
+		}
+		inline bool operator!=(const iterator& iter) const {
+			return (_listnode != iter._listnode);
+		}
+		inline bool operator==(const const_iterator& iter) const {
+			return (_listnode == iter._listnode);
+		}
+		inline bool operator==(const iterator& iter) const {
+			return (_listnode == iter._listnode);
+		}
 
 		friend class List<T>;
 		friend class List<T>::const_iterator;
@@ -168,9 +201,237 @@ private:
 	const_iterator  _const_end_iter;
 };
 
+template <typename T>
+List<T>::~List<T>()
+{
+	clear();
+}
+
+template <typename T>
+inline typename List<T>::iterator
+List<T>::begin()
+{
+	typename List<T>::iterator iter(this);
+
+	iter._listnode = _head.get();
+
+	return iter;
+}
+
+template <typename T>
+inline typename List<T>::const_iterator
+List<T>::begin() const
+{
+	typename List<T>::const_iterator iter(this);
+	iter._listnode = _head.get();
+	return iter;
+}
+
+template <typename T>
+inline const typename List<T>::iterator
+List<T>::end() const
+{
+	return _end_iter;
+}
+
+/** Clear the list, deleting all Nodes contained (but NOT their contents!)
+ *
+ * Not realtime safe.
+ */
+template <typename T>
+void
+List<T>::clear()
+{
+	Node* node = _head.get();
+	Node* next = NULL;
+
+	while (node) {
+		next = node->next();
+		delete node;
+		node = next;
+	}
+
+	_head = 0;
+	_tail = 0;
+	_size = 0;
+}
+
+/** Add an element to the list.
+ *
+ * Thread safe (may be called while another thread is reading the list).
+ * Realtime safe.
+ */
+template <typename T>
+void
+List<T>::push_back(Node* const ln)
+{
+	assert(ln);
+
+	ln->next(NULL);
+
+	if ( ! _head.get()) { // empty
+		ln->prev(NULL);
+		_tail = ln;
+		_head = ln;
+	} else {
+		ln->prev(_tail.get());
+		_tail.get()->next(ln);
+		_tail = ln;
+	}
+	++_size;
+}
+
+/** Add an element to the list.
+ *
+ * Thread safe (may be called while another thread is reading the list).
+ * NOT realtime safe (a Node is allocated).
+ */
+template <typename T>
+void
+List<T>::push_back(T& elem)
+{
+	Node* const ln = new Node(elem);
+
+	assert(ln);
+
+	ln->next(NULL);
+
+	if ( ! _head.get()) { // empty
+		ln->prev(NULL);
+		_tail = ln;
+		_head = ln;
+	} else {
+		ln->prev(_tail.get());
+		_tail.get()->next(ln);
+		_tail = ln;
+	}
+	++_size;
+}
+
+/** Append a list to this list.
+ *
+ * This operation is fast ( O(1) ).
+ * The appended list is not safe to use concurrently with this call.
+ * The appended list will be empty after this call.
+ *
+ * Thread safe (may be called while another thread is reading the list).
+ * Realtime safe.
+ */
+template <typename T>
+void
+List<T>::append(List<T>& list)
+{
+	Node* const my_head    = _head.get();
+	Node* const my_tail    = _tail.get();
+	Node* const other_head = list._head.get();
+	Node* const other_tail = list._tail.get();
+
+	assert((my_head && my_tail) || (!my_head && !my_tail));
+	assert((other_head && other_tail) || (!other_head && !other_tail));
+
+	// Appending to an empty list
+	if (my_head == NULL && my_tail == NULL) {
+		_tail = other_tail;
+		_head = other_head;
+		_size = list._size;
+	} else if (other_head != NULL && other_tail != NULL) {
+
+		other_head->prev(my_tail);
+
+		// FIXME: atomicity an issue? _size < true size is probably fine...
+		// no guarantee an iteration runs exactly size times though.  verify/document this.
+		// assuming comment above that says tail is writer only, this is fine
+		my_tail->next(other_head);
+		_tail = other_tail;
+		_size += list.size();
+	}
+
+	list._head = NULL;
+	list._tail = NULL;
+	list._size = 0;
+}
+
+/** Find an element in the list.
+ *
+ * This will return the first element equal to @a val found in the list.
+ */
+template <typename T>
+typename List<T>::iterator
+List<T>::find(const T& val)
+{
+	for (iterator i = begin(); i != end(); ++i)
+		if (*i == val)
+			return i;
+
+	return end();
+}
+
+/** Remove an element from the list using an iterator.
+ *
+ * This function is realtime safe - it is the caller's responsibility to
+ * delete the returned Node, or there will be a leak.
+ * Thread safe (safe to call while another thread reads the list).
+ * @a iter is invalid immediately following this call.
+ */
+template <typename T>
+typename List<T>::Node*
+List<T>::erase(const iterator iter)
+{
+	assert((_head.get() && _tail.get()) || (!_head.get() && !_tail.get()));
+
+	Node* const n = iter._listnode;
+
+	if (n) {
+		Node* const prev = n->prev();
+		Node* const next = n->next();
+
+		// Removing the head (or the only element)
+		if (n == _head.get())
+			_head = next;
+
+		// Removing the tail (or the only element)
+		if (n == _tail.get())
+			_tail = _tail.get()->prev();
+
+		if (prev)
+			n->prev()->next(next);
+
+		if (next)
+			n->next()->prev(prev);
+
+		--_size;
+	}
+
+	assert((_head.get() && _tail.get()) || (!_head.get() && !_tail.get()));
+	return n;
+}
+
+template <typename T>
+void
+List<T>::chop_front(List<T>& front, size_t front_size, Node* front_tail)
+{
+	assert(front_tail);
+	assert((front._head.get() && front._tail.get()) || (!front._head.get() && !front._tail.get()));
+	assert((_head.get() && _tail.get()) || (!_head.get() && !_tail.get()));
+	front._size = front_size;
+	front._head = _head;
+	front._tail = front_tail;
+	Node* new_head = front_tail->next();
+	if (new_head) {
+		new_head->prev(NULL);
+		_head = new_head;
+	} else {
+		// FIXME: race?
+		_head = NULL;
+		_tail = NULL;
+	}
+	_size -= front_size;
+	front_tail->next(NULL);
+	assert((front._head.get() && front._tail.get()) || (!front._head.get() && !front._tail.get()));
+	assert((_head.get() && _tail.get()) || (!_head.get() && !_tail.get()));
+}
+
 } // namespace Raul
 
 #endif // RAUL_LIST_HPP
-
-#include "ListImpl.hpp"
 
