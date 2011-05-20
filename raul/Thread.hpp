@@ -24,7 +24,7 @@
 
 #include <pthread.h>
 
-#include <boost/utility.hpp>
+#include "raul/Noncopyable.hpp"
 
 namespace Raul {
 
@@ -37,7 +37,7 @@ namespace Raul {
  *
  * \ingroup raul
  */
-class Thread : boost::noncopyable
+class Thread : Noncopyable
 {
 public:
 	virtual ~Thread() {

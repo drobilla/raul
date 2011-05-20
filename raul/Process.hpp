@@ -25,8 +25,7 @@
 #include <iostream>
 #include <string>
 
-#include <boost/utility.hpp>
-
+#include "raul/Noncopyable.hpp"
 #include "raul/log.hpp"
 
 namespace Raul {
@@ -35,7 +34,7 @@ namespace Raul {
  *
  * \ingroup raul
  */
-class Process : boost::noncopyable
+class Process : Noncopyable
 {
 public:
 

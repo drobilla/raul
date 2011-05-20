@@ -21,8 +21,7 @@
 #include <cassert>
 #include <cmath>
 
-#include <boost/utility.hpp>
-
+#include "raul/Noncopyable.hpp"
 #include "raul/TimeStamp.hpp"
 
 namespace Raul {
@@ -47,7 +46,7 @@ namespace Raul {
  *
  * \ingroup raul
  */
-class TimeSlice : public boost::noncopyable {
+class TimeSlice : public Noncopyable {
 public:
 	TimeSlice(uint32_t rate, uint32_t ppqn, double bpm)
 		: _tick_rate(rate)

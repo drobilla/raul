@@ -22,8 +22,7 @@
 #include <utility>
 #include <vector>
 
-#include <boost/utility.hpp>
-
+#include "raul/Noncopyable.hpp"
 #include "raul/SharedPtr.hpp"
 
 //#define TABLE_SORT_DEBUG
@@ -38,7 +37,7 @@ namespace Raul {
  * \ingroup raul
  */
 template <typename K, typename T>
-class Table : public boost::noncopyable {
+class Table : public Noncopyable {
 public:
 	Table<K, T>() : _entries() {}
 	Table<K, T>(size_t capacity) : _entries(capacity) {}

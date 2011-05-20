@@ -1,12 +1,12 @@
-/* A "weak" pointer to a resource owned by a shared pointer.
- * Copyright 2007-2011 David Robillard <http://drobilla.net>
+/* This file is part of Raul.
+ * Copyright 2011 David Robillard <http://drobilla.net>
  *
- * This is free software; you can redistribute it and/or modify it under the
+ * Raul is free software; you can redistribute it and/or modify it under the
  * terms of the GNU General Public License as published by the Free Software
  * Foundation; either version 2 of the License, or (at your option) any later
  * version.
  *
- * This file is distributed in the hope that it will be useful, but WITHOUT ANY
+ * Raul is distributed in the hope that it will be useful, but WITHOUT ANY
  * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  * FOR A PARTICULAR PURPOSE.  See the GNU General Public License for details.
  *
@@ -15,12 +15,21 @@
  * 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
-#ifndef RAUL_INTRUSIVE_PTR_HPP
-#define RAUL_INTRUSIVE_PTR_HPP
+#ifndef RAUL_NONCOPYABLE_HPP
+#define RAUL_NONCOPYABLE_HPP
 
-#include <boost/intrusive_ptr.hpp>
+namespace Raul {
 
-#define IntrusivePtr boost::intrusive_ptr
+class Noncopyable {
+protected:
+	Noncopyable()  {}
+	~Noncopyable() {}
 
-#endif // RAUL_INTRUSIVE_PTR_HPP
+private:
+	Noncopyable(const Noncopyable&);
+	const Noncopyable& operator=(const Noncopyable&);
+};
 
+} // namespace Raul
+
+#endif // RAUL_NONCOPYABLE_HPP

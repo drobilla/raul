@@ -22,9 +22,8 @@
 #include <cstdlib>
 #include <cmath>
 
-#include <boost/utility.hpp>
-
 #include "raul/AtomicInt.hpp"
+#include "raul/Noncopyable.hpp"
 
 namespace Raul {
 
@@ -50,7 +49,7 @@ namespace Raul {
  * \ingroup raul
  */
 template <typename T>
-class SRMWQueue : boost::noncopyable
+class SRMWQueue : Noncopyable
 {
 public:
 	explicit SRMWQueue(size_t size);

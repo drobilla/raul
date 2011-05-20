@@ -25,7 +25,7 @@
 #include <semaphore.h>
 #endif
 
-#include <boost/utility.hpp>
+#include "raul/Noncopyable.hpp"
 
 namespace Raul {
 
@@ -33,7 +33,7 @@ namespace Raul {
  *
  * \ingroup raul
  */
-class Semaphore : boost::noncopyable {
+class Semaphore : Noncopyable {
 public:
 	inline Semaphore(unsigned int initial) {
 		#ifdef __APPLE__

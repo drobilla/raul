@@ -42,6 +42,8 @@ def options(opt):
                     help="Coloured console/log output")
     opt.add_option('--log-debug', action='store_true', default=False, dest='log_debug',
                     help="Print debugging output")
+    opt.add_option('--cpp0x', action='store_true', default=False, dest='cpp0x',
+                    help="Use C++0x smart pointers instead of boost")
 
 def configure(conf):
     autowaf.configure(conf)
@@ -64,12 +66,18 @@ def configure(conf):
     if Options.options.log_debug:
         autowaf.define(conf, 'RAUL_LOG_DEBUG', 1)
 
-    conf.write_config_header('raul-config.h', remove=False)
 
-    # Boost headers
-    autowaf.check_header(conf, 'boost/shared_ptr.hpp', mandatory=True)
-    autowaf.check_header(conf, 'boost/weak_ptr.hpp', mandatory=True)
-    autowaf.check_header(conf, 'boost/utility.hpp', mandatory=True)
+    if Options.options.cpp0x:
+        conf.env.append_value('CXXFLAGS', [ '-std=c++0x' ])
+        autowaf.check_header(conf, 'memory', mandatory=True)
+        autowaf.define(conf, 'RAUL_CPP0x', 1)
+        autowaf.define(conf, 'RAUL_EXTRA_CXXFLAGS', '-std=c++0x')
+    else:
+        autowaf.check_header(conf, 'boost/shared_ptr.hpp', mandatory=True)
+        autowaf.check_header(conf, 'boost/weak_ptr.hpp', mandatory=True)
+        autowaf.define(conf, 'RAUL_EXTRA_CXXFLAGS', '')
+
+    conf.write_config_header('raul-config.h', remove=False)
 
     autowaf.display_msg(conf, "Unit tests", str(conf.env['BUILD_TESTS']))
     print('')
@@ -79,6 +87,7 @@ tests = '''
         test/atomic_test
         test/list_test
         test/path_test
+        test/ptr_test
         test/quantize_test
         test/queue_test
         test/ringbuffer_test
@@ -115,6 +124,10 @@ def build(bld):
     if Options.platform == 'darwin':
         framework = ' CoreServices '
 
+    def set_defines(obj):
+        if bld.env['RAUL_CPP0x']:
+            obj.defines = ['RAUL_CPP0x']
+
     # Library
     obj = bld(features = 'cxx cxxshlib')
     obj.export_includes = ['.']
@@ -127,6 +140,7 @@ def build(bld):
     obj.framework       = framework
     obj.install_path    = '${LIBDIR}'
     obj.vnum            = RAUL_LIB_VERSION
+    set_defines(obj);
 
     if bld.env['BUILD_TESTS']:
         # Static library (for unit test code coverage)
@@ -139,6 +153,7 @@ def build(bld):
         obj.framework    = framework
         obj.install_path = ''
         obj.cxxflags     = [ '-fprofile-arcs',  '-ftest-coverage' ]
+        set_defines(obj);
 
         # Unit tests
         for i in tests.split():
@@ -152,6 +167,7 @@ def build(bld):
             obj.install_path = ''
             obj.cxxflags     = [ '-fprofile-arcs',  '-ftest-coverage' ]
             obj.linkflags    = ['-lgcov']
+            set_defines(obj);
 
     # Documentation
     autowaf.build_dox(bld, 'RAUL', RAUL_VERSION, top, out)

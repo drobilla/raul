@@ -20,9 +20,8 @@
 
 #include <cassert>
 
-#include <boost/utility.hpp>
-
 #include "raul/AtomicInt.hpp"
+#include "raul/Noncopyable.hpp"
 
 namespace Raul {
 
@@ -39,7 +38,7 @@ namespace Raul {
  * \ingroup raul
  */
 template <typename T>
-class SRSWQueue : boost::noncopyable
+class SRSWQueue : Noncopyable
 {
 public:
 	/** @param size Size in number of elements */

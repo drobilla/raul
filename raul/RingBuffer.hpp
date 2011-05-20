@@ -25,7 +25,7 @@
 
 #include <glib.h>
 
-#include <boost/utility.hpp>
+#include "raul/Noncopyable.hpp"
 
 namespace Raul {
 
@@ -37,7 +37,7 @@ namespace Raul {
 
    @ingroup raul
 */
-class RingBuffer : public boost::noncopyable {
+class RingBuffer : public Noncopyable {
 public:
 	/**
 	   Create a new RingBuffer.

@@ -18,11 +18,11 @@
 #ifndef RAUL_MAID_HPP
 #define RAUL_MAID_HPP
 
-#include <boost/utility.hpp>
-#include "raul/SharedPtr.hpp"
-#include "raul/SRSWQueue.hpp"
 #include "raul/Deletable.hpp"
 #include "raul/List.hpp"
+#include "raul/Noncopyable.hpp"
+#include "raul/SRSWQueue.hpp"
+#include "raul/SharedPtr.hpp"
 
 namespace Raul {
 
@@ -42,7 +42,7 @@ namespace Raul {
  *
  * \ingroup raul
  */
-class Maid : boost::noncopyable
+class Maid : Noncopyable
 {
 public:
 	explicit Maid(size_t size);

@@ -21,11 +21,10 @@
 #include <cstddef>
 #include <cassert>
 
-#include <boost/utility.hpp>
-
 #include "raul/AtomicInt.hpp"
 #include "raul/AtomicPtr.hpp"
 #include "raul/Deletable.hpp"
+#include "raul/Noncopyable.hpp"
 
 namespace Raul {
 
@@ -37,7 +36,7 @@ namespace Raul {
  * \ingroup raul
  */
 template <typename T>
-class List : public Raul::Deletable, public boost::noncopyable
+class List : Deletable, Noncopyable
 {
 public:
 

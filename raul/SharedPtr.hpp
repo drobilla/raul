@@ -18,39 +18,21 @@
 #ifndef RAUL_SHARED_PTR_HPP
 #define RAUL_SHARED_PTR_HPP
 
-#ifdef BOOST_SP_ENABLE_DEBUG_HOOKS
-#include <algorithm>
-#include <cassert>
-#include <cstddef>
-#include <iostream>
-#include <set>
-
-static std::set<void*> shared_ptr_counters;
-
-// Use debug hooks to ensure 2 shared_ptrs never point to the same thing
-namespace boost {
-	inline void sp_scalar_constructor_hook(void* px, std::size_t size, void* pn) {
-		assert(shared_ptr_counters.find(px) == shared_ptr_counters.end());
-		shared_ptr_counters.push_back(px);
-	}
-
-	inline void sp_scalar_destructor_hook(void* px, std::size_t size, void* pn) {
-		shared_ptr_counters.remove(px);
-	}
-}
-#endif // BOOST_SP_ENABLE_DEBUG_HOOKS
-
-#include <boost/shared_ptr.hpp>
-
-#ifdef BOOST_AC_USE_PTHREADS
-#error "Boost is using mutexes for shared_ptr reference counting."
-#error "This is VERY slow.  Please report your platform to d@drobilla.net"
-#endif
-
 template <typename T> void NullDeleter(T* ptr) {}
 
-#define SharedPtr boost::shared_ptr
-#define PtrCast   boost::dynamic_pointer_cast
+#ifdef RAUL_CPP0x
+#    include <memory>
+#    define SharedPtr std::shared_ptr
+#    define PtrCast   std::dynamic_pointer_cast
+#else
+#    include <boost/shared_ptr.hpp>
+#    ifdef BOOST_AC_USE_PTHREADS
+#        error "Boost is using mutexes for shared_ptr reference counting."
+#        error "This is VERY slow.  Please report your platform to d@drobilla.net"
+#    endif
+#    define SharedPtr boost::shared_ptr
+#    define PtrCast   boost::dynamic_pointer_cast
+#endif
 
 #endif // RAUL_SHARED_PTR_HPP
 

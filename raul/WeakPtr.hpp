@@ -18,9 +18,13 @@
 #ifndef RAUL_WEAK_PTR_HPP
 #define RAUL_WEAK_PTR_HPP
 
-#include <boost/weak_ptr.hpp>
-
-#define WeakPtr boost::weak_ptr
+#ifdef RAUL_CPP0x
+#    include <memory>
+#    define WeakPtr std::weak_ptr
+#else
+#    include <boost/weak_ptr.hpp>
+#    define WeakPtr boost::weak_ptr
+#endif
 
 #endif // RAUL_WEAK_PTR_HPP
 
