@@ -71,11 +71,9 @@ def configure(conf):
         conf.env.append_value('CXXFLAGS', [ '-std=c++0x' ])
         autowaf.check_header(conf, 'memory', mandatory=True)
         autowaf.define(conf, 'RAUL_CPP0x', 1)
-        autowaf.define(conf, 'RAUL_EXTRA_CXXFLAGS', '-std=c++0x')
     else:
         autowaf.check_header(conf, 'boost/shared_ptr.hpp', mandatory=True)
         autowaf.check_header(conf, 'boost/weak_ptr.hpp', mandatory=True)
-        autowaf.define(conf, 'RAUL_EXTRA_CXXFLAGS', '')
 
     conf.write_config_header('raul-config.h', remove=False)
 
