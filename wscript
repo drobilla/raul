@@ -36,6 +36,7 @@ out = 'build'
 
 def options(opt):
     autowaf.set_options(opt)
+    opt.load('compiler_cxx')
     opt.add_option('--test', action='store_true', default=False, dest='build_tests',
                     help="Build unit tests")
     opt.add_option('--log-colour', action='store_true', default=True, dest='log_colour',
@@ -69,11 +70,11 @@ def configure(conf):
 
     if Options.options.cpp0x:
         conf.env.append_value('CXXFLAGS', [ '-std=c++0x' ])
-        autowaf.check_header(conf, 'memory')
+        autowaf.check_header(conf, 'cxx', 'memory')
         autowaf.define(conf, 'RAUL_CPP0x', 1)
     else:
-        autowaf.check_header(conf, 'boost/shared_ptr.hpp')
-        autowaf.check_header(conf, 'boost/weak_ptr.hpp')
+        autowaf.check_header(conf, 'cxx', 'boost/shared_ptr.hpp')
+        autowaf.check_header(conf, 'cxx', 'boost/weak_ptr.hpp')
 
     conf.write_config_header('raul-config.h', remove=False)
 
