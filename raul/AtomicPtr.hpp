@@ -18,6 +18,39 @@
 #ifndef RAUL_ATOMIC_PTR_HPP
 #define RAUL_ATOMIC_PTR_HPP
 
+#ifdef RAUL_CPP0x
+
+#include <atomic>
+
+namespace Raul {
+
+/** Atomic pointer.
+ * \ingroup raul
+ */
+template<typename T>
+class AtomicPtr {
+public:
+	inline AtomicPtr() : _val(NULL) {}
+
+	inline AtomicPtr(const AtomicPtr& copy) : _val(copy.get()) {}
+
+	inline T* get() const { return static_cast<T*>(_val.load()); }
+
+	inline void operator=(T* val) { _val = val; }
+
+	/** Set value to newval iff current value is oldval */
+	inline bool compare_and_exchange(void* oldval, void* newval) {
+		return _val.compare_exchange_strong(oldval, newval);
+	}
+
+private:
+	std::atomic<void*> _val;
+};
+
+} // namespace Raul
+
+#else // !RAUL_CPP0x
+
 #include <glib.h>
 
 namespace Raul {
@@ -50,5 +83,7 @@ private:
 };
 
 } // namespace Raul
+
+#endif // RAUL_CPP0x
 
 #endif // RAUL_ATOMIC_PTR_HPP

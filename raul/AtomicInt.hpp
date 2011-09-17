@@ -18,6 +18,62 @@
 #ifndef RAUL_ATOMIC_INT_HPP
 #define RAUL_ATOMIC_INT_HPP
 
+#ifdef RAUL_CPP0x
+
+#include <atomic>
+
+/** Atomic integer.
+ * \ingroup raul
+ */
+class AtomicInt {
+public:
+	inline AtomicInt(int val) : _val(val) {}
+
+	inline AtomicInt(const AtomicInt& copy) : _val(copy.get()) {}
+
+	inline int get() const { return _val.load(); }
+
+	inline void operator=(int val) { _val = val; }
+ 
+	inline void operator+=(int val) { _val += val; }
+
+	inline void operator-=(int val) { _val -= val; }
+
+	inline bool operator==(int val) const { return _val == val; }
+
+	inline int operator+(int val) const { return _val + val; }
+
+	inline AtomicInt& operator++() { ++_val; return *this; }
+
+	inline AtomicInt& operator--() { --_val; return *this; }
+
+	/** Set value to @a val iff current value is @a old.
+	 * @return true iff set succeeded.
+	 */
+	inline bool compare_and_exchange(int old, int val) {
+		return _val.compare_exchange_strong(old, val);
+	}
+
+	/** Add val to value.
+	 * @return value immediately before addition took place.
+	 */
+	inline int exchange_and_add(int val) {
+		return _val.fetch_add(val);
+	}
+
+	/** Decrement value.
+	 * @return true if value is now 0, otherwise false.
+	 */
+	inline bool decrement_and_test() {
+		return _val.fetch_add(-1) == 0;
+	}
+
+private:
+	std::atomic<int> _val;
+};
+
+#else // !RAUL_CPP0x
+
 #include <glib.h>
 
 namespace Raul {
@@ -80,5 +136,7 @@ private:
 };
 
 } // namespace Raul
+
+#endif // RAUL_CPP0x
 
 #endif // RAUL_ATOMIC_INT_HPP
