@@ -18,6 +18,8 @@
 #ifndef RAUL_ATOMIC_PTR_HPP
 #define RAUL_ATOMIC_PTR_HPP
 
+#include <cstddef>
+
 #ifdef RAUL_CPP0x
 
 #include <atomic>

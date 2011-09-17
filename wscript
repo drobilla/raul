@@ -67,10 +67,10 @@ def configure(conf):
     if Options.options.log_debug:
         autowaf.define(conf, 'RAUL_LOG_DEBUG', 1)
 
-
     if Options.options.cpp0x:
         conf.env.append_value('CXXFLAGS', [ '-std=c++0x' ])
         autowaf.check_header(conf, 'cxx', 'memory')
+        autowaf.check_header(conf, 'cxx', 'atomic')
         autowaf.define(conf, 'RAUL_CPP0x', 1)
     else:
         autowaf.check_header(conf, 'cxx', 'boost/shared_ptr.hpp')
