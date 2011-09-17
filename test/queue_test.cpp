@@ -4,6 +4,7 @@
 #include <algorithm>
 #include <stdio.h>
 #include <stdlib.h>
+#include <limits.h>
 #include "raul/SRSWQueue.hpp"
 #include "raul/SRMWQueue.hpp"
 #include "raul/Thread.hpp"
