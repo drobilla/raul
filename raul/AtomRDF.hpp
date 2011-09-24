@@ -92,10 +92,9 @@ atom_to_node(Sord::Model& model, const Atom& atom)
 		if (std::isnan(atom.get_float()) || std::isinf(atom.get_float()))
 			break;
 		os.precision(8);
+		os << std::fixed << std::showpoint;
 		os << atom.get_float();
 		str = os.str();
-		if (str.find(".") == std::string::npos)
-			str += ".0";
 		// xsd:decimal -> pretty decimal (float) literals in Turtle
 		type = sord_new_uri(world.world(), CUC(RAUL_NS_XSD "decimal"));
 		break;
