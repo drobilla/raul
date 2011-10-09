@@ -199,7 +199,7 @@ private:
 		} else {
 			const uint32_t first_size = _size - r;
 			memcpy(dst, &_buf[r], first_size);
-			memcpy(dst, &_buf[0], size - first_size);
+			memcpy((char*)dst + first_size, &_buf[0], size - first_size);
 		}
 
 		return size;
