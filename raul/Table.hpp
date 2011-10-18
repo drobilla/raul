@@ -111,7 +111,7 @@ private:
 	bool is_sorted() const;
 #endif
 
-	friend class iterator;
+	friend struct iterator;
 
 	typedef std::pair<K, T> Entry;
 

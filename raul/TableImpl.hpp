@@ -241,7 +241,7 @@ Table<K, T>::cram(const Table<K,T>& range)
 	assert(is_sorted());
 #endif
 
-	return make_pair(iterator(*this, insert_index), true);
+	return std::make_pair(iterator(*this, insert_index), true);
 }
 
 /** Add an item to the table, using \a entry.first as the search key.
@@ -329,7 +329,7 @@ Table<K, T>::operator[](const K& key)
 	if (i != end()) {
 		return i->second;
 	} else {
-		std::pair<iterator,bool> ret = insert(make_pair(key, T()));
+		std::pair<iterator,bool> ret = insert(std::make_pair(key, T()));
 		return ret.first->second;
 	}
 }
