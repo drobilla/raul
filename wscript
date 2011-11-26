@@ -135,7 +135,7 @@ def build(bld):
     obj.name            = 'libraul'
     obj.target          = 'raul'
     obj.uselib          = 'GLIB GTHREAD'
-    obj.linkflags       = ['-lpthread']
+    obj.lib             = ['pthread']
     obj.framework       = framework
     obj.install_path    = '${LIBDIR}'
     obj.vnum            = RAUL_LIB_VERSION
@@ -165,7 +165,7 @@ def build(bld):
             obj.target       = i
             obj.install_path = ''
             obj.cxxflags     = [ '-fprofile-arcs',  '-ftest-coverage' ]
-            obj.linkflags    = ['-lgcov']
+            obj.lib          = ['gcov']
             set_defines(obj);
 
     # Documentation
