@@ -20,7 +20,6 @@
 
 #include <cmath>
 #include <cstring>
-#include <sstream>
 #include <string>
 #include <utility>
 
@@ -76,25 +75,25 @@ atom_to_node(Sord::Model& model, const Atom& atom)
 {
 	Sord::World& world = model.world();
 
-	std::ostringstream os;
 	std::string        str;
 	SordNode*          type = NULL;
 	SordNode*          node = NULL;
+	SerdNode           snode;
 
 	switch (atom.type()) {
 	case Atom::INT:
-		os << atom.get_int32();
-		str = os.str();
+		snode = serd_node_new_integer(atom.get_int32());
+		str  = (const char*)snode.buf;
+		serd_node_free(&snode);
 		// xsd:integer -> pretty integer literals in Turtle
 		type = sord_new_uri(world.world(), CUC(RAUL_NS_XSD "integer"));
 		break;
 	case Atom::FLOAT:
 		if (std::isnan(atom.get_float()) || std::isinf(atom.get_float()))
 			break;
-		os.precision(8);
-		os << std::fixed << std::showpoint;
-		os << atom.get_float();
-		str = os.str();
+		snode = serd_node_new_decimal(atom.get_float(), 8);
+		str  = (const char*)snode.buf;
+		serd_node_free(&snode);
 		// xsd:decimal -> pretty decimal (float) literals in Turtle
 		type = sord_new_uri(world.world(), CUC(RAUL_NS_XSD "decimal"));
 		break;
