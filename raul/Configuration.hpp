@@ -61,6 +61,7 @@ public:
 	void print(std::ostream& os, const std::string mime_type="text/plain") const;
 
 	const Raul::Atom& option(const std::string& long_name);
+	const std::list<std::string>& files() const { return _files; }
 
 private:
 	struct Option {

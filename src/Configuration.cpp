@@ -52,7 +52,7 @@ Configuration::add(
 void
 Configuration::print_usage(const std::string& program, std::ostream& os)
 {
-	os << "Usage: " << program << " [OPTIONS]" << endl;
+	os << "Usage: " << program << " [OPTION]..." << endl;
 	os << _shortdesc << endl << endl;
 	os << _desc << endl << endl;
 	os << "Options:" << endl;
