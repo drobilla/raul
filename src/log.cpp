@@ -18,7 +18,7 @@
 #include <string>
 
 #include "raul/log.hpp"
-#include "raul-config.h"
+#include "raul_config.h"
 
 namespace Raul {
 

@@ -76,7 +76,7 @@ def configure(conf):
         autowaf.check_header(conf, 'cxx', 'boost/shared_ptr.hpp')
         autowaf.check_header(conf, 'cxx', 'boost/weak_ptr.hpp')
 
-    conf.write_config_header('raul-config.h', remove=False)
+    conf.write_config_header('raul_config.h', remove=False)
 
     autowaf.display_msg(conf, "Unit tests", str(conf.env['BUILD_TESTS']))
     print('')
