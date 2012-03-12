@@ -31,6 +31,7 @@
 namespace Raul {
 
 class URI;
+class Forge;
 
 /** A piece of data with some type.
  *
@@ -42,6 +43,8 @@ class URI;
  */
 class Atom {
 public:
+	Atom() : _type(NIL), _blob_val(0) {}
+
 	enum Type {
 		NIL,
 		INT,
@@ -52,25 +55,6 @@ public:
 		BLOB,
 		DICT
 	};
-
-	Atom()                : _type(NIL),    _blob_val(0)             {}
-	Atom(int32_t val)     : _type(INT),    _int_val(val)            {}
-	Atom(float val)       : _type(FLOAT),  _float_val(val)          {}
-	Atom(bool val)        : _type(BOOL),   _bool_val(val)           {}
-	Atom(const char* val) : _type(STRING), _string_val(g_strdup(val)) {}
-
-	Atom(const std::string& val) : _type(STRING), _string_val(g_strdup(val.c_str())) {}
-
-	/** URI constructor (@a t must be URI) */
-	Atom(Type t, const std::string& val) : _type(t), _string_val(g_intern_string(val.c_str())) {
-		assert(t == URI);
-	}
-
-	Atom(const char* type_uri, size_t size, void* val)
-		: _type(BLOB), _blob_val(new BlobValue(type_uri, size, val)) {}
-
-	typedef std::map<Raul::Atom, Raul::Atom> DictValue;
-	Atom(const DictValue& dict) : _type(DICT), _dict_val(new DictValue(dict)) {}
 
 	~Atom() { dealloc(); }
 
@@ -173,9 +157,29 @@ public:
 	inline const char* get_blob_type() const { assert(_type == BLOB); return _blob_val->type(); }
 	inline const void* get_blob()      const { assert(_type == BLOB); return _blob_val->data(); }
 
+	typedef std::map<Raul::Atom, Raul::Atom> DictValue;
+
 	inline const DictValue& get_dict() const { assert(_type == DICT); return *_dict_val; }
 
 private:
+	friend class Forge;
+	Atom(int32_t val)     : _type(INT),    _int_val(val)              {}
+	Atom(float val)       : _type(FLOAT),  _float_val(val)            {}
+	Atom(bool val)        : _type(BOOL),   _bool_val(val)             {}
+	Atom(const char* val) : _type(STRING), _string_val(g_strdup(val)) {}
+
+	Atom(const std::string& val) : _type(STRING), _string_val(g_strdup(val.c_str())) {}
+
+	/** URI constructor (@a t must be URI) */
+	Atom(Type t, const std::string& val) : _type(t), _string_val(g_intern_string(val.c_str())) {
+		assert(t == URI);
+	}
+
+	Atom(const char* type_uri, size_t size, void* val)
+		: _type(BLOB), _blob_val(new BlobValue(type_uri, size, val)) {}
+
+	Atom(const DictValue& dict) : _type(DICT), _dict_val(new DictValue(dict)) {}
+
 	Type _type;
 
 	friend class Raul::URI;
@@ -235,6 +239,18 @@ private:
 		BlobValue*       _blob_val;
 		const DictValue* _dict_val;
 	};
+};
+
+class Forge {
+public:
+	Atom make()                                    { return Atom(); }
+	Atom make(int32_t v)                           { return Atom(v); }
+	Atom make(float v)                             { return Atom(v); }
+	Atom make(bool v)                              { return Atom(v); }
+	Atom make(const char* v)                       { return Atom(v); }
+	Atom alloc(const std::string& v)               { return Atom(v); }
+	Atom alloc(const Atom::DictValue& v)           { return Atom(v); }
+	Atom alloc(Atom::Type t, const std::string& v) { return Atom(t, v); }
 };
 
 } // namespace Raul

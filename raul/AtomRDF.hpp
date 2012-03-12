@@ -40,28 +40,28 @@ namespace AtomRDF {
 
 /** Convert a Sord::Node to a Raul::Atom */
 inline Atom
-node_to_atom(Sord::Model& model, const Sord::Node& node)
+node_to_atom(Forge& forge, Sord::Model& model, const Sord::Node& node)
 {
 	if (node.is_bool()) {
-		return Atom(bool(node.to_bool()));
+		return forge.make(bool(node.to_bool()));
 	} else if (node.is_uri()) {
-		return Atom(Atom::URI, node.to_c_string());
+		return forge.alloc(Atom::URI, node.to_c_string());
 	} else if (node.is_float()) {
-		return Atom(node.to_float());
+		return forge.make(node.to_float());
 	} else if (node.is_int()) {
-		return Atom(node.to_int());
+		return forge.make(node.to_int());
 	} else if (node.is_blank()) {
 		Atom::DictValue dict;
 		Sord::Node nil;
 		for (Sord::Iter i = model.find(node, nil, nil); !i.end(); ++i) {
 			Sord::Node predicate = i.get_predicate();
 			Sord::Node object    = i.get_object();
-			dict.insert(std::make_pair(node_to_atom(model, predicate),
-			                           node_to_atom(model, object)));
+			dict.insert(std::make_pair(node_to_atom(forge, model, predicate),
+			                           node_to_atom(forge, model, object)));
 		}
-		return Atom(dict);
+		return forge.alloc(dict);
 	} else {
-		return Atom(node.to_c_string());
+		return forge.alloc(node.to_c_string());
 	}
 }
 

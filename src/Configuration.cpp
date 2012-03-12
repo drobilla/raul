@@ -70,7 +70,8 @@ Configuration::print_usage(const std::string& program, std::ostream& os)
 }
 
 int
-Configuration::set_value_from_string(Configuration::Option& option, const std::string& value)
+Configuration::set_value_from_string(Configuration::Option& option,
+                                     const std::string&     value)
 		throw (Configuration::CommandLineError)
 {
 	int   intval = 0;
@@ -79,14 +80,14 @@ Configuration::set_value_from_string(Configuration::Option& option, const std::s
 	case Atom::INT:
 		intval = static_cast<int>(strtol(value.c_str(), &endptr, 10));
 		if (endptr && *endptr == '\0') {
-			option.value = intval;
+			option.value = _forge->make(intval);
 		} else {
 			throw CommandLineError("option `" + option.name
 					+ "' has non-integer value `" + value + "'");
 		}
 		break;
 	case Atom::STRING:
-		option.value = Atom(value.c_str());
+		option.value = _forge->make(value.c_str());
 		break;
 	default:
 		throw CommandLineError(string("bad option type `--") + option.name + "'");
@@ -108,7 +109,7 @@ Configuration::parse(int argc, char** argv) throw (Configuration::CommandLineErr
 				throw CommandLineError(string("unrecognized option `--") + name + "'");
 			}
 			if (o->second.type == Atom::BOOL) {
-				o->second.value = true;
+				o->second.value = _forge->make(true);
 			} else {
 				if (++i >= argc)
 					throw CommandLineError("missing value for `--" + name + "'");
@@ -125,10 +126,10 @@ Configuration::parse(int argc, char** argv) throw (Configuration::CommandLineErr
 				if (j < len - 1) {
 					if (o->second.type != Atom::BOOL)
 						throw CommandLineError(string("missing value for `-") + letter + "'");
-					o->second.value = true;
+					o->second.value = _forge->make(true);
 				} else {
 					if (o->second.type == Atom::BOOL) {
-						o->second.value = true;
+						o->second.value = _forge->make(true);
 					} else {
 						if (++i >= argc)
 							throw CommandLineError(string("missing value for `-") + letter + "'");

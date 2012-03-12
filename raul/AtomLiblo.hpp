@@ -71,21 +71,21 @@ lo_message_add_atom(lo_message m, const Atom& atom)
 
 /** Convert a liblo argument to a Raul::Atom */
 inline Atom
-lo_arg_to_atom(char type, lo_arg* arg)
+lo_arg_to_atom(Raul::Forge& forge, char type, lo_arg* arg)
 {
 	switch (type) {
 	case 'i':
-		return Atom(arg->i);
+		return forge.make(arg->i);
 	case 'f':
-		return Atom(arg->f);
+		return forge.make(arg->f);
 	case 's':
-		return Atom(&arg->s);
+		return forge.make(&arg->s);
 	case 'S':
-		return Atom(Atom::URI, &arg->S);
+		return forge.make(Atom::URI, &arg->S);
 	case 'T':
-		return Atom((bool)true);
+		return forge.make((bool)true);
 	case 'F':
-		return Atom((bool)false);
+		return forge.make((bool)false);
 	default:
 		warn << "Unable to convert OSC type '"
 			<< type << "' to Atom" << std::endl;

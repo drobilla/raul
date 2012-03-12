@@ -34,18 +34,20 @@ namespace Raul {
  */
 class Configuration {
 public:
-	Configuration(const std::string& shortdesc, const std::string& desc)
-		: _shortdesc(shortdesc)
+	Configuration(Forge*             forge,
+	              const std::string& shortdesc,
+	              const std::string& desc)
+		: _forge(forge)
+		, _shortdesc(shortdesc)
 		, _desc(desc)
 		, _max_name_length(0)
 	{}
 
-	Configuration& add(
-			const std::string& name,
-			char               letter,
-			const std::string& desc,
-			const Atom::Type   type,
-			const Atom&        value);
+	Configuration& add(const std::string& name,
+	                   char               letter,
+	                   const std::string& desc,
+	                   const Atom::Type   type,
+	                   const Atom&        value);
 
 	void print_usage(const std::string& program, std::ostream& os);
 
@@ -92,6 +94,7 @@ private:
 	int set_value_from_string(Configuration::Option& option, const std::string& value)
 			throw (Configuration::CommandLineError);
 
+	Forge*            _forge;
 	const std::string _shortdesc;
 	const std::string _desc;
 	Options           _options;
