@@ -81,7 +81,7 @@ lo_arg_to_atom(Raul::Forge& forge, char type, lo_arg* arg)
 	case 's':
 		return forge.make(&arg->s);
 	case 'S':
-		return forge.make(Atom::URI, &arg->S);
+		return forge.alloc(Atom::URI, &arg->S);
 	case 'T':
 		return forge.make((bool)true);
 	case 'F':
