@@ -30,7 +30,7 @@ namespace Raul {
  * @param name Long name (without leading "--")
  * @param letter Short name (without leading "-")
  * @param desc Description
- * @param type Type (Atom::BOOL for flags)
+ * @param type Type
  * @param value Default value
  */
 Configuration&
@@ -38,14 +38,15 @@ Configuration::add(
 		const std::string& name,
 		char               letter,
 		const std::string& desc,
-		const Atom::Type   type,
-		const Atom&        value)
+		const OptionType   type,
+		const Value&       value)
 {
+	assert(value.type() == type || value.type() == 0);
 	_max_name_length = std::max(_max_name_length, name.length());
 	_options.insert(make_pair(name, Option(name, letter, desc, type, value)));
-	if (letter != '\0')
+	if (letter != '\0') {
 		_short_names.insert(make_pair(letter, name));
-	assert(value.type() == type || value.type() == Atom::NIL);
+	}
 	return *this;
 }
 
@@ -77,17 +78,18 @@ Configuration::set_value_from_string(Configuration::Option& option,
 	int   intval = 0;
 	char* endptr = NULL;
 	switch (option.type) {
-	case Atom::INT:
+	case INT:
 		intval = static_cast<int>(strtol(value.c_str(), &endptr, 10));
 		if (endptr && *endptr == '\0') {
-			option.value = _forge->make(intval);
+			option.value = Value(intval);
 		} else {
 			throw CommandLineError("option `" + option.name
 					+ "' has non-integer value `" + value + "'");
 		}
 		break;
-	case Atom::STRING:
-		option.value = _forge->make(value.c_str());
+	case STRING:
+		option.value = Value(value.c_str());
+		assert(option.value.type() == STRING);
 		break;
 	default:
 		throw CommandLineError(string("bad option type `--") + option.name + "'");
@@ -108,8 +110,8 @@ Configuration::parse(int argc, char** argv) throw (Configuration::CommandLineErr
 			if (o == _options.end()) {
 				throw CommandLineError(string("unrecognized option `--") + name + "'");
 			}
-			if (o->second.type == Atom::BOOL) {
-				o->second.value = _forge->make(true);
+			if (o->second.type == BOOL) {
+				o->second.value = Value(true);
 			} else {
 				if (++i >= argc)
 					throw CommandLineError("missing value for `--" + name + "'");
@@ -124,12 +126,12 @@ Configuration::parse(int argc, char** argv) throw (Configuration::CommandLineErr
 					throw CommandLineError(string("unrecognized option `-") + letter + "'");
 				Options::iterator o = _options.find(n->second);
 				if (j < len - 1) {
-					if (o->second.type != Atom::BOOL)
+					if (o->second.type != BOOL)
 						throw CommandLineError(string("missing value for `-") + letter + "'");
-					o->second.value = _forge->make(true);
+					o->second.value = Value(true);
 				} else {
-					if (o->second.type == Atom::BOOL) {
-						o->second.value = _forge->make(true);
+					if (o->second.type == BOOL) {
+						o->second.value = Value(true);
 					} else {
 						if (++i >= argc)
 							throw CommandLineError(string("missing value for `-") + letter + "'");
@@ -150,10 +152,10 @@ Configuration::print(std::ostream& os, const std::string mime_type) const
 	}
 }
 
-const Raul::Atom&
+const Raul::Configuration::Value&
 Configuration::option(const std::string& long_name)
 {
-	static const Raul::Atom nil;
+	static const Value nil;
 	Options::iterator o = _options.find(long_name);
 	if (o == _options.end())
 		return nil;

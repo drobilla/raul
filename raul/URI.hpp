@@ -23,7 +23,6 @@
 #include <exception>
 #include <ostream>
 #include <glib.h>
-#include "raul/Atom.hpp"
 
 namespace Raul {
 
@@ -94,8 +93,6 @@ public:
 	inline size_t length()                           const { return str().length(); }
 	inline size_t find(const std::string& s)         const { return str().find(s); }
 	inline size_t find_last_of(char c) const { return str().find_last_of(c); }
-
-	inline operator Raul::Atom() const { return Raul::Atom(_str, 12345); }
 
 private:
 	const char* _str;

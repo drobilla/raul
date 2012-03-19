@@ -24,83 +24,60 @@
 #include <cassert>
 #include <cstdlib>
 #include <cstring>
+#include <iostream>
 #include <map>
-#include <ostream>
 #include <string>
 
 namespace Raul {
 
-class URI;
 class Forge;
 
 /** A piece of data with some type.
  *
- * Atoms can be of various primitive types (integer, float, etc) as well as
- * a string or primitive.  The primitive types are entirely contained within
- * the Atom, i.e. the Atom is POD.  String, URI, and blob atoms are not POD.
+ * An Atom is either a primitive type (int, float, etc.) or a blob.  Primitives
+ * are contained entirely within this struct so everything is realtime safe.
+ * Blob creation/copying/destruction allocates and is not realtime safe.
  *
  * \ingroup raul
  */
 class Atom {
 public:
-	Atom() : _type(NIL), _blob_val(0) {}
-
-	enum Type {
-		NIL,
-		INT,
-		FLOAT,
-		BOOL,
-		URI,
-		STRING,
-		BLOB,
-		DICT
-	};
-
+	Atom() : _size(0), _type(0) { _val._blob = NULL; }
 	~Atom() { dealloc(); }
 
+	typedef uint32_t TypeID;
+
 	Atom(const Atom& copy)
-		: _type(copy._type)
+		: _size(copy._size)
+		, _type(copy._type)
 	{
-		switch (_type) {
-		case NIL:    _blob_val   = 0;                              break;
-		case INT:    _int_val    = copy._int_val;                  break;
-		case FLOAT:  _float_val  = copy._float_val;                break;
-		case BOOL:   _bool_val   = copy._bool_val;                 break;
-		case URI:    _string_val = copy._string_val;               break;
-		case STRING: _string_val = g_strdup(copy._string_val);     break;
-		case BLOB:   _blob_val   = new BlobValue(*copy._blob_val); break;
-		case DICT:   _dict_val   = new DictValue(*copy._dict_val); break;
+		if (is_reference()) {
+			_val._blob = malloc(_size);
+			memcpy(_val._blob, copy._val._blob, _size);
+		} else {
+			memcpy(&_val, &copy._val, _size);
 		}
 	}
 
 	Atom& operator=(const Atom& other) {
 		dealloc();
+		_size = other._size;
 		_type = other._type;
-
-		switch (_type) {
-		case NIL:    _blob_val   = 0;                               break;
-		case INT:    _int_val    = other._int_val;                  break;
-		case FLOAT:  _float_val  = other._float_val;                break;
-		case BOOL:   _bool_val   = other._bool_val;                 break;
-		case URI:    _string_val = other._string_val;               break;
-		case STRING: _string_val = g_strdup(other._string_val);     break;
-		case BLOB:   _blob_val   = new BlobValue(*other._blob_val); break;
-		case DICT:   _dict_val   = new DictValue(*other._dict_val); break;
+		if (is_reference()) {
+			_val._blob = malloc(_size);
+			memcpy(_val._blob, other._val._blob, _size);
+		} else {
+			memcpy(&_val, &other._val, _size);
 		}
 		return *this;
 	}
 
 	inline bool operator==(const Atom& other) const {
 		if (_type == other.type()) {
-			switch (_type) {
-			case NIL:    return true;
-			case INT:    return _int_val    == other._int_val;
-			case FLOAT:  return _float_val  == other._float_val;
-			case BOOL:   return _bool_val   == other._bool_val;
-			case URI:    return _string_val == other._string_val;
-			case STRING: return strcmp(_string_val, other._string_val) == 0;
-			case BLOB:   return _blob_val == other._blob_val;
-			case DICT:   return *_dict_val == *other._dict_val;
+			if (is_reference()) {
+				return !memcmp(_val._blob, other._val._blob, _size);
+			} else {
+				return !memcmp(&_val, &other._val, _size);
 			}
 		}
 		return false;
@@ -110,186 +87,124 @@ public:
 
 	inline bool operator<(const Atom& other) const {
 		if (_type == other.type()) {
-			switch (_type) {
-			case NIL:    return true;
-			case INT:    return _int_val    < other._int_val;
-			case FLOAT:  return _float_val  < other._float_val;
-			case BOOL:   return _bool_val   < other._bool_val;
-			case URI:
-				if (_string_val == other._string_val) {
-					return false;
-				} // else fall through to STRING
-			case STRING: return strcmp(_string_val, other._string_val) < 0;
-			case BLOB:   return _blob_val   < other._blob_val;
-			case DICT:   return *_dict_val  < *other._dict_val;
+			if (is_reference()) {
+				return memcmp(_val._blob, other._val._blob, _size) < 0;
+			} else {
+				return memcmp(&_val, &other._val, _size) < 0;
 			}
 		}
 		return _type < other.type();
 	}
 
-	inline size_t data_size() const {
-		switch (_type) {
-		case NIL:    return 0;
-		case INT:    return sizeof(uint32_t);
-		case FLOAT:  return sizeof(float);
-		case BOOL:   return sizeof(bool);
-		case URI:
-		case STRING: return strlen(_string_val) + 1;
-		case BLOB:   return _blob_val->size();
-		case DICT:   return 0; // FIXME ?
-		}
-		return 0;
+	inline uint32_t size()     const { return _size; }
+	inline bool     is_valid() const { return _type; }
+	inline TypeID   type()     const { return _type; }
+
+	inline const void* get_body() const {
+		return is_reference() ? _val._blob : &_val;
 	}
 
-	inline bool is_valid() const { return (_type != NIL); }
-
-	/** Type of this atom.  Always check this before attempting to get the
-	 * value - attempting to get the incorrectly typed value is a fatal error.
-	 */
-	Type type() const { return _type; }
-
-	inline int32_t     get_int32()  const { assert(_type == INT);    return _int_val; }
-	inline float       get_float()  const { assert(_type == FLOAT);  return _float_val; }
-	inline bool        get_bool()   const { assert(_type == BOOL);   return _bool_val; }
-	inline const char* get_string() const { assert(_type == STRING); return _string_val; }
-	inline const char* get_uri()    const { assert(_type == URI);    return _string_val; }
-
-	inline const char* get_blob_type() const { assert(_type == BLOB); return _blob_val->type(); }
-	inline const void* get_blob()      const { assert(_type == BLOB); return _blob_val->data(); }
+	inline int32_t     get_int32()  const { return _val._int; }
+	inline float       get_float()  const { return _val._float; }
+	inline bool        get_bool()   const { return _val._bool; }
+	inline const char* get_uri()    const { return (const char*)get_body(); }
+	inline const char* get_string() const { return (const char*)get_body(); }
 
 	typedef std::map<Raul::Atom, Raul::Atom> DictValue;
 
-	inline const DictValue& get_dict() const { assert(_type == DICT); return *_dict_val; }
+	inline const DictValue& get_dict() const { return *(DictValue*)_val._blob; }
 
 private:
 	friend class Forge;
-	Atom(int32_t val)     : _type(INT),    _int_val(val)              {}
-	Atom(float val)       : _type(FLOAT),  _float_val(val)            {}
-	Atom(bool val)        : _type(BOOL),   _bool_val(val)             {}
-	Atom(const char* val) : _type(STRING), _string_val(g_strdup(val)) {}
 
-	Atom(const std::string& val) : _type(STRING), _string_val(g_strdup(val.c_str())) {}
-
-	/** URI constructor (@a t must be URI) */
-	Atom(Type t, const std::string& val) : _type(t), _string_val(g_intern_string(val.c_str())) {
-		assert(t == URI);
-	}
-
-	Atom(const char* type_uri, size_t size, void* val)
-		: _type(BLOB), _blob_val(new BlobValue(type_uri, size, val)) {}
-
-	Atom(const DictValue& dict) : _type(DICT), _dict_val(new DictValue(dict)) {}
-
-	Type _type;
-
-	friend class Raul::URI;
-	Atom(const char* str, uint32_t magic) : _type(URI), _string_val(str) {
-		assert(magic == 12345);
-		assert(g_intern_string(str) == str);
+	Atom(uint32_t s, TypeID t, const void* v)
+		: _size(s)
+		, _type(t)
+	{
+		if (is_reference()) {
+			_val._blob = malloc(s);
+			memcpy(_val._blob, v, s);
+		} else {
+			memcpy(&_val, v, s);
+		}
 	}
 
 	inline void dealloc() {
-		switch (_type) {
-		case STRING:
-			g_free(const_cast<char*>(_string_val));
-			break;
-		case BLOB:
-			delete _blob_val;
-		default:
-			break;
+		if (is_reference()) {
+			free(_val._blob);
 		}
 	}
 
-	class BlobValue {
-	public:
-		BlobValue(const char* type, size_t size, void* data)
-			: _type_length(strlen(type) + 1) // + 1 for \0
-			, _size(size)
-			, _buf(malloc(_type_length + _size))
-		{
-			memcpy(_buf, type, _type_length);
-			memcpy(static_cast<char*>(_buf) + _type_length, data, size);
-		}
+	inline bool is_reference() const {
+		return _size > sizeof(_val);
+	}
 
-		BlobValue(const BlobValue& copy)
-			: _type_length(copy._type_length)
-			, _size(copy._size)
-			, _buf(malloc(_type_length + _size))
-		{
-			_type_length = copy._type_length;
-			memcpy(_buf, copy._buf, _type_length + _size);
-		}
-
-		~BlobValue() { free(_buf); }
-
-		inline const char* type() const { return static_cast<const char*>(_buf); }
-		inline const void* data() const { return static_cast<const char*>(_buf) + _type_length; }
-		inline size_t      size() const { return _size; }
-	private:
-		size_t _type_length; ///< Length of type string (first part of buffer, inc. \0)
-		size_t _size;        ///< Length of data not including (after) type string
-		void*  _buf;         ///< Type string followed by data
-	};
+	uint32_t _size;
+	TypeID   _type;
 
 	union {
-		int32_t          _int_val;
-		float            _float_val;
-		bool             _bool_val;
-		const char*      _string_val;
-		BlobValue*       _blob_val;
-		const DictValue* _dict_val;
-	};
+		int32_t _int;
+		float   _float;
+		int32_t _bool;
+		void*   _blob;
+	} _val;
 };
 
 class Forge {
 public:
-	Atom make()                                    { return Atom(); }
-	Atom make(int32_t v)                           { return Atom(v); }
-	Atom make(float v)                             { return Atom(v); }
-	Atom make(bool v)                              { return Atom(v); }
-	Atom make(const char* v)                       { return Atom(v); }
-	Atom alloc(const std::string& v)               { return Atom(v); }
-	Atom alloc(const Atom::DictValue& v)           { return Atom(v); }
-	Atom alloc(Atom::Type t, const std::string& v) { return Atom(t, v); }
+	Forge()
+		: Int(1)
+		, Float(2)
+		, Bool(3)
+		, URI(4)
+		, String(5)
+		, Dict(6)
+	{}
+
+	Atom make()          { return Atom(); }
+	Atom make(int32_t v) { return Atom(sizeof(int32_t), Int, &v); }
+	Atom make(float v)   { return Atom(sizeof(float), Float, &v); }
+
+	Atom alloc(uint32_t size, uint32_t type, const void* val) {
+		return Atom(size, type, val);
+	}
+
+	Atom make_bool(bool v) {
+		const int32_t iv = v ? 1 : 0;
+		return Atom(sizeof(int32_t), Bool, &iv);
+	}
+
+	Atom alloc(const char* v) {
+		const size_t len = strlen(v);
+		return Atom(len + 1, String, v);
+	}
+
+	Atom alloc(const std::string& v) {
+		return Atom(v.length() + 1, String, v.c_str());
+	}
+
+	Atom alloc(const Atom::DictValue& v) {
+		std::cerr << "FIXME: Atom dict" << std::endl;
+		return Atom();
+	}
+
+	Atom alloc_uri(const char* v) {
+		const size_t len = strlen(v);
+		return Atom(len + 1, URI, v);
+	}
+
+	Atom alloc_uri(const std::string& v) {
+		return Atom(v.length() + 1, URI, v.c_str());
+	}
+
+	Atom::TypeID Int;
+	Atom::TypeID Float;
+	Atom::TypeID Bool;
+	Atom::TypeID URI;
+	Atom::TypeID String;
+	Atom::TypeID Dict;
 };
 
 } // namespace Raul
-
-static inline std::ostream& operator<<(std::ostream& os, const Raul::Atom& atom)
-{
-	switch (atom.type()) {
-	case Raul::Atom::NIL:    return os << "(nil)";
-	case Raul::Atom::INT:    return os << atom.get_int32();
-	case Raul::Atom::FLOAT:  return os << atom.get_float();
-	case Raul::Atom::BOOL:   return os << (atom.get_bool() ? "true" : "false");
-	case Raul::Atom::URI:    return os << "<" << atom.get_uri() << ">";
-	case Raul::Atom::STRING: return os << atom.get_string();
-	case Raul::Atom::BLOB:   return os << atom.get_blob();
-	case Raul::Atom::DICT:
-		os << "{";
-		for (Raul::Atom::DictValue::const_iterator i = atom.get_dict().begin();
-				i != atom.get_dict().end(); ++i) {
-			os << " " << i->first << " " << i->second << ";";
-		}
-		os << " }";
-		return os;
-	}
-	return os;
-}
-
-static inline std::ostream& operator<<(std::ostream& os, Raul::Atom::Type type)
-{
-	switch (type) {
-	case Raul::Atom::NIL:    return os << "Nil";
-	case Raul::Atom::INT:    return os << "Int";
-	case Raul::Atom::FLOAT:  return os << "Float";
-	case Raul::Atom::BOOL:   return os << "Bool";
-	case Raul::Atom::URI:    return os << "URI";
-	case Raul::Atom::STRING: return os << "String";
-	case Raul::Atom::BLOB:   return os << "Blob";
-	case Raul::Atom::DICT:   return os << "Dict";
-	}
-	return os;
-}
 
 #endif // RAUL_ATOM_HPP
