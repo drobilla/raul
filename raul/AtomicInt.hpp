@@ -35,7 +35,7 @@ public:
 
 	inline void operator=(int val) { _val = val; }
 	inline void operator=(const AtomicInt& val) { _val = val.get(); }
- 
+
 	inline void operator+=(int val) { _val += val; }
 
 	inline void operator-=(int val) { _val -= val; }
