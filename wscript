@@ -5,7 +5,7 @@ from waflib.extras import autowaf as autowaf
 import waflib.Options as Options
 
 # Version of this package (even if built as a child)
-RAUL_VERSION = '0.8.1'
+RAUL_VERSION = '0.8.3'
 
 # Library version (UNIX style major, minor, micro)
 # major increment <=> incompatible changes
