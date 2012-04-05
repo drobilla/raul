@@ -164,14 +164,13 @@ public:
 	Atom make()          { return Atom(); }
 	Atom make(int32_t v) { return Atom(sizeof(int32_t), Int, &v); }
 	Atom make(float v)   { return Atom(sizeof(float), Float, &v); }
+	Atom make(bool v) {
+		const int32_t iv = v ? 1 : 0;
+		return Atom(sizeof(int32_t), Bool, &iv);
+	}
 
 	Atom alloc(uint32_t size, uint32_t type, const void* val) {
 		return Atom(size, type, val);
-	}
-
-	Atom make_bool(bool v) {
-		const int32_t iv = v ? 1 : 0;
-		return Atom(sizeof(int32_t), Bool, &iv);
 	}
 
 	Atom alloc(const char* v) {
