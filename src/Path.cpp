@@ -1,5 +1,5 @@
 /* This file is part of Raul.
- * Copyright 2007-2011 David Robillard <http://drobilla.net>
+ * Copyright 2007-2012 David Robillard <http://drobilla.net>
  *
  * Raul is free software; you can redistribute it and/or modify it under the
  * terms of the GNU General Public License as published by the Free Software
@@ -208,6 +208,29 @@ bool
 Path::is_parent_of(const Path& child) const
 {
 	return child.is_child_of(*this);
+}
+
+Path
+Path::lca(const Path& patha, const Path& pathb)
+{
+	const std::string a = patha.chop_scheme();
+	const std::string b = pathb.chop_scheme();
+	size_t len = std::min(a.length(), b.length());
+
+	size_t last_slash = 0;
+	for (size_t i = 0; i < len; ++i) {
+		if (a[i] == '/' && b[i] == '/') {
+			last_slash = i;
+		}
+		if (a[i] != b[i]) {
+			break;
+		}
+	}
+
+	if (last_slash <= 1) {
+		return root();
+	}
+	return Path(a.substr(0, last_slash));
 }
 
 } // namespace Raul

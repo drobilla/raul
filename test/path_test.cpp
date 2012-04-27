@@ -41,6 +41,10 @@ main()
 	CHECK(Path("/foo").is_parent_of(Path("/foo/bar")));
 	CHECK(!(Path("/foo").is_parent_of(Path("/foo2"))));
 
+	CHECK(Path::lca(Path("/foo"), Path("/foo/bar/baz")) == Path("/"));
+	CHECK(Path::lca(Path("/foo/bar"), Path("/foo/bar/baz")) == Path("/foo"));
+	CHECK(Path::lca(Path("/foo/bar/quux"), Path("/foo/bar/baz")) == Path("/foo/bar"));
+
 	CHECK(!Path::is_valid(""));
 	CHECK(!Path::is_valid("hello"));
 	CHECK(!Path::is_valid("/foo/bar/"));

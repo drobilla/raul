@@ -90,6 +90,8 @@ public:
 	inline bool operator==(const URI& uri) const { return _str == uri._str; }
 	inline bool operator!=(const URI& uri) const { return _str != uri._str; }
 
+	inline char operator[](int i) const { return _str[i]; }
+
 	inline size_t length()                           const { return str().length(); }
 	inline size_t find(const std::string& s)         const { return str().find(s); }
 	inline size_t find_last_of(char c) const { return str().find_last_of(c); }

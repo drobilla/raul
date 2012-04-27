@@ -134,6 +134,9 @@ public:
 
 	Path operator+(const Path& p) const { return child(p); }
 
+	/** Return the lowest common ancestor of a and b. */
+	static Path lca(const Path& a, const Path& b);
+
 	/** Return the symbol of this path (everything after the last '/').
 	 * This is e.g. the "method name" for OSC paths, the filename
 	 * for filesystem paths, etc.
