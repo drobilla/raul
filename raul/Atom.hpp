@@ -157,8 +157,9 @@ public:
 		, Float(2)
 		, Bool(3)
 		, URI(4)
-		, String(5)
-		, Dict(6)
+		, URID(5)
+		, String(6)
+		, Dict(7)
 	{}
 
 	Atom make()          { return Atom(); }
@@ -168,6 +169,8 @@ public:
 		const int32_t iv = v ? 1 : 0;
 		return Atom(sizeof(int32_t), Bool, &iv);
 	}
+
+	Atom make_urid(int32_t v) { return Atom(sizeof(int32_t), URID, &v); }
 
 	Atom alloc(uint32_t size, uint32_t type, const void* val) {
 		return Atom(size, type, val);
@@ -200,6 +203,7 @@ public:
 	Atom::TypeID Float;
 	Atom::TypeID Bool;
 	Atom::TypeID URI;
+	Atom::TypeID URID;
 	Atom::TypeID String;
 	Atom::TypeID Dict;
 };
