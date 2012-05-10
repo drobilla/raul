@@ -21,7 +21,7 @@
 #include "raul/log.hpp"
 #include "raul/Thread.hpp"
 
-#define LOG(s) s << "[" << _name << "] "
+#define LOG(s) (s("[")(_name)("] "))
 
 using std::endl;
 

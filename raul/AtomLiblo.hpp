@@ -20,8 +20,6 @@
 
 #include <lo/lo.h>
 
-#include <iostream>
-
 #include "raul/log.hpp"
 #include "raul/Atom.hpp"
 
@@ -88,7 +86,7 @@ lo_arg_to_atom(Raul::Forge& forge, char type, lo_arg* arg)
 		return forge.make((bool)false);
 	default:
 		warn << "Unable to convert OSC type '"
-			<< type << "' to Atom" << std::endl;
+		     << type << "' to Atom" << std::endl;
 		return Atom();
 	}
 }

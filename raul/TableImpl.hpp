@@ -20,7 +20,6 @@
 
 #include <algorithm>
 #include <cassert>
-#include <iostream>
 #include <stdexcept>
 #include <utility>
 #include <vector>

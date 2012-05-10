@@ -18,11 +18,10 @@
 #ifndef RAUL_PATH_HPP
 #define RAUL_PATH_HPP
 
-#include <iostream>
-#include <cctype>
-#include <string>
-#include <cstring>
 #include <cassert>
+#include <cctype>
+#include <cstring>
+#include <string>
 
 #include "raul/Symbol.hpp"
 #include "raul/URI.hpp"

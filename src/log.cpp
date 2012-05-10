@@ -46,10 +46,10 @@ NullBuffer debug_buffer;
 
 #endif // RAUL_LOG_COLOUR
 
-std::ostream info(&info_buffer);
-std::ostream warn(&warn_buffer);
-std::ostream error(&error_buffer);
-std::ostream debug(&debug_buffer);
+Raul::Log info(&info_buffer);
+Raul::Log warn(&warn_buffer);
+Raul::Log error(&error_buffer);
+Raul::Log debug(&debug_buffer);
 
 std::string
 Raul::LogBuffer::colour(Colour c)

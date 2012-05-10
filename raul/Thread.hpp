@@ -18,7 +18,6 @@
 #ifndef RAUL_THREAD_HPP
 #define RAUL_THREAD_HPP
 
-#include <iostream>
 #include <set>
 #include <string>
 

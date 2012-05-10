@@ -1,5 +1,5 @@
 /* This file is part of Raul.
- * Copyright 2009-2011 David Robillard <http://drobilla.net>
+ * Copyright 2009-2012 David Robillard <http://drobilla.net>
  *
  * Raul is free software; you can redistribute it and/or modify it under the
  * terms of the GNU General Public License as published by the Free Software
@@ -18,11 +18,14 @@
 #ifndef RAUL_LOG_HPP
 #define RAUL_LOG_HPP
 
+#include <boost/format.hpp>
 #include <iostream>
 #include <sstream>
 #include <string>
 
 namespace Raul {
+
+typedef boost::basic_format<char> fmt;
 
 /** Buffer for (possibly coloured) log printing.
  * \ingroup raul
@@ -85,10 +88,18 @@ protected:
 	int      sync()               { return 0; }
 };
 
-extern std::ostream info;
-extern std::ostream warn;
-extern std::ostream error;
-extern std::ostream debug;
+class Log : public std::ostream {
+public:
+	Log(std::streambuf* buf) : std::ostream(buf) {}
+	template<typename T> Log& operator()(const T& o) {
+		*this << o; return *this;
+	}
+};
+
+extern Raul::Log info;
+extern Raul::Log warn;
+extern Raul::Log error;
+extern Raul::Log debug;
 
 } // namespace Raul
 

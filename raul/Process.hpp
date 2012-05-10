@@ -22,7 +22,6 @@
 #include <sys/time.h>
 #include <unistd.h>
 
-#include <iostream>
 #include <string>
 
 #include "raul/Noncopyable.hpp"
@@ -50,7 +49,7 @@ public:
         const std::string arguments = command.substr((command.find(" ") + 1));
 
         info << "Launching child process '" << executable << "' with arguments '"
-            << arguments << "'" << std::endl;
+             << arguments << "'" << std::endl;
 
         // Use the same double fork() trick as JACK to prevent zombie children
         const int err = fork();
