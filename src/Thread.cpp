@@ -18,6 +18,8 @@
 #include <cstring>
 #include <string>
 
+#include <pthread.h>
+
 #include "raul/log.hpp"
 #include "raul/Thread.hpp"
 
@@ -27,30 +29,51 @@ using std::endl;
 
 namespace Raul {
 
-/* Thread-specific data key (once-only initialized) */
-pthread_once_t Thread::_thread_key_once = PTHREAD_ONCE_INIT;
-pthread_key_t  Thread::_thread_key;
+struct ThreadImpl {
+	pthread_t pthread;
+};
+
+static pthread_once_t s_thread_key_once = PTHREAD_ONCE_INIT;
+static pthread_key_t  s_thread_key;
+
+static void thread_key_alloc() {
+	pthread_key_create(&s_thread_key, NULL);
+}
 
 Thread::Thread(const std::string& name)
 	: _exit_flag(false)
+	, _impl(new ThreadImpl())
 	, _name(name)
-	, _pthread_exists(false)
+	, _thread_exists(false)
 	, _own_thread(true)
 {
-	pthread_once(&_thread_key_once, thread_key_alloc);
-	pthread_setspecific(_thread_key, this);
+	pthread_once(&s_thread_key_once, thread_key_alloc);
+	pthread_setspecific(s_thread_key, this);
 }
 
 /** Must be called from thread */
 Thread::Thread(pthread_t thread, const std::string& name)
 	: _exit_flag(false)
+	, _impl(new ThreadImpl())
 	, _name(name)
-	, _pthread_exists(true)
+	, _thread_exists(true)
 	, _own_thread(false)
-	, _pthread(thread)
 {
-	pthread_once(&_thread_key_once, thread_key_alloc);
-	pthread_setspecific(_thread_key, this);
+	_impl->pthread = thread;
+	pthread_once(&s_thread_key_once, thread_key_alloc);
+	pthread_setspecific(s_thread_key, this);
+}
+
+Thread::~Thread()
+{
+	stop();
+	delete _impl;
+}
+
+Thread*
+Thread::create_for_this_thread(const std::string& name)
+{
+	return new Thread(pthread_self(), name);
 }
 
 /** Return the calling thread.
@@ -60,7 +83,8 @@ Thread::Thread(pthread_t thread, const std::string& name)
 Thread&
 Thread::get()
 {
-	Thread* this_thread = reinterpret_cast<Thread*>(pthread_getspecific(_thread_key));
+	Thread* this_thread = reinterpret_cast<Thread*>(
+		pthread_getspecific(s_thread_key));
 	if (!this_thread)
 		this_thread = new Thread(); // sets thread-specific data
 
@@ -71,9 +95,9 @@ void*
 Thread::_static_run(void* thread)
 {
 	Thread* me = static_cast<Thread*>(thread);
-	pthread_setspecific(me->_thread_key, thread);
+	pthread_setspecific(s_thread_key, thread);
 	me->_run();
-	me->_pthread_exists = false;
+	me->_thread_exists = false;
 	return NULL;
 }
 
@@ -81,15 +105,15 @@ Thread::_static_run(void* thread)
 void
 Thread::start()
 {
-	if (!_pthread_exists) {
+	if (!_thread_exists) {
 		LOG(info) << "Starting thread" << endl;
 
 		pthread_attr_t attr;
 		pthread_attr_init(&attr);
 		pthread_attr_setstacksize(&attr, 1500000);
 
-		pthread_create(&_pthread, &attr, _static_run, this);
-		_pthread_exists = true;
+		pthread_create(&_impl->pthread, &attr, _static_run, this);
+		_thread_exists = true;
 	}
 }
 
@@ -97,13 +121,13 @@ Thread::start()
 void
 Thread::stop()
 {
-	if (_pthread_exists) {
+	if (_thread_exists) {
 		if (_own_thread) {
 			_exit_flag = true;
-			pthread_cancel(_pthread);
-			pthread_join(_pthread, NULL);
+			pthread_cancel(_impl->pthread);
+			pthread_join(_impl->pthread, NULL);
 		}
-		_pthread_exists = false;
+		_thread_exists = false;
 		LOG(info) << "Exiting thread" << endl;
 	}
 }
@@ -111,7 +135,7 @@ Thread::stop()
 void
 Thread::join()
 {
-	pthread_join(_pthread, NULL);
+	pthread_join(_impl->pthread, NULL);
 }
 
 void
@@ -119,7 +143,7 @@ Thread::set_scheduling(int policy, unsigned int priority)
 {
 	sched_param sp;
 	sp.sched_priority = priority;
-	int result = pthread_setschedparam(_pthread, policy, &sp);
+	int result = pthread_setschedparam(_impl->pthread, policy, &sp);
 	if (!result) {
 		LOG(info) << "Set scheduling policy to ";
 		switch (policy) {

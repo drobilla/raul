@@ -18,7 +18,6 @@
 #ifndef RAUL_SLAVE_HPP
 #define RAUL_SLAVE_HPP
 
-#include <pthread.h>
 #include "raul/Semaphore.hpp"
 #include "raul/Thread.hpp"
 

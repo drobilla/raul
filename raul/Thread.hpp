@@ -21,11 +21,11 @@
 #include <set>
 #include <string>
 
-#include <pthread.h>
-
 #include "raul/Noncopyable.hpp"
 
 namespace Raul {
+
+struct ThreadImpl;
 
 /** Abstract base class for a thread.
  *
@@ -39,16 +39,12 @@ namespace Raul {
 class Thread : Noncopyable
 {
 public:
-	virtual ~Thread() {
-		stop();
-	}
+	virtual ~Thread();
 
 	static Thread* create(const std::string& name="")
 		{ return new Thread(name); }
 
-	/** Must be called from thread */
-	static Thread* create_for_this_thread(const std::string& name="")
-		{ return new Thread(pthread_self(), name); }
+	static Thread* create_for_this_thread(const std::string& name="");
 
 	static Thread& get();
 
@@ -84,22 +80,11 @@ protected:
 private:
 	static void* _static_run(void* me);
 
-	/** Allocate thread-specific data key */
-	static void thread_key_alloc() {
-		pthread_key_create(&_thread_key, NULL);
-	}
-
-	/* Key for the thread-specific buffer */
-	static pthread_key_t _thread_key;
-
-	/* Once-only initialisation of the key */
-	static pthread_once_t _thread_key_once;
-
+	ThreadImpl*        _impl;
 	std::set<unsigned> _contexts;
 	std::string        _name;
-	bool               _pthread_exists;
+	bool               _thread_exists;
 	bool               _own_thread;
-	pthread_t          _pthread;
 };
 
 } // namespace Raul
