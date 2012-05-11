@@ -46,6 +46,11 @@ public:
 
 	static Thread* create_for_this_thread(const std::string& name="");
 
+	/** Return the calling thread.
+	 *
+	 * If the calling thread does not yet have a Thread object associated with
+	 * it, one will be created.
+	 */
 	static Thread& get();
 
 	virtual void start();

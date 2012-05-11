@@ -76,17 +76,13 @@ Thread::create_for_this_thread(const std::string& name)
 	return new Thread(pthread_self(), name);
 }
 
-/** Return the calling thread.
- * The return value of this should NOT be cached unless the thread is
- * explicitly user created with create().
- */
 Thread&
 Thread::get()
 {
 	Thread* this_thread = reinterpret_cast<Thread*>(
 		pthread_getspecific(s_thread_key));
 	if (!this_thread)
-		this_thread = new Thread(); // sets thread-specific data
+		this_thread = create_for_this_thread("");
 
 	return *this_thread;
 }

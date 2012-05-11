@@ -46,8 +46,8 @@ public:
 
 	LogBuffer(const char* prefix="", Colour colour=DEFAULT)
 		: _prefix(prefix)
-		, _colour(colour)
 		, _out(std::cout)
+		, _colour(colour)
 	{}
 
 	/** Change the colour of the output, e.g. out << colour(RED) << "red" << endl; */
@@ -75,10 +75,10 @@ protected:
 private:
 	void emit();
 
-	const char*   _prefix;
-	Colour        _colour;
+	std::string   _prefix;
 	std::string   _line;
 	std::ostream& _out;
+	Colour        _colour;
 };
 
 class NullBuffer : public std::streambuf

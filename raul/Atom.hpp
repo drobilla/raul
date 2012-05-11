@@ -162,6 +162,8 @@ public:
 		, Dict(7)
 	{}
 
+	virtual ~Forge() {}
+
 	Atom make()          { return Atom(); }
 	Atom make(int32_t v) { return Atom(sizeof(int32_t), Int, &v); }
 	Atom make(float v)   { return Atom(sizeof(float), Float, &v); }
