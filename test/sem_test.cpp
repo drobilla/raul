@@ -1,4 +1,5 @@
 #include <iostream>
+#include <unistd.h>
 #include "raul/Thread.hpp"
 #include "raul/Semaphore.hpp"
 
