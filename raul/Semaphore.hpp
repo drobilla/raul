@@ -25,8 +25,9 @@
 #elif defined(_WIN32)
 #    include <windows.h>
 #else
-#    include <semaphore.h>
 #    include <errno.h>
+#    include <semaphore.h>
+#    include <time.h>
 #endif
 
 namespace Raul {
@@ -229,8 +230,18 @@ inline bool
 Semaphore::timed_wait(unsigned ms)
 {
 	const unsigned seconds = ms / 1000;
-	const struct timespec_t t = { seconds, (ms - (seconds * 1000)) * 1000000 };
-	return (sem_timedwait(_sem, &t) == 0);
+
+	struct timespec now;
+	clock_gettime(CLOCK_REALTIME, &now);
+
+	struct timespec delta = { seconds, (ms - (seconds * 1000)) * 1000000 };
+	struct timespec end   = { now.tv_sec + delta.tv_sec,
+	                          now.tv_nsec + delta.tv_nsec };
+	if (end.tv_nsec >= 1000000000L) {
+		++end.tv_sec;
+		end.tv_nsec -= 1000000000L;
+	}
+	return (sem_timedwait(&_sem, &end) == 0);
 }
 
 #endif
