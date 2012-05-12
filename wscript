@@ -56,6 +56,11 @@ def configure(conf):
     autowaf.check_pkg(conf, 'gthread-2.0', atleast_version='2.14.0',
                                       uselib_store='GTHREAD', mandatory=True)
 
+    if conf.env['BUILD_TESTS']:
+        conf.check_cc(lib='gcov',
+                      define_name='HAVE_GCOV',
+                      mandatory=False)
+
     if Options.platform == 'darwin':
         conf.check(framework_name='CoreServices')
         conf.env['FRAMEWORK_RAUL'] = ['CoreServices']
@@ -143,6 +148,12 @@ def build(bld):
     set_defines(obj);
 
     if bld.env['BUILD_TESTS']:
+        test_libs     = ['']
+        test_cxxflags = ['']
+        if bld.is_defined('HAVE_GCOV'):
+            test_libs     += ['gcov']
+            test_cxxflags += ['-fprofile-arcs', '-ftest-coverage']
+
         # Static library (for unit test code coverage)
         obj = bld(features = 'cxx cxxstlib')
         obj.source       = lib_source
@@ -152,7 +163,8 @@ def build(bld):
         obj.uselib       = 'GLIB GTHREAD'
         obj.framework    = framework
         obj.install_path = ''
-        obj.cxxflags     = [ '-fprofile-arcs',  '-ftest-coverage' ]
+        obj.cxxflags     = test_cxxflags
+        obj.lib          = test_libs
         set_defines(obj);
 
         # Unit tests
@@ -165,8 +177,8 @@ def build(bld):
             obj.framework    = framework
             obj.target       = i
             obj.install_path = ''
-            obj.cxxflags     = [ '-fprofile-arcs',  '-ftest-coverage' ]
-            obj.lib          = ['gcov']
+            obj.cxxflags     = test_cxxflags
+            obj.lib          = test_libs
             set_defines(obj);
 
     # Documentation
