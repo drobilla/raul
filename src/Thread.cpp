@@ -79,6 +79,7 @@ Thread::create_for_this_thread(const std::string& name)
 Thread&
 Thread::get()
 {
+	pthread_once(&s_thread_key_once, thread_key_alloc);
 	Thread* this_thread = reinterpret_cast<Thread*>(
 		pthread_getspecific(s_thread_key));
 	if (!this_thread)

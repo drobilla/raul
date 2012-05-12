@@ -24,8 +24,6 @@ private:
 int
 main()
 {
-	Thread::create_for_this_thread();
-
 	Thread& this_thread = Thread::get();
 	this_thread.set_name("Main");
 
