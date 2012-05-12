@@ -70,11 +70,14 @@ public:
 	/** Post/Increment/Signal */
 	inline void post();
 
-	/** Wait/Decrement.  Returns false on error. */
+	/** Wait/Decrement.  Return false on error. */
 	inline bool wait();
 
-	/** Attempt Wait/Decrement.  Returns true iff a decrement occurred. */
+	/** Attempt Wait/Decrement.  Return true iff decremented. */
 	inline bool try_wait();
+
+	/** Wait for at most @p ms milliseconds.  Return true iff decremented. */
+	inline bool timed_wait(unsigned ms);
 
 private:
 	inline bool init(unsigned initial);
@@ -128,6 +131,14 @@ Semaphore::try_wait()
 	return semaphore_timedwait(_sem, zero) == KERN_SUCCESS;
 }
 
+inline bool
+Semaphore::timed_wait(unsigned ms)
+{
+	const unsigned seconds = ms / 1000;
+	const mach_timespec_t t = { seconds, (ms - (seconds * 1000)) * 1000000 };
+	return semaphore_timedwait(_sem, t) == KERN_SUCCESS;
+}
+
 #elif defined(_WIN32)
 
 inline bool
@@ -164,6 +175,12 @@ inline bool
 Semaphore::try_wait()
 {
 	return WaitForSingleObject(_sem, 0) == WAIT_OBJECT_0;
+}
+
+inline bool
+Semaphore::timed_wait(unsigned ms)
+{
+	return WaitForSingleObject(_sem, ms) == WAIT_OBJECT_0;
 }
 
 #else  /* !defined(__APPLE__) && !defined(_WIN32) */
@@ -206,6 +223,14 @@ inline bool
 Semaphore::try_wait()
 {
 	return (sem_trywait(&_sem) == 0);
+}
+
+inline bool
+Semaphore::timed_wait(unsigned ms)
+{
+	const unsigned seconds = ms / 1000;
+	const struct timespec_t t = { seconds, (ms - (seconds * 1000)) * 1000000 };
+	return (sem_timedwait(_sem, &t) == 0);
 }
 
 #endif

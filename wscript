@@ -90,6 +90,7 @@ tests = '''
         test/quantize_test
         test/queue_test
         test/ringbuffer_test
+        test/sem_test
         test/smf_test
         test/table_test
         test/thread_test

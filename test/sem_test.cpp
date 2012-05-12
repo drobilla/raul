@@ -13,9 +13,15 @@ public:
 
 private:
 	void _run() {
-		cout << "[Waiter] Waiting for signal..." << endl;
-		_sem.wait();
-		cout << "[Waiter] Received signal, exiting" << endl;
+		while (true) {
+			if (_sem.timed_wait(250)) {
+				cout << "[Waiter] Received signal" << endl;
+				break;
+			} else {
+				cout << "[Waiter] Timed out" << endl;
+			}
+		}
+		cout << "[Waiter] Exiting" << endl;
 	}
 
 	Semaphore& _sem;
@@ -31,12 +37,12 @@ main()
 	Waiter waiter(sem);
 	waiter.start();
 
+	sleep(1);
+	
 	cout << "[Main] Signalling..." << endl;
 	sem.post();
 
-	cout << "[Main] Waiting for waiter..." << endl;
 	waiter.join();
-
 	cout << "[Main] Exiting" << endl;
 
 	return 0;
