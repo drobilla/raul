@@ -59,6 +59,9 @@ public:
 	}
 
 	Atom& operator=(const Atom& other) {
+		if (&other == this) {
+			return *this;
+		}
 		dealloc();
 		_size = other._size;
 		_type = other._type;

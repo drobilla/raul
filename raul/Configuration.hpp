@@ -80,6 +80,9 @@ public:
 
 		Value& operator=(const Value& other)
 		{
+			if (&other == this) {
+				return *this;
+			}
 			if (_type == STRING) {
 				free(_val._string);
 			}
