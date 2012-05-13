@@ -1,14 +1,15 @@
-raul (UNRELEASED) unstable, urgency=low
+raul (9999) unstable;
 
   * Remove EventRingBuffer
   * Use Sord instead of Redlandmm for AtomRDF
   * Add INSTALL file
   * Improve RingBuffer
   * Improve test suite
+  * Update license to GPL3+
 
-  -- David Robillard <d@drobilla.net>  UNRELEASED=
+ -- David Robillard <d@drobilla.net>
 
-raul (0.8.0) unstable, urgency=low
+raul (0.8.0) stable;
 
   * Implement Semaphore for Darwin
   * Remove unused/trivial/inappropriate Command and Stateful
@@ -30,7 +31,7 @@ raul (0.8.0) unstable, urgency=low
 
  -- David Robillard <d@drobilla.net>  Tue, 11 Jan 2011 17:42:07 -0500
 
-raul (0.7.0) unstable; urgency=low
+raul (0.7.0) stable;
 
   * Add several unit tests
   * Use malloc'd memory for RingBuffer/SRSWQueue (instead of a new'd array)
@@ -49,7 +50,7 @@ raul (0.7.0) unstable; urgency=low
 
  -- David Robillard <d@drobilla.net>  Fri, 03 Sep 2010 20:24:36 -0400
 
-raul (0.6.0) unstable; urgency=low
+raul (0.6.0) stable;
 
   * Switch to waf build system
   * Fix compilation with GCC 4.4
@@ -64,7 +65,7 @@ raul (0.6.0) unstable; urgency=low
 
  -- David Robillard <d@drobilla.net>  Tue, 08 Dec 2009 19:20:37 -0500
 
-raul (0.5.1) unstable; urgency=low
+raul (0.5.1) stable;
 
   * OSC blob fixes
   * Use true atomic integers for Queue indexes
@@ -72,7 +73,7 @@ raul (0.5.1) unstable; urgency=low
  -- David Robillard <d@drobilla.net>  Sun, 07 Sep 2008 14:10:32 -0400
 
 
-raul (0.5.0) unstable; urgency=low
+raul (0.5.0) stable;
 
   * Initial Debian release
 
