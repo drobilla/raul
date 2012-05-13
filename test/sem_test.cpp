@@ -39,7 +39,7 @@ main()
 	waiter.start();
 
 	sleep(1);
-	
+
 	cout << "[Main] Signalling..." << endl;
 	sem.post();
 

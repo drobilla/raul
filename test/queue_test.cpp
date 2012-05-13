@@ -95,10 +95,10 @@ dump_data()
 int
 main()
 {
-	unsigned long total_processed = 0;
+	size_t total_processed = 0;
 
 	cout << "Testing size" << endl;
-	for (unsigned i=0; i < queue.capacity(); ++i) {
+	for (size_t i=0; i < queue.capacity(); ++i) {
 		queue.push(i);
 		if (i == queue.capacity()-1) {
 			if (!queue.full()) {
@@ -115,7 +115,7 @@ main()
 		}
 	}
 
-	for (unsigned i = 0; i < queue.capacity(); ++i)
+	for (size_t i = 0; i < queue.capacity(); ++i)
 		queue.pop();
 
 	if (!queue.empty()) {

@@ -105,7 +105,7 @@ public:
 			, _listnode(NULL)
 		{}
 
-		const_iterator(const iterator& i)
+		explicit const_iterator(const iterator& i)
 			: _list(i._list)
 			, _listnode(i._listnode)
 		{}

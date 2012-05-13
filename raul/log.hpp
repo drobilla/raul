@@ -90,9 +90,10 @@ protected:
 
 class Log : public std::ostream {
 public:
-	Log(std::streambuf* buf) : std::ostream(buf) {}
+	explicit Log(std::streambuf* buf) : std::ostream(buf) {}
 	template<typename T> Log& operator()(const T& o) {
-		*this << o; return *this;
+		*this << o;
+		return *this;
 	}
 };
 

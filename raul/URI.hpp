@@ -36,7 +36,7 @@ class URI {
 public:
 	class BadURI : public std::exception {
 	public:
-		BadURI(const std::string& uri) : _uri(uri) {}
+		explicit BadURI(const std::string& uri) : _uri(uri) {}
 		~BadURI() throw() {}
 		const char* what() const throw() { return _uri.c_str(); }
 	private:
@@ -48,7 +48,9 @@ public:
 	 * It is a fatal error to construct a URI from an invalid string,
 	 * use is_valid first to check.
 	 */
-	URI(const std::basic_string<char>& uri="nil:0") : _str(g_intern_string(uri.c_str())) {
+	URI(const std::basic_string<char>& uri="nil:0")
+		: _str(g_intern_string(uri.c_str()))
+	{
 		if (!is_valid(uri))
 			throw BadURI(uri);
 	}
@@ -58,7 +60,9 @@ public:
 	 * It is a fatal error to construct a URI from an invalid string,
 	 * use is_valid first to check.
 	 */
-	URI(const char* uri) : _str(g_intern_string(uri)) {
+	URI(const char* uri)
+		: _str(g_intern_string(uri))
+	{
 		if (!is_valid(uri))
 			throw BadURI(uri);
 	}

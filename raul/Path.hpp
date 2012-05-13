@@ -45,7 +45,7 @@ class Path : public URI {
 public:
 	class BadPath : public std::exception {
 	public:
-		BadPath(const std::string& path) : _path(path) {}
+		explicit BadPath(const std::string& path) : _path(path) {}
 		~BadPath() throw() {}
 		const char* what() const throw() { return _path.c_str(); }
 	private:
