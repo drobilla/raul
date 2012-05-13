@@ -1,19 +1,18 @@
-/* This file is part of Raul.
- * Copyright 2007-2011 David Robillard <http://drobilla.net>
- *
- * Raul is free software; you can redistribute it and/or modify it under the
- * terms of the GNU General Public License as published by the Free Software
- * Foundation; either version 2 of the License, or (at your option) any later
- * version.
- *
- * Raul is distributed in the hope that it will be useful, but WITHOUT ANY
- * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE.  See the GNU General Public License for details.
- *
- * You should have received a copy of the GNU General Public License along
- * with this program; if not, write to the Free Software Foundation, Inc.,
- * 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA
- */
+/*
+  This file is part of Raul.
+  Copyright 2007-2012 David Robillard <http://drobilla.net>
+
+  Raul is free software: you can redistribute it and/or modify it under the
+  terms of the GNU General Public License as published by the Free Software
+  Foundation, either version 3 of the License, or any later version.
+
+  Raul is distributed in the hope that it will be useful, but WITHOUT ANY
+  WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR
+  A PARTICULAR PURPOSE.  See the GNU General Public License for more details.
+
+  You should have received a copy of the GNU General Public License
+  along with Raul.  If not, see <http://www.gnu.org/licenses/>.
+*/
 
 #ifndef RAUL_ATOMIC_INT_HPP
 #define RAUL_ATOMIC_INT_HPP
@@ -123,8 +122,13 @@ public:
 	/** Add val to value.
 	 * @return value immediately before addition took place.
 	 */
-	inline int exchange_and_add(int val)
-		{ return g_atomic_int_exchange_and_add(static_cast<volatile gint*>(&_val), val); }
+	inline int exchange_and_add(int val) {
+#if GLIB_CHECK_VERSION(2, 30, 0)
+		return g_atomic_int_add(static_cast<volatile gint*>(&_val), val);
+#else
+		return g_atomic_int_exchange_and_add(static_cast<volatile gint*>(&_val), val);
+#endif
+	}
 
 	/** Decrement value.
 	 * @return true if value is now 0, otherwise false.
