@@ -116,7 +116,7 @@ Thread::join()
 	pthread_join(_impl->pthread, NULL);
 }
 
-void
+bool
 Thread::set_scheduling(bool realtime, unsigned priority)
 {
 	sched_param sp;
@@ -128,9 +128,10 @@ Thread::set_scheduling(bool realtime, unsigned priority)
 		              % (realtime ? "realtime" : "normal")
 		              % sp.sched_priority);
 	} else {
-		LOG(info) << (fmt("Unable to set scheduling policy (%1%)\n")
+		LOG(warn) << (fmt("Unable to set scheduling policy (%1%)\n")
 		              % strerror(result));
 	}
+	return !result;
 }
 
 } // namespace Raul

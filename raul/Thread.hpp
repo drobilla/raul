@@ -55,8 +55,10 @@ public:
 	/** Wait until the thread exits. */
 	virtual void join();
 
-	/** Set the scheduling policy for this thread. */
-	virtual void set_scheduling(bool realtime, unsigned priority);
+	/** Set the scheduling policy for this thread.
+	 * @return True on success.
+	 */
+	virtual bool set_scheduling(bool realtime, unsigned priority);
 
 	/** Return the name of this thread. */
 	const std::string& name() const { return _name; }
