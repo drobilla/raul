@@ -14,6 +14,7 @@
   along with Raul.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+#include <sstream>
 #include <string>
 
 #include "raul/log.hpp"

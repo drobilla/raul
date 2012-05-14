@@ -19,7 +19,6 @@
 
 #include <boost/format.hpp>
 #include <iostream>
-#include <sstream>
 #include <string>
 
 namespace Raul {
