@@ -15,22 +15,34 @@
 */
 
 #include <iostream>
-#include "raul/Thread.hpp"
+
+#include "raul/AtomicInt.hpp"
 #include "raul/Semaphore.hpp"
+#include "raul/Thread.hpp"
+#include "raul/ThreadVar.hpp"
 
 using namespace std;
 using namespace Raul;
 
+Raul::ThreadVar<int> var(0);
+Raul::AtomicInt      n_errors(0);
+
 class Waiter : public Raul::Thread {
 public:
-	Waiter(Semaphore& sem) : Raul::Thread("Waiter"), _sem(sem) {
-	}
+	Waiter(Semaphore& sem) : Raul::Thread("Waiter"), _sem(sem) {}
 
 private:
 	void _run() {
+		set_scheduling(true, 10);
+		var = 41;
 		cout << "[Waiter] Waiting for signal..." << endl;
 		_sem.wait();
 		cout << "[Waiter] Received signal, exiting" << endl;
+		var = 42;
+		if (var != 42) {
+			cerr << "[Waiter] error: var != 42" << endl;
+			++n_errors;
+		}
 	}
 
 	Semaphore& _sem;
@@ -39,9 +51,17 @@ private:
 int
 main()
 {
+	Thread& main_thread = Thread::get("Main");
+	if (main_thread.name() != "Main") {
+		cerr << "error: Main thread name is not 'Main'" << endl;
+		return 1;
+	}
+
 	Semaphore sem(0);
 	Waiter waiter(sem);
 	waiter.start();
+
+	var = 24;
 
 	cout << "[Main] Signalling..." << endl;
 	sem.post();
@@ -51,5 +71,10 @@ main()
 
 	cout << "[Main] Exiting" << endl;
 
-	return 0;
+	if (var != 24) {
+		cerr << "[Main] error: var != 24" << endl;
+		++n_errors;
+	}
+
+	return n_errors.get();
 }

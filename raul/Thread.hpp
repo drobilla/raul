@@ -39,11 +39,6 @@ class Thread : Noncopyable
 public:
 	virtual ~Thread();
 
-	/** Create a new thread. */
-	static Thread* create(const std::string& name="") {
-		return new Thread(name);
-	}
-
 	/** Return the calling thread.
 	 *
 	 * If the calling thread does not yet have a Thread object associated with

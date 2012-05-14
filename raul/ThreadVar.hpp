@@ -17,7 +17,6 @@
 #ifndef RAUL_THREADVAR_HPP
 #define RAUL_THREADVAR_HPP
 
-#include <stdlib.h>
 #include <pthread.h>
 
 namespace Raul {
@@ -33,7 +32,7 @@ public:
 	ThreadVar(const T& default_value)
 		: _default_value(default_value)
 	{
-		pthread_key_create(&_key, free);
+		pthread_key_create(&_key, destroy_value);
 	}
 
 	~ThreadVar() {
@@ -45,8 +44,7 @@ public:
 		if (val) {
 			*val = value;
 		} else {
-			val  = (T*)malloc(sizeof(value));
-			*val = value;
+			val  = new T(value);
 			pthread_setspecific(_key, val);
 		}
 		return *this;
@@ -60,6 +58,10 @@ public:
 private:
 	ThreadVar(const ThreadVar& noncopyable);
 	ThreadVar& operator=(const ThreadVar& noncopyable);
+
+	static void destroy_value(void* ptr) {
+		delete (T*)ptr;
+	}
 
 	const T       _default_value;
 	pthread_key_t _key;
