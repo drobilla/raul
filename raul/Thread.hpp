@@ -17,7 +17,6 @@
 #ifndef RAUL_THREAD_HPP
 #define RAUL_THREAD_HPP
 
-#include <set>
 #include <string>
 
 #include "raul/Noncopyable.hpp"
@@ -50,7 +49,7 @@ public:
 	 * If the calling thread does not yet have a Thread object associated with
 	 * it, one will be created.
 	 */
-	static Thread& get();
+	static Thread& get(const std::string& name="");
 
 	virtual void start();
 	virtual void stop();
@@ -61,9 +60,6 @@ public:
 
 	const std::string& name() const { return _name; }
 	void set_name(const std::string& name) { _name = name; }
-
-	bool is_context(unsigned context) const { return _contexts.find(context) != _contexts.end(); }
-	void set_context(unsigned context) { _contexts.insert(context); }
 
 protected:
 	explicit Thread(const std::string& name="");
@@ -84,11 +80,10 @@ protected:
 private:
 	static void* _static_run(void* me);
 
-	ThreadImpl*        _impl;
-	std::set<unsigned> _contexts;
-	std::string        _name;
-	bool               _thread_exists;
-	bool               _own_thread;
+	ThreadImpl* _impl;
+	std::string _name;
+	bool        _thread_exists;
+	bool        _own_thread;
 };
 
 } // namespace Raul

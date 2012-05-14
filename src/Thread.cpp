@@ -21,6 +21,7 @@
 
 #include "raul/log.hpp"
 #include "raul/Thread.hpp"
+#include "raul/ThreadVar.hpp"
 
 #define LOG(s) (s("[")(_name)("] "))
 
@@ -32,12 +33,7 @@ struct ThreadImpl {
 	pthread_t pthread;
 };
 
-static pthread_once_t s_thread_key_once = PTHREAD_ONCE_INIT;
-static pthread_key_t  s_thread_key;
-
-static void thread_key_alloc() {
-	pthread_key_create(&s_thread_key, NULL);
-}
+static ThreadVar<Thread*> self(NULL);
 
 Thread::Thread(const std::string& name)
 	: _exit_flag(false)
@@ -46,8 +42,6 @@ Thread::Thread(const std::string& name)
 	, _thread_exists(false)
 	, _own_thread(true)
 {
-	pthread_once(&s_thread_key_once, thread_key_alloc);
-	pthread_setspecific(s_thread_key, this);
 }
 
 /** Must be called from thread */
@@ -59,8 +53,6 @@ Thread::Thread(pthread_t thread, const std::string& name)
 	, _own_thread(false)
 {
 	_impl->pthread = thread;
-	pthread_once(&s_thread_key_once, thread_key_alloc);
-	pthread_setspecific(s_thread_key, this);
 }
 
 Thread::~Thread()
@@ -69,29 +61,21 @@ Thread::~Thread()
 	delete _impl;
 }
 
-Thread*
-Thread::create_for_this_thread(const std::string& name)
-{
-	return new Thread(pthread_self(), name);
-}
-
 Thread&
-Thread::get()
+Thread::get(const std::string& name)
 {
-	pthread_once(&s_thread_key_once, thread_key_alloc);
-	Thread* this_thread = reinterpret_cast<Thread*>(
-		pthread_getspecific(s_thread_key));
-	if (!this_thread)
-		this_thread = create_for_this_thread("");
+	if (!self) {
+		self = new Thread(pthread_self(), name);
+	}
 
-	return *this_thread;
+	return *self;
 }
 
 void*
 Thread::_static_run(void* thread)
 {
 	Thread* me = static_cast<Thread*>(thread);
-	pthread_setspecific(s_thread_key, thread);
+	self = me;
 	me->_run();
 	me->_thread_exists = false;
 	return NULL;

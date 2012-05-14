@@ -5,6 +5,8 @@ raul (9999) unstable;
   * Add INSTALL file
   * Improve RingBuffer
   * Improve test suite
+  * Remove Thread context stuff and add a thread-specific variable class,
+    ThreadVar, which can be used for this and many other things
   * Update license to GPL3+
 
  -- David Robillard <d@drobilla.net>
