@@ -32,7 +32,7 @@ namespace Raul {
 class Slave : public Thread
 {
 public:
-	Slave() : _whip(0) {}
+	explicit Slave(const std::string& name="") : Thread(name), _whip(0) {}
 
 	/** Tell the slave to do whatever work it does.  Realtime safe. */
 	inline void whip() { _whip.post(); }

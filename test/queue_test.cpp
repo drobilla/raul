@@ -14,17 +14,20 @@
   along with Raul.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+#include <limits.h>
+#include <stdio.h>
+#include <stdlib.h>
+
+#include <algorithm>
 #include <iostream>
 #include <string>
 #include <vector>
-#include <algorithm>
-#include <stdio.h>
-#include <stdlib.h>
-#include <limits.h>
-#include "raul/SRSWQueue.hpp"
-#include "raul/SRMWQueue.hpp"
-#include "raul/Thread.hpp"
+
 #include "raul/AtomicInt.hpp"
+#include "raul/SRMWQueue.hpp"
+#include "raul/SRSWQueue.hpp"
+#include "raul/Thread.hpp"
+#include "raul/log.hpp"
 
 using namespace std;
 using namespace Raul;
@@ -59,6 +62,9 @@ struct WriteAction {
 SRMWQueue<WriteAction> queue(QUEUE_SIZE);
 
 class WriteThread : public Thread {
+public:
+	WriteThread(const std::string& name) : Thread(name) {}
+
 protected:
 	void _run() {
 		while (true) {
@@ -140,10 +146,10 @@ main()
 	}
 
 	cout << "Testing concurrent reading/writing" << endl;
-	vector<WriteThread*> writers(NUM_WRITERS, new WriteThread());
+	vector<WriteThread*> writers(NUM_WRITERS, NULL);
 
 	for (unsigned i=0; i < NUM_WRITERS; ++i) {
-		writers[i]->set_name(string("Writer ") + static_cast<char>('0' + i));
+		writers[i] = new WriteThread((Raul::fmt("Writer %1%") % i).str());
 		writers[i]->start();
 	}
 

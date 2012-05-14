@@ -36,21 +36,21 @@ struct ThreadImpl {
 static ThreadVar<Thread*> self(NULL);
 
 Thread::Thread(const std::string& name)
-	: _exit_flag(false)
-	, _impl(new ThreadImpl())
+	: _impl(new ThreadImpl())
 	, _name(name)
 	, _thread_exists(false)
 	, _own_thread(true)
+	, _exit_flag(false)
 {
 }
 
 /** Must be called from thread */
 Thread::Thread(pthread_t thread, const std::string& name)
-	: _exit_flag(false)
-	, _impl(new ThreadImpl())
+	: _impl(new ThreadImpl())
 	, _name(name)
 	, _thread_exists(true)
 	, _own_thread(false)
+	, _exit_flag(false)
 {
 	_impl->pthread = thread;
 }
@@ -81,7 +81,6 @@ Thread::_static_run(void* thread)
 	return NULL;
 }
 
-/** Launch and start the thread. */
 void
 Thread::start()
 {
@@ -97,7 +96,6 @@ Thread::start()
 	}
 }
 
-/** Stop and terminate the thread. */
 void
 Thread::stop()
 {
@@ -119,23 +117,19 @@ Thread::join()
 }
 
 void
-Thread::set_scheduling(int policy, unsigned int priority)
+Thread::set_scheduling(bool realtime, unsigned priority)
 {
 	sched_param sp;
 	sp.sched_priority = priority;
-	int result = pthread_setschedparam(_impl->pthread, policy, &sp);
+	const int policy = realtime ? SCHED_FIFO : SCHED_OTHER;
+	const int result = pthread_setschedparam(_impl->pthread, policy, &sp);
 	if (!result) {
-		LOG(info) << "Set scheduling policy to ";
-		switch (policy) {
-			case SCHED_FIFO:  info << "SCHED_FIFO";  break;
-			case SCHED_RR:    info << "SCHED_RR";    break;
-			case SCHED_OTHER: info << "SCHED_OTHER"; break;
-			default:          info << "UNKNOWN";     break;
-		}
-		info << ", priority " << sp.sched_priority << endl;
+		LOG(info) << (fmt("Set scheduling policy to %1% priority %2%\n")
+		              % (realtime ? "realtime" : "normal")
+		              % sp.sched_priority);
 	} else {
-		LOG(info) << "Unable to set scheduling policy ("
-			<< strerror(result) << ")" << endl;
+		LOG(info) << (fmt("Unable to set scheduling policy (%1%)\n")
+		              % strerror(result));
 	}
 }
 

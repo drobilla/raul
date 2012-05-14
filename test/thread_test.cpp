@@ -23,8 +23,7 @@ using namespace Raul;
 
 class Waiter : public Raul::Thread {
 public:
-	Waiter(Semaphore& sem) : _sem(sem) {
-		Thread::set_name("Waiter");
+	Waiter(Semaphore& sem) : Raul::Thread("Waiter"), _sem(sem) {
 	}
 
 private:
@@ -40,9 +39,6 @@ private:
 int
 main()
 {
-	Thread& this_thread = Thread::get();
-	this_thread.set_name("Main");
-
 	Semaphore sem(0);
 	Waiter waiter(sem);
 	waiter.start();

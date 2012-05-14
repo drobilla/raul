@@ -39,27 +39,32 @@ class Thread : Noncopyable
 public:
 	virtual ~Thread();
 
-	static Thread* create(const std::string& name="")
-		{ return new Thread(name); }
-
-	static Thread* create_for_this_thread(const std::string& name="");
+	/** Create a new thread. */
+	static Thread* create(const std::string& name="") {
+		return new Thread(name);
+	}
 
 	/** Return the calling thread.
 	 *
 	 * If the calling thread does not yet have a Thread object associated with
-	 * it, one will be created.
+	 * it yet, one will be created with the given name.
 	 */
 	static Thread& get(const std::string& name="");
 
+	/** Start the thread if it is not already running. */
 	virtual void start();
+
+	/** Stop the thread if it is running. */
 	virtual void stop();
 
+	/** Wait until the thread exits. */
 	virtual void join();
 
-	void set_scheduling(int policy, unsigned int priority);
+	/** Set the scheduling policy for this thread. */
+	virtual void set_scheduling(bool realtime, unsigned priority);
 
+	/** Return the name of this thread. */
 	const std::string& name() const { return _name; }
-	void set_name(const std::string& name) { _name = name; }
 
 protected:
 	explicit Thread(const std::string& name="");
@@ -75,8 +80,6 @@ protected:
 	 */
 	virtual void _run() {}
 
-	bool _exit_flag;
-
 private:
 	static void* _static_run(void* me);
 
@@ -84,6 +87,9 @@ private:
 	std::string _name;
 	bool        _thread_exists;
 	bool        _own_thread;
+
+protected:
+	bool _exit_flag;
 };
 
 } // namespace Raul
