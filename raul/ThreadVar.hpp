@@ -49,7 +49,7 @@ public:
 		}
 		return *this;
 	}
-	
+
 	operator T() const {
 		T* val = (T*)pthread_getspecific(_key);
 		return val ? *val : _default_value;
