@@ -112,10 +112,6 @@ public:
 	inline const char* get_uri()    const { return (const char*)get_body(); }
 	inline const char* get_string() const { return (const char*)get_body(); }
 
-	typedef std::map<Raul::Atom, Raul::Atom> DictValue;
-
-	inline const DictValue& get_dict() const { return *(DictValue*)_val._blob; }
-
 private:
 	friend class Forge;
 
@@ -161,7 +157,6 @@ public:
 		, URI(4)
 		, URID(5)
 		, String(6)
-		, Dict(7)
 	{}
 
 	virtual ~Forge() {}
@@ -189,11 +184,6 @@ public:
 		return Atom(v.length() + 1, String, v.c_str());
 	}
 
-	Atom alloc(const Atom::DictValue& v) {
-		std::cerr << "FIXME: Atom dict" << std::endl;
-		return Atom();
-	}
-
 	Atom alloc_uri(const char* v) {
 		const size_t len = strlen(v);
 		return Atom(len + 1, URI, v);
@@ -209,7 +199,6 @@ public:
 	Atom::TypeID URI;
 	Atom::TypeID URID;
 	Atom::TypeID String;
-	Atom::TypeID Dict;
 };
 
 } // namespace Raul
