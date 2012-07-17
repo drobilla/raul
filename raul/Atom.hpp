@@ -106,6 +106,10 @@ public:
 		return is_reference() ? _val._blob : &_val;
 	}
 
+	inline void* get_body() {
+		return is_reference() ? _val._blob : &_val;
+	}
+
 	inline int32_t     get_int32()  const { return _val._int; }
 	inline float       get_float()  const { return _val._float; }
 	inline bool        get_bool()   const { return _val._bool; }
@@ -121,9 +125,9 @@ private:
 	{
 		if (is_reference()) {
 			_val._blob = malloc(s);
-			memcpy(_val._blob, v, s);
-		} else {
-			memcpy(&_val, v, s);
+		}
+		if (v) {
+			memcpy(get_body(), v, s);
 		}
 	}
 
