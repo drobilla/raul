@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-import os
 import subprocess
 
 from waflib.extras import autowaf as autowaf
