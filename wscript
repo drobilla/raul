@@ -58,10 +58,10 @@ def configure(conf):
 
     if Options.platform == 'darwin':
         conf.check(framework_name='CoreServices')
-        conf.env['FRAMEWORK_RAUL'] = ['CoreServices']
+        conf.env.FRAMEWORK_RAUL = ['CoreServices']
 
-    conf.env['BUILD_TESTS'] = Options.options.build_tests
-    if conf.env['BUILD_TESTS']:
+    conf.env.BUILD_TESTS = Options.options.build_tests
+    if conf.env.BUILD_TESTS:
         conf.check_cxx(lib='gcov',
                        define_name='HAVE_GCOV',
                        mandatory=False)
@@ -82,7 +82,7 @@ def configure(conf):
 
     conf.write_config_header('raul_config.h', remove=False)
 
-    autowaf.display_msg(conf, "Unit tests", str(conf.env['BUILD_TESTS']))
+    autowaf.display_msg(conf, "Unit tests", str(conf.env.BUILD_TESTS))
     print('')
 
 tests = '''
@@ -129,7 +129,7 @@ def build(bld):
         framework = ' CoreServices '
 
     def set_defines(obj):
-        if bld.env['RAUL_CPP0x']:
+        if bld.env.RAUL_CPP0x:
             obj.defines = ['RAUL_CPP0x']
 
     # Library
@@ -146,7 +146,7 @@ def build(bld):
               vnum            = RAUL_LIB_VERSION)
     set_defines(obj);
 
-    if bld.env['BUILD_TESTS']:
+    if bld.env.BUILD_TESTS:
         test_libs     = []
         test_cxxflags = []
         if bld.is_defined('HAVE_GCOV'):
