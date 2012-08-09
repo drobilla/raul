@@ -47,7 +47,7 @@ public:
 	 */
 	class Node : public Raul::Deletable {
 	public:
-		explicit Node(T elem) : _elem(elem) {}
+		explicit Node(T e) : _elem(e) {}
 		virtual ~Node() {}
 
 		template <typename Y>
