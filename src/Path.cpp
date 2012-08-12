@@ -22,60 +22,21 @@ using std::string;
 
 namespace Raul {
 
-static URI root_uri("path:/");
-
-const Path Path::root()                         { return Path(true, root_uri); }
-void       Path::set_root(const Raul::URI& uri) { root_uri = uri.str(); }
-
 bool
-Path::is_path(const Raul::URI& uri)
+Path::is_valid(const std::basic_string<char>& path)
 {
-	return uri.length() >= root_uri.length()
-			&& uri.substr(0, root_uri.length()) == root_uri.str()
-			&& Path::is_valid(uri.str());
-}
-
-Path::Path(const std::basic_string<char>& path)
-	: URI(path[0] == '/' ? root_uri.str() + path.substr(1) : path)
-{
-	if (!is_valid(str()))
-		throw BadPath(str());
-}
-
-Path::Path(const char* cpath)
-	: URI(cpath[0] == '/' ? root_uri.str() + (cpath + 1) : cpath)
-{
-	if (!is_valid(str()))
-		throw BadPath(str());
-}
-
-bool
-Path::is_valid(const std::basic_string<char>& path_str)
-{
-	if (path_str.length() == 0)
+	if (path.empty() || path[0] != '/') {
 		return false;
+	}
 
-	if (path_str == root_uri.str())
+	// Root path
+	if (path == "/") {
 		return true;
+	}
 
-	if (path_str[0] != '/' &&
-			(path_str.length() < root_uri.length()
-				|| path_str.substr(0, root_uri.length()) != root_uri.str()))
+	// Not root, must not end with a slash
+	if (*path.rbegin() == '/')
 		return false;
-
-	const string path = (path_str[0] == '/')
-			? path_str
-			: path_str.substr(root_uri.length() - 1);
-
-	// Must start with a /
-	if (path[0] != '/')
-		return false;
-
-	// Must not end with a slash unless "/"
-	if (path.length() > 1 && path[path.length()-1] == '/')
-		return false;
-
-	assert(path.find_last_of("/") != string::npos);
 
 	// Double slash not allowed
 	if (path.find("//") != string::npos)
@@ -95,17 +56,11 @@ Path::is_valid(const std::basic_string<char>& path_str)
 	return true;
 }
 
-/** Convert a string to a valid full path.
- *
- * The returned string is a valid relative path without the root prefix,
- * i.e. the returned string starts with '/' followed by valid symbols,
- * each separated by '/'.
- */
-string
+Path
 Path::pathify(const std::basic_string<char>& str)
 {
 	if (str.length() == 0)
-		return root().chop_scheme(); // this might not be wise?
+		return Path("/"); // this might not be wise?
 
 	const size_t first_slash = str.find('/');
 	string path = (first_slash == string::npos)
@@ -120,13 +75,8 @@ Path::pathify(const std::basic_string<char>& str)
 	if (path != "/" && path[path.length() - 1] == '/')
 		path = path.substr(0, path.length() - 1); // chop trailing slash
 
-	assert(path.find_last_of('/') != string::npos);
-
 	replace_invalid_chars(path, 0, false);
-
-	assert(is_valid(path));
-
-	return path;
+	return Path(path);
 }
 
 /** Replace any invalid characters in @a str with a suitable replacement.
@@ -181,7 +131,7 @@ bool
 Path::is_child_of(const Path& parent) const
 {
 	const string parent_base = parent.base();
-	return (substr(0, parent_base.length()) == parent_base);
+	return (str().substr(0, parent_base.length()) == parent_base);
 }
 
 bool
@@ -191,11 +141,9 @@ Path::is_parent_of(const Path& child) const
 }
 
 Path
-Path::lca(const Path& patha, const Path& pathb)
+Path::lca(const Path& a, const Path& b)
 {
-	const std::string a = patha.chop_scheme();
-	const std::string b = pathb.chop_scheme();
-	size_t len = std::min(a.length(), b.length());
+	const size_t len = std::min(a.length(), b.length());
 
 	size_t last_slash = 0;
 	for (size_t i = 0; i < len; ++i) {
@@ -208,10 +156,9 @@ Path::lca(const Path& patha, const Path& pathb)
 	}
 
 	if (last_slash <= 1) {
-		return root();
+		return Path("/");
 	}
-	return Path(a.substr(0, last_slash));
+	return Path(a.str().substr(0, last_slash));
 }
 
 } // namespace Raul
-

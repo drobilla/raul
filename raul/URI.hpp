@@ -23,6 +23,8 @@
 #include <ostream>
 #include <glib.h>
 
+#include "raul/Path.hpp"
+
 namespace Raul {
 
 /** Simple wrapper around standard string with useful URI-specific methods.
@@ -47,11 +49,12 @@ public:
 	 * It is a fatal error to construct a URI from an invalid string,
 	 * use is_valid first to check.
 	 */
-	URI(const std::basic_string<char>& uri="nil:0")
+	URI(const std::basic_string<char>& uri="nil:0") throw(BadURI)
 		: _str(g_intern_string(uri.c_str()))
 	{
-		if (!is_valid(uri))
+		if (!is_valid(uri)) {
 			throw BadURI(uri);
+		}
 	}
 
 	/** Construct a URI from a C string.
@@ -59,12 +62,17 @@ public:
 	 * It is a fatal error to construct a URI from an invalid string,
 	 * use is_valid first to check.
 	 */
-	URI(const char* uri)
+	URI(const char* uri) throw(BadURI)
 		: _str(g_intern_string(uri))
 	{
 		if (!is_valid(uri))
 			throw BadURI(uri);
 	}
+
+	/** Construct a URI from a base URI and a Path. */
+	URI(const URI& base, const Path& path)
+		: _str(g_intern_string((base.str() + path.c_str()).c_str()))
+	{}
 
 	static bool is_valid(const std::basic_string<char>& uri) {
 		return uri.find(":") != std::string::npos;
@@ -95,22 +103,23 @@ public:
 
 	inline char operator[](int i) const { return _str[i]; }
 
-	inline size_t length()                           const { return str().length(); }
-	inline size_t find(const std::string& s)         const { return str().find(s); }
-	inline size_t find_last_of(char c) const { return str().find_last_of(c); }
+	inline size_t length()                   const { return str().length(); }
+	inline size_t find(const std::string& s) const { return str().find(s); }
+	inline size_t find_last_of(char c)       const { return str().find_last_of(c); }
 
 private:
 	const char* _str;
 };
 
+} // namespace Raul
+
 static inline
 std::ostream&
-operator<<(std::ostream& os, const URI& uri)
+operator<<(std::ostream& os, const Raul::URI& uri)
 {
 	return (os << uri.c_str());
 }
 
-} // namespace Raul
 
 #endif // RAUL_URI_HPP
 

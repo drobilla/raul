@@ -104,7 +104,8 @@ private:
 
 } // namespace Raul
 
-static inline std::ostream& operator<<(std::ostream& os, const Raul::Symbol& symbol)
+static inline std::ostream&
+operator<<(std::ostream& os, const Raul::Symbol& symbol)
 {
 	return (os << symbol.c_str());
 }
