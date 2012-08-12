@@ -39,14 +39,15 @@ using namespace std;
 
 int range_end_val;
 
-bool range_comparator(const int& a, const int& b)
+static bool
+range_comparator(const int& a, const int& b)
 {
 	bool ret = (b >= a && b <= range_end_val);
 	//cout << "COMP: " << a << " . " << b << " = " << ret << endl;
 	return ret;
 }
 
-void benchmark(size_t n);
+static void benchmark(size_t n);
 
 int
 main(int argc, char** argv)
@@ -233,14 +234,14 @@ main(int argc, char** argv)
 	return 0;
 }
 
-string
+static string
 random_string()
 {
 	string ret(60, 'A' + (rand() % 26));
 	return ret;
 }
 
-void
+static void
 benchmark(size_t n)
 {
 	cout << "Benchmarking with n = " << n << endl;
