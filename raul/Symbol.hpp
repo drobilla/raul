@@ -45,7 +45,7 @@ public:
 	 * It is a fatal error to construct a Symbol from an invalid string,
 	 * use is_valid first to check.
 	 */
-	Symbol(const std::basic_string<char>& symbol)
+	explicit Symbol(const std::basic_string<char>& symbol)
 		: _str(g_intern_string(symbol.c_str()))
 	{
 		assert(is_valid(symbol));
@@ -56,10 +56,15 @@ public:
 	 * It is a fatal error to construct a Symbol from an invalid string,
 	 * use is_valid first to check.
 	 */
-	Symbol(const char* csymbol)
+	explicit Symbol(const char* csymbol)
 		: _str(g_intern_string(csymbol))
 	{
 		assert(is_valid(csymbol));
+	}
+
+	Symbol& operator=(const Symbol& other) {
+		_str = other._str;
+		return *this;
 	}
 
 	inline const char* c_str() const { return _str; }
@@ -78,7 +83,7 @@ public:
 
 	static bool is_valid(const std::basic_string<char>& symbol);
 
-	static std::string symbolify(const std::basic_string<char>& str);
+	static Raul::Symbol symbolify(const std::basic_string<char>& str);
 
 private:
 	const char* _str;

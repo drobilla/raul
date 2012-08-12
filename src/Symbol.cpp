@@ -53,19 +53,14 @@ Symbol::is_valid(const std::basic_string<char>& symbol)
  * This will make a best effort at turning @a str into a complete, valid
  * Symbol, and will always return one.
  */
-string
+Raul::Symbol
 Symbol::symbolify(const std::basic_string<char>& str)
 {
 	string symbol = str;
 
 	Path::replace_invalid_chars(symbol, 0, true);
 
-	if (symbol.length() == 0)
-		return "_";
-
-	assert(is_valid(symbol));
-
-	return symbol;
+	return Raul::Symbol(symbol.empty() ? "_" : symbol);
 }
 
 } // namespace Raul
