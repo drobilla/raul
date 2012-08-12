@@ -48,7 +48,7 @@ public:
 		~BadPath() throw() {}
 		const char* what() const throw() { return _path.c_str(); }
 	private:
-		std::string _path;
+		const std::string _path;
 	};
 
 	/** Return the root path.
@@ -102,13 +102,7 @@ public:
 
 	static bool is_valid(const std::basic_string<char>& path);
 
-	static bool is_valid_name(const std::basic_string<char>& name) {
-		return name.length() > 0 && name.find("/") == std::string::npos
-			&& is_valid(std::string("/").append(name));
-	}
-
 	static std::string pathify(const std::basic_string<char>& str);
-	static std::string nameify(const std::basic_string<char>& str);
 
 	static void replace_invalid_chars(std::string& str,
 	                                  size_t       start,
@@ -166,7 +160,7 @@ public:
 		}
 	}
 
-	/** Return the path's child with the given name (symbol)
+	/** Return the path's child with the given symbol
 	 */
 	inline Path child(const Raul::Symbol& symbol) const {
 		return base() + symbol.c_str();
@@ -186,7 +180,7 @@ public:
 	/** Return path with a trailing "/".
 	 *
 	 * Returned value is guaranteed to be a valid parent path, i.e. a valid
-	 * child path can be made using parent.base() + child_name.
+	 * child path can be made using parent.base() + symbol.
 	 */
 	inline const std::string base() const {
 		std::string ret = str();
@@ -199,7 +193,7 @@ public:
 	/** Return path with a trailing "/".
 	 *
 	 * Returned value is guaranteed to be a valid parent path, i.e. a valid
-	 * child path can be made using parent.base() + child_name.
+	 * child path can be made using parent.base() + symbol.
 	 */
 	inline const std::string base_no_scheme() const {
 		return base().substr(find(":") + 1);

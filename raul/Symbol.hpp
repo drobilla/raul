@@ -17,9 +17,9 @@
 #ifndef RAUL_SYMBOL_HPP
 #define RAUL_SYMBOL_HPP
 
-#include <cassert>
 #include <cctype>
 #include <cstring>
+#include <exception>
 #include <iostream>
 #include <string>
 
@@ -40,15 +40,26 @@ namespace Raul {
  */
 class Symbol {
 public:
+	class BadSymbol : public std::exception {
+	public:
+		explicit BadSymbol(const std::string& symbol) : _symbol(symbol) {}
+		~BadSymbol() throw() {}
+		const char* what() const throw() { return _symbol.c_str(); }
+	private:
+		const std::string _symbol;
+	};
+
 	/** Construct a Symbol from an std::string.
 	 *
 	 * It is a fatal error to construct a Symbol from an invalid string,
 	 * use is_valid first to check.
 	 */
-	explicit Symbol(const std::basic_string<char>& symbol)
+	explicit Symbol(const std::basic_string<char>& symbol) throw(BadSymbol)
 		: _str(g_intern_string(symbol.c_str()))
 	{
-		assert(is_valid(symbol));
+		if (!is_valid(symbol)) {
+			throw BadSymbol(symbol);
+		}
 	}
 
 	/** Construct a Symbol from a C string.
@@ -56,10 +67,12 @@ public:
 	 * It is a fatal error to construct a Symbol from an invalid string,
 	 * use is_valid first to check.
 	 */
-	explicit Symbol(const char* csymbol)
+	explicit Symbol(const char* csymbol) throw(BadSymbol)
 		: _str(g_intern_string(csymbol))
 	{
-		assert(is_valid(csymbol));
+		if (!is_valid(csymbol)) {
+			throw BadSymbol(csymbol);
+		}
 	}
 
 	Symbol& operator=(const Symbol& other) {

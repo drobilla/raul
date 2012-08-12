@@ -129,25 +129,6 @@ Path::pathify(const std::basic_string<char>& str)
 	return path;
 }
 
-/** Convert a string to a valid name (or "method" - tokens between slashes)
- *
- * This will strip all slashes, etc, and always return a valid name/method.
- */
-string
-Path::nameify(const std::basic_string<char>& str)
-{
-	string name = str;
-
-	if (name.length() == 0)
-		return "_"; // this might not be wise
-
-	replace_invalid_chars(name, 0, true);
-
-	assert(is_valid(string("/") + name));
-
-	return name;
-}
-
 /** Replace any invalid characters in @a str with a suitable replacement.
  */
 void

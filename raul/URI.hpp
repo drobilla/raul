@@ -39,7 +39,7 @@ public:
 		~BadURI() throw() {}
 		const char* what() const throw() { return _uri.c_str(); }
 	private:
-		std::string _uri;
+		const std::string _uri;
 	};
 
 	/** Construct a URI from an std::string.
