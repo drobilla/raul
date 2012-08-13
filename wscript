@@ -95,7 +95,6 @@ tests = '''
         test/queue_test
         test/ringbuffer_test
         test/sem_test
-        test/smf_test
         test/table_test
         test/thread_test
         test/time_test
@@ -117,8 +116,6 @@ def build(bld):
             src/Configuration.cpp
             src/Maid.cpp
             src/Path.cpp
-            src/SMFReader.cpp
-            src/SMFWriter.cpp
             src/Symbol.cpp
             src/Thread.cpp
             src/log.cpp

@@ -1,12 +1,13 @@
 raul (9999) unstable;
 
-  * Remove EventRingBuffer
-  * Use Sord instead of Redlandmm for AtomRDF
-  * Add INSTALL file
   * Improve RingBuffer
   * Improve test suite
+  * Remove EventRingBuffer
+  * Remove SMFReader and SMFWriter
+  * Remove OSC and RDF library dependent code
   * Remove Thread context stuff and add a thread-specific variable class,
     ThreadVar, which can be used for this and many other things
+  * Add INSTALL file
   * Update license to GPL3+
 
  -- David Robillard <d@drobilla.net>
