@@ -16,8 +16,8 @@
 
 #include <glib.h>
 
-#include <cstdio>
 #include <cassert>
+#include <cstdio>
 #include <cstring>
 #include <string>
 

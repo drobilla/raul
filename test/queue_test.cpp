@@ -89,7 +89,7 @@ protected:
 
 // Returns 0 if all read count/write count pairs are equal,
 // otherwise how far off total count was
-unsigned
+static unsigned
 data_is_sane()
 {
 	unsigned ret = 0;
@@ -99,19 +99,6 @@ data_is_sane()
 	}
 
 	return ret;
-}
-
-void
-dump_data()
-{
-	for (unsigned i = 0; i < NUM_DATA; ++i) {
-		cout << i << ":\t" << data[i].read_count.get()
-			<< "\t : \t" << data[i].write_count.get();
-		if (data[i].read_count.get() == data[i].write_count.get())
-			cout << "\t OK" << endl;
-		else
-			cout << "\t FAIL" << endl;
-	}
 }
 
 int
@@ -210,8 +197,6 @@ main()
 		cout << "FAILED BY " << diff << endl;
 		return EXIT_FAILURE;
 	}
-
-	//dump_data();
 
 	return 0;
 }
