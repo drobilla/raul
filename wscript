@@ -38,13 +38,13 @@ def options(opt):
     opt.load('compiler_cxx')
     autowaf.set_options(opt)
     opt.add_option('--test', action='store_true', default=False, dest='build_tests',
-                    help="Build unit tests")
+                   help="Build unit tests")
     opt.add_option('--log-colour', action='store_true', default=True, dest='log_colour',
-                    help="Coloured console/log output")
+                   help="Coloured console/log output")
     opt.add_option('--log-debug', action='store_true', default=False, dest='log_debug',
-                    help="Print debugging output")
+                   help="Print debugging output")
     opt.add_option('--cpp0x', action='store_true', default=False, dest='cpp0x',
-                    help="Use C++0x smart pointers instead of boost")
+                   help="Use C++0x smart pointers instead of boost")
 
 def configure(conf):
     conf.load('compiler_cxx')
@@ -52,9 +52,9 @@ def configure(conf):
     conf.line_just = 40
     autowaf.display_header('Raul Configuration')
     autowaf.check_pkg(conf, 'glib-2.0', atleast_version='2.2',
-                                      uselib_store='GLIB', mandatory=True)
+                      uselib_store='GLIB', mandatory=True)
     autowaf.check_pkg(conf, 'gthread-2.0', atleast_version='2.14.0',
-                                      uselib_store='GTHREAD', mandatory=True)
+                      uselib_store='GTHREAD', mandatory=True)
 
     if Options.platform == 'darwin':
         conf.check(framework_name='CoreServices')
