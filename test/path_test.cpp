@@ -45,8 +45,7 @@ main()
 	names.push_back("Phaser1 - Similar to CSound's phaser1 by Sean Costello");
 
 	for (list<string>::iterator i = names.begin(); i != names.end(); ++i) {
-		CHECK(Symbol::is_valid(Path::nameify(*i)));
-		CHECK(Symbol::is_valid(Symbol::symbolify(*i)));
+		CHECK(strcmp(Symbol::symbolify(*i).c_str(), ""));
 	}
 
 	CHECK(Path("/foo/bar").parent() == Path("/foo"));
@@ -81,8 +80,7 @@ main()
 	CHECK(!Symbol::is_valid("/I/have/slashes"));
 	CHECK(!Symbol::is_valid("!illegalchar"));
 	CHECK(!Symbol::is_valid("0illegalleadingdigit"));
-	CHECK(Symbol::is_valid(Symbol::symbolify("")));
-	CHECK(Symbol::is_valid(Symbol::symbolify("1hello")));
+	CHECK(strcmp(Symbol::symbolify("").c_str(), ""));
 
 	return 0;
 }
