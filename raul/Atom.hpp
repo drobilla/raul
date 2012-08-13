@@ -18,13 +18,9 @@
 #define RAUL_ATOM_HPP
 
 #include <stdint.h>
-#include <glib.h>
 
-#include <cassert>
 #include <cstdlib>
 #include <cstring>
-#include <iostream>
-#include <map>
 #include <string>
 
 namespace Raul {

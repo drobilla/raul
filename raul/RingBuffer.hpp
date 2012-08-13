@@ -22,16 +22,15 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include <glib.h>
-
 #include "raul/Noncopyable.hpp"
+#include "raul/barrier.hpp"
 
 namespace Raul {
 
 /**
    A lock-free RingBuffer.
 
-   Thread-safe with a single reader and single writer, and realtime safe
+   Thread-safe with a single reader and single writer, and real-time safe
    on both ends.
 
    @ingroup raul
@@ -66,26 +65,22 @@ public:
 	   readers or writers.
 	*/
 	inline void reset() {
-		g_atomic_int_set(&_write_ptr, 0);
-		g_atomic_int_set(&_read_ptr, 0);
+		_write_head = 0;
+		_read_head  = 0;
 	}
 
 	/**
 	   Return the number of bytes of space available for reading.
 	*/
 	inline uint32_t read_space() const {
-		const uint32_t r = g_atomic_int_get(&_read_ptr);
-		const uint32_t w = g_atomic_int_get(&_write_ptr);
-		return read_space_internal(r, w);
+		return read_space_internal(_read_head, _write_head);
 	}
 
 	/**
 	   Return the number of bytes of space available for writing.
 	*/
 	inline uint32_t write_space() const {
-		const uint32_t r = g_atomic_int_get(&_read_ptr);
-		const uint32_t w = g_atomic_int_get(&_write_ptr);
-		return write_space_internal(r, w);
+		return write_space_internal(_read_head, _write_head);
 	}
 
 	/**
@@ -97,20 +92,19 @@ public:
 	   Read from the RingBuffer without advancing the read head.
 	*/
 	inline uint32_t peek(uint32_t size, void* dst) {
-		const uint32_t r = g_atomic_int_get(&_read_ptr);
-		const uint32_t w = g_atomic_int_get(&_write_ptr);
-		return peek_internal(r, w, size, dst);
+		return peek_internal(_read_head, _write_head, size, dst);
 	}
 
 	/**
 	   Read from the RingBuffer and advance the read head.
 	*/
 	inline uint32_t read(uint32_t size, void* dst) {
-		const uint32_t r = g_atomic_int_get(&_read_ptr);
-		const uint32_t w = g_atomic_int_get(&_write_ptr);
+		const uint32_t r = _read_head;
+		const uint32_t w = _write_head;
 
 		if (peek_internal(r, w, size, dst)) {
-			g_atomic_int_set(&_read_ptr, (r + size) & _size_mask);
+			Raul::barrier();
+			_read_head = (r + size) & _size_mask;
 			return size;
 		} else {
 			return 0;
@@ -121,13 +115,14 @@ public:
 	   Skip data in the RingBuffer (advance read head without reading).
 	*/
 	inline uint32_t skip(uint32_t size) {
-		const uint32_t r = g_atomic_int_get(&_read_ptr);
-		const uint32_t w = g_atomic_int_get(&_write_ptr);
+		const uint32_t r = _read_head;
+		const uint32_t w = _write_head;
 		if (read_space_internal(r, w) < size) {
 			return 0;
 		}
 
-		g_atomic_int_set(&_read_ptr, (r + size) & _size_mask);
+		Raul::barrier();
+		_read_head = (r + size) & _size_mask;
 		return size;
 	}
 
@@ -135,22 +130,24 @@ public:
 	   Write data to the RingBuffer.
 	*/
 	inline uint32_t write(uint32_t size, const void* src) {
-		const uint32_t r = g_atomic_int_get(&_read_ptr);
-		const uint32_t w = g_atomic_int_get(&_write_ptr);
+		const uint32_t r = _read_head;
+		const uint32_t w = _write_head;
 		if (write_space_internal(r, w) < size) {
 			return 0;
 		}
 
 		if (w + size <= _size) {
 			memcpy(&_buf[w], src, size);
-			g_atomic_int_set(&_write_ptr, (w + size) & _size_mask);
+			Raul::barrier();
+			_write_head = (w + size) & _size_mask;
 		} else {
 			const uint32_t this_size = _size - w;
 			assert(this_size < size);
 			assert(w + this_size <= _size);
 			memcpy(&_buf[w], src, this_size);
-			memcpy(&_buf[0], (char*)src + this_size, size - this_size);
-			g_atomic_int_set(&_write_ptr, size - this_size);
+			memcpy(&_buf[0], (const char*)src + this_size, size - this_size);
+			Raul::barrier();
+			_write_head = size - this_size;
 		}
 
 		return size;
@@ -170,17 +167,17 @@ private:
 	}
 
 	inline uint32_t write_space_internal(uint32_t r, uint32_t w) const {
-		if (w > r) {
-			return ((r - w + _size) & _size_mask) - 1;
-		} else if (w < r) {
-			return (r - w) - 1;
-		} else {
+		if (r == w) {
 			return _size - 1;
+		} else if (r < w) {
+			return ((r - w + _size) & _size_mask) - 1;
+		} else {
+			return (r - w) - 1;
 		}
 	}
 
 	inline uint32_t read_space_internal(uint32_t r, uint32_t w) const {
-		if (w > r) {
+		if (r < w) {
 			return w - r;
 		} else {
 			return (w - r + _size) & _size_mask;
@@ -204,8 +201,8 @@ private:
 		return size;
 	}
 
-	mutable uint32_t _write_ptr;  ///< Read index into _buf
-	mutable uint32_t _read_ptr;   ///< Write index into _buf
+	mutable uint32_t _write_head;  ///< Read index into _buf
+	mutable uint32_t _read_head;   ///< Write index into _buf
 
 	const uint32_t _size;       ///< Size (capacity) in bytes
 	const uint32_t _size_mask;  ///< Mask for fast modulo
