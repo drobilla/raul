@@ -19,9 +19,7 @@
 
 #include <cstddef>
 
-#ifdef RAUL_CPP0x
-
-#include <atomic>
+#include "raul/barrier.hpp"
 
 namespace Raul {
 
@@ -35,56 +33,27 @@ public:
 
 	inline AtomicPtr(const AtomicPtr& copy) : _val(copy.get()) {}
 
-	inline T* get() const { return static_cast<T*>(_val.load()); }
+	inline T* get() const {
+		Raul::barrier();
+		return static_cast<T*>(_val);
+	}
 
-	inline void operator=(T* val) { _val = val; }
+	inline void operator=(T* val) {
+		_val = val;
+		Raul::barrier();
+	}
 
-	/** Set value to newval iff current value is oldval */
-	inline bool compare_and_exchange(void* oldval, void* newval) {
-		return _val.compare_exchange_strong(oldval, newval);
+	/** Set value to @a val iff current value is @a old.
+	 * @return true iff set succeeded.
+	 */
+	inline bool compare_and_exchange(void* old, void* val) {
+		return __sync_bool_compare_and_swap(&_val, old, val);
 	}
 
 private:
-	std::atomic<void*> _val;
+	void* _val;
 };
 
 } // namespace Raul
-
-#else // !RAUL_CPP0x
-
-#include <glib.h>
-
-namespace Raul {
-
-/** Atomic pointer.
- * \ingroup raul
- */
-template<typename T>
-class AtomicPtr {
-public:
-	inline AtomicPtr()
-		{ g_atomic_pointer_set(static_cast<volatile gpointer*>(&_val), NULL); }
-
-	inline AtomicPtr(const AtomicPtr& copy)
-		{ g_atomic_pointer_set(static_cast<volatile gpointer*>(&_val),
-				static_cast<gpointer>(copy.get())); }
-
-	inline T* get() const
-		{ return static_cast<T*>(g_atomic_pointer_get(static_cast<volatile gpointer*>(&_val))); }
-
-	inline void operator=(T* val)
-		{ g_atomic_pointer_set(&_val, static_cast<gpointer>(val)); }
-
-	/** Set value to newval iff current value is oldval */
-	inline bool compare_and_exchange(gpointer oldval, gpointer newval)
-		{ return g_atomic_pointer_compare_and_exchange(&_val, oldval, newval); }
-
-private:
-	mutable volatile gpointer _val;
-};
-
-} // namespace Raul
-
-#endif // RAUL_CPP0x
 
 #endif // RAUL_ATOMIC_PTR_HPP
