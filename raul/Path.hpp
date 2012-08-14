@@ -198,10 +198,7 @@ public:
 	/** Return true iff @p child is equal to, or a descendant of @p parent. */
 	static inline bool descendant_comparator(const Path& parent,
 	                                         const Path& child) {
-		return (child == parent ||
-		        (child.length() > parent.length() &&
-		         (!parent.compare(0, parent.length(), child, 0, parent.length())
-		          && (parent.is_root() || child[parent.length()] == '/'))));
+		return (child == parent || child.is_child_of(parent));
 	}
 };
 

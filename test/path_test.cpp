@@ -39,6 +39,7 @@ main()
 	CHECK(Path("/").is_parent_of(Path("/foo")));
 	CHECK(Path("/foo").is_parent_of(Path("/foo/bar")));
 	CHECK(!(Path("/foo").is_parent_of(Path("/foo2"))));
+	CHECK(!(Path("/foo").is_parent_of(Path("/foo"))));
 
 	CHECK(Path::lca(Path("/foo"), Path("/foo/bar/baz")) == Path("/"));
 	CHECK(Path::lca(Path("/foo/bar"), Path("/foo/bar/baz")) == Path("/foo"));
@@ -52,6 +53,7 @@ main()
 	CHECK(Path::is_valid("/"));
 	CHECK(!Path::is_valid("/foo/3foo/bar"));
 
+	CHECK(Path::descendant_comparator(Path("/"), Path("/")));
 	CHECK(Path::descendant_comparator(Path("/"), Path("/foo")));
 	CHECK(Path::descendant_comparator(Path("/foo"), Path("/foo/bar")));
 	CHECK(Path::descendant_comparator(Path("/foo"), Path("/foo")));

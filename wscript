@@ -84,6 +84,7 @@ def configure(conf):
 tests = '''
         test/atom_test
         test/atomic_test
+        test/double_buffer_test
         test/list_test
         test/path_test
         test/ptr_test
@@ -91,7 +92,6 @@ tests = '''
         test/ringbuffer_test
         test/sem_test
         test/symbol_test
-        test/table_test
         test/thread_test
         test/time_test
         test/uri_test
