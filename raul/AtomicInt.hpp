@@ -51,6 +51,11 @@ public:
 	inline int        operator+(int val)  const { return get() + val; }
 	inline int        operator-(int val)  const { return get() - val; }
 
+	inline bool operator==(const AtomicInt& other) const {
+		Raul::barrier();
+		return _val == other._val;
+	}
+
 	inline AtomicInt& operator+=(int val) {
 		__sync_fetch_and_add(&_val, val);
 		return *this;

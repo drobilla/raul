@@ -38,6 +38,11 @@ public:
 		return static_cast<T*>(_val);
 	}
 
+	inline bool operator==(const AtomicPtr& other) const {
+		Raul::barrier();
+		return _val == other._val;
+	}
+
 	inline void operator=(T* val) {
 		_val = val;
 		Raul::barrier();

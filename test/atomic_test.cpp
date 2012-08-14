@@ -29,6 +29,9 @@ main()
 	AtomicInt i(0);
 	TEST(i == 0);
 
+	AtomicInt j(i);
+	TEST(i == j);
+
 	++i;
 	TEST(i == 1);
 
@@ -58,6 +61,9 @@ main()
 	int seven = 7;
 	AtomicPtr<int> p;
 	TEST(p.get() == NULL);
+
+	AtomicPtr<int> q(p);
+	TEST(p == q);
 
 	p = &five;
 	TEST(p.get() == &five);
