@@ -15,7 +15,9 @@
 */
 
 #include <iostream>
+#include <limits.h>
 #include <unistd.h>
+
 #include "raul/Thread.hpp"
 #include "raul/Semaphore.hpp"
 
@@ -46,7 +48,18 @@ private:
 int
 main()
 {
+	try {
+		Semaphore fail(UINT_MAX);
+	} catch (...) {
+	}
+
 	Semaphore sem(0);
+
+	if (sem.try_wait()) {
+		cerr << "Successfully try-waited a 0 Semaphore" << endl;
+		return 1;
+	}
+
 	Waiter waiter(sem);
 	waiter.start();
 

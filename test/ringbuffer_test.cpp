@@ -131,6 +131,61 @@ main(int argc, char** argv)
 	       n_writes, MSG_SIZE, size);
 
 	ring = new Raul::RingBuffer(size);
+	if (ring->capacity() < (unsigned)size - 1) {
+		fprintf(stderr, "Ring capacity is smaller than expected\n");
+		return 1;
+	}
+
+	if (ring->skip(1)) {
+		fprintf(stderr, "Successfully skipped in empty RingBuffer\n");
+		return 1;
+	}
+
+	char buf[6] = { 'h', 'e', 'l', 'l', '0', '\0' };
+	if (ring->read(1, buf)) {
+		fprintf(stderr, "Successfully read from empty RingBuffer\n");
+		return 1;
+	}
+
+	ring->write(sizeof(buf), buf);
+	ring->skip(1);
+	char buf2[sizeof(buf) - 1];
+	ring->read(sizeof(buf2), buf2);
+	if (strcmp(buf2, buf + 1)) {
+		fprintf(stderr, "Skip failed\n");
+		return 1;
+	}
+
+	ring->reset();
+	if (ring->read_space() != 0) {
+		fprintf(stderr, "Reset RingBuffer is not empty\n");
+		return 1;
+	}
+
+	for (uint32_t i = 0; i < ring->capacity(); ++i) {
+		const char c = 'X';
+		if (ring->write(1, &c) != 1) {
+			fprintf(stderr, "Write failed\n");
+			return 1;
+		}
+	}
+
+	if (ring->write_space() != 0) {
+		fprintf(stderr, "Ring is not full as expected\n");
+		return 1;
+	}
+
+	if (ring->write(1, buf) != 0) {
+		fprintf(stderr, "Successfully wrote to full RingBuffer\n");
+		return 1;
+	}
+
+	if (ring->peek(1, buf2) != 1 || buf2[0] != 'X') {
+		fprintf(stderr, "Failed to read from full RingBuffer\n");
+		return 1;
+	}
+
+	ring->reset();
 
 	pthread_t reader_thread;
 	if (pthread_create(&reader_thread, NULL, reader, NULL)) {
