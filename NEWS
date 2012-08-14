@@ -1,15 +1,12 @@
 raul (9999) unstable;
 
   * Remove glib dpendency
+  * Remove OSC and RDF library dependent code
   * Improve RingBuffer
   * Add ThreadVar, a thread-specific variable class
   * Implement Semaphore for Windows
   * Improve test suite
-  * Remove EventRingBuffer
-  * Remove SMFReader and SMFWriter
-  * Remove OSC and RDF library dependent code
-  * Remove Quantizer
-  * Remove Thread context stuff in favour of ThreadVar
+  * Remove several questionable classes
   * Add INSTALL file
   * Update license to GPL3+
 
