@@ -87,7 +87,6 @@ tests = '''
         test/list_test
         test/path_test
         test/ptr_test
-        test/quantize_test
         test/queue_test
         test/ringbuffer_test
         test/sem_test
