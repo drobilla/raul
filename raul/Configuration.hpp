@@ -22,11 +22,12 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include <exception>
 #include <list>
 #include <map>
 #include <ostream>
 #include <string>
+
+#include "raul/Exception.hpp"
 
 namespace Raul {
 
@@ -126,11 +127,8 @@ public:
 
 	void print_usage(const std::string& program, std::ostream& os);
 
-	struct CommandLineError : public std::exception {
-		explicit CommandLineError(const std::string& m) : msg(m) {}
-		~CommandLineError() throw() {}
-		const char* what() const throw() { return msg.c_str(); }
-		std::string msg;
+	struct CommandLineError : public Exception {
+		explicit CommandLineError(const std::string& m) : Exception(m) {}
 	};
 
 	void parse(int argc, char** argv) throw (CommandLineError);

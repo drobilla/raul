@@ -14,8 +14,9 @@
   along with Raul.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+#include <cstring>
 #include <iostream>
-#include <list>
+
 #include "raul/log.hpp"
 #include "raul/Path.hpp"
 
@@ -30,23 +31,6 @@ main()
 		error << "Test failed: " << (cond) << endl; \
 		return 1; \
 	} } while (0)
-
-	list<string> names;
-	names.push_back("Dry/Wet Balance");
-	names.push_back("foo+1bar(baz)");
-	names.push_back("ThisCRAR");
-	names.push_back("NAME");
-	names.push_back("thing with a bunch of spaces");
-	names.push_back("thing-with-a-bunch-of-dashes");
-	names.push_back("CamelCaseABC");
-	names.push_back("Signal Level [dB]");
-	names.push_back("Gain dB");
-	names.push_back("Dry/Wet Balance");
-	names.push_back("Phaser1 - Similar to CSound's phaser1 by Sean Costello");
-
-	for (list<string>::iterator i = names.begin(); i != names.end(); ++i) {
-		CHECK(strcmp(Symbol::symbolify(*i).c_str(), ""));
-	}
 
 	CHECK(Path("/foo/bar").parent() == Path("/foo"));
 	CHECK(Path("/foo").parent() == Path("/"));
@@ -68,19 +52,49 @@ main()
 	CHECK(Path::is_valid("/"));
 	CHECK(!Path::is_valid("/foo/3foo/bar"));
 
-	CHECK(Path::descendant_comparator("/", "/foo"));
-	CHECK(Path::descendant_comparator("/foo", "/foo/bar"));
-	CHECK(Path::descendant_comparator("/foo", "/foo"));
-	CHECK(Path::descendant_comparator("/", "/"));
-	CHECK(!Path::descendant_comparator("/baz", "/"));
-	CHECK(!Path::descendant_comparator("/foo", "/bar"));
-	CHECK(!Path::descendant_comparator("/foo/bar", "/foo"));
+	CHECK(Path::descendant_comparator(Path("/"), Path("/foo")));
+	CHECK(Path::descendant_comparator(Path("/foo"), Path("/foo/bar")));
+	CHECK(Path::descendant_comparator(Path("/foo"), Path("/foo")));
+	CHECK(Path::descendant_comparator(Path("/"), Path("/")));
+	CHECK(!Path::descendant_comparator(Path("/baz"), Path("/")));
+	CHECK(!Path::descendant_comparator(Path("/foo"), Path("/bar")));
+	CHECK(!Path::descendant_comparator(Path("/foo/bar"), Path("/foo")));
 
 	CHECK(!Symbol::is_valid(""));
 	CHECK(!Symbol::is_valid("/I/have/slashes"));
 	CHECK(!Symbol::is_valid("!illegalchar"));
 	CHECK(!Symbol::is_valid("0illegalleadingdigit"));
 	CHECK(strcmp(Symbol::symbolify("").c_str(), ""));
+
+	CHECK(Path("/foo").child(Symbol("bar")) == "/foo/bar");
+	CHECK(Path("/foo").child(Path("/bar/baz")) == "/foo/bar/baz");
+	CHECK(Path("/foo").child(Path("/")) == "/foo");
+
+	CHECK(!strcmp(Path("/foo").symbol(), "foo"));
+	CHECK(!strcmp(Path("/foo/bar").symbol(), "bar"));
+	CHECK(!strcmp(Path("/").symbol(), ""));
+
+	Path original(std::string("/foo/bar"));
+	Path copy(original);
+	CHECK(original == copy);
+
+	bool valid = true;
+	try {
+		Path path("/ends/in/slash/");
+	} catch (const Path::BadPath& e) {
+		std::cerr << "Caught exception: " << e.what() << std::endl;
+		valid = false;
+	}
+	CHECK(!valid);
+
+	valid = true;
+	try {
+		Path path(std::string("/has//double/slash"));
+	} catch (const Path::BadPath& e) {
+		std::cerr << "Caught exception: " << e.what() << std::endl;
+		valid = false;
+	}
+	CHECK(!valid);
 
 	return 0;
 }

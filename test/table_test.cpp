@@ -14,12 +14,13 @@
   along with Raul.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include <string>
+#include <cstring>
 #include <iostream>
-#include <utility>
 #include <map>
 #include <set>
+#include <string>
 #include <sys/time.h>
+#include <utility>
 
 #include "raul/log.hpp"
 #include "raul/PathTable.hpp"

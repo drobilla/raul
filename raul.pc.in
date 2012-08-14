@@ -6,6 +6,5 @@ includedir=@INCLUDEDIR@
 Name: raul
 Version: @RAUL_VERSION@
 Description: A C++ convenience library for realtime audio applications
-Requires: glib-2.0 gthread-2.0
 Libs: -L${libdir} -lraul @RAUL_PC_LIBS@
 Cflags: -I${includedir}

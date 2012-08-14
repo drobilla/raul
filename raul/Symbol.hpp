@@ -17,45 +17,38 @@
 #ifndef RAUL_SYMBOL_HPP
 #define RAUL_SYMBOL_HPP
 
-#include <cctype>
-#include <cstring>
-#include <exception>
-#include <iostream>
 #include <string>
 
-#include <glib.h>
+#include "raul/Exception.hpp"
 
 namespace Raul {
 
-/** A restricted string (C identifier, which is a component of a Path).
+/** A restricted string which is a valid C identifier and Path component.
  *
  * A Symbol is a very restricted string suitable for use as an identifier.
  * It is a valid LV2 symbol, URI fragment, filename, OSC path fragment,
- * and identifier for most programming languages (including C).
+ * and identifier for virtually all programming languages.
  *
  * Valid characters are _, a-z, A-Z, 0-9, except the first character which
  * must not be 0-9.
  *
- * \ingroup raul
+ * @ingroup raul
  */
-class Symbol {
+class Symbol : public std::basic_string<char> {
 public:
-	class BadSymbol : public std::exception {
+	/** Attempt to construct an invalid Symbol. */
+	class BadSymbol : public Exception {
 	public:
-		explicit BadSymbol(const std::string& symbol) : _symbol(symbol) {}
-		~BadSymbol() throw() {}
-		const char* what() const throw() { return _symbol.c_str(); }
-	private:
-		const std::string _symbol;
+		explicit BadSymbol(const std::string& symbol) : Exception(symbol) {}
 	};
 
-	/** Construct a Symbol from an std::string.
+	/** Construct a Symbol from a C++ string.
 	 *
-	 * It is a fatal error to construct a Symbol from an invalid string,
-	 * use is_valid first to check.
+	 * This will throw an exception if @p symbol is invalid.  To avoid this,
+	 * use is_valid() first to check.
 	 */
-	explicit Symbol(const std::basic_string<char>& symbol) throw(BadSymbol)
-		: _str(g_intern_string(symbol.c_str()))
+	explicit Symbol(const std::basic_string<char>& symbol)
+		: std::basic_string<char>(symbol)
 	{
 		if (!is_valid(symbol)) {
 			throw BadSymbol(symbol);
@@ -64,50 +57,71 @@ public:
 
 	/** Construct a Symbol from a C string.
 	 *
-	 * It is a fatal error to construct a Symbol from an invalid string,
-	 * use is_valid first to check.
+	 * This will throw an exception if @p symbol is invalid.  To avoid this,
+	 * use is_valid() first to check.
 	 */
-	explicit Symbol(const char* csymbol) throw(BadSymbol)
-		: _str(g_intern_string(csymbol))
+	explicit Symbol(const char* symbol)
+		: std::basic_string<char>(symbol)
 	{
-		if (!is_valid(csymbol)) {
-			throw BadSymbol(csymbol);
+		if (!is_valid(symbol)) {
+			throw BadSymbol(symbol);
 		}
 	}
 
-	Symbol& operator=(const Symbol& other) {
-		_str = other._str;
-		return *this;
+	/** Copy a Symbol.
+	 *
+	 * Note this is faster than constructing a Symbol from another Symbol's
+	 * string since validation is unnecessary.
+	 */
+	Symbol(const Symbol& symbol)
+		: std::basic_string<char>(symbol)
+	{}
+
+	/** Return true iff @p c is a valid Symbol start character. */
+	static inline bool is_valid_start_char(char c) {
+		return (c == '_') || (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z');
 	}
 
-	inline const char* c_str() const { return _str; }
-
-	inline bool operator==(const Symbol& other) const {
-		return _str == other._str;
+	/** Return true iff @p c is a valid Symbol character. */
+	static inline bool is_valid_char(char c) {
+		return is_valid_start_char(c) || (c >= '0' && c <= '9');
 	}
 
-	inline bool operator!=(const Symbol& other) const {
-		return _str != other._str;
+	/** Return true iff @p str is a valid Symbol. */
+	static inline bool is_valid(const std::basic_string<char>& str) {
+		if (str.empty() || (str[0] >= '0' && str[0] <= '9')) {
+			return false;  // Must start with a letter or underscore
+		}
+
+		for (size_t i = 0; i < str.length(); ++i) {
+			if (!is_valid_char(str[i])) {
+				return false;  // All characters must be _, a-z, A-Z, 0-9
+			}
+		}
+
+		return true;
 	}
 
-	inline bool operator<(const Symbol& other) const {
-		return strcmp(_str, other._str) < 0;
+	/** Convert a string to a valid symbol.
+	 *
+	 * This will make a best effort at turning @a str into a complete, valid
+	 * Symbol, and will always return one.
+	 */
+	static inline Symbol symbolify(const std::basic_string<char>& in) {
+		if (in.empty()) {
+			return Symbol("_");
+		}
+
+		std::basic_string<char> out(in);
+		for (size_t i = 0; i < in.length(); ++i) {
+			if (!is_valid_char(out[i])) {
+				out[i] = '_';
+			}
+		}
+		return Symbol(out);
 	}
-
-	static bool is_valid(const std::basic_string<char>& symbol);
-
-	static Raul::Symbol symbolify(const std::basic_string<char>& str);
-
-private:
-	const char* _str;
 };
 
 } // namespace Raul
-
-static inline std::ostream&
-operator<<(std::ostream& os, const Raul::Symbol& symbol)
-{
-	return (os << symbol.c_str());
-}
 
 #endif // RAUL_SYMBOL_HPP

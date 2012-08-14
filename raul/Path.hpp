@@ -17,48 +17,38 @@
 #ifndef RAUL_PATH_HPP
 #define RAUL_PATH_HPP
 
-#include <cassert>
-#include <cctype>
-#include <cstring>
-#include <exception>
 #include <string>
 
+#include "raul/Exception.hpp"
 #include "raul/Symbol.hpp"
 
 namespace Raul {
 
 /** A restricted path of Symbols separated by, and beginning with, "/".
  *
- * This enforces that a Path is a valid path, where each fragment is a valid
- * Symbol, separated by exactly one slash (/).
+ * A Path never ends with a "/", except for the root Path "/", which is the
+ * only valid single-character Path.
  *
- * A path is divided by slashes (/).  The first character MUST be a slash, and
- * the last character MUST NOT be a slash (except in the special case of the
- * root path "/", which is the only valid single-character path).
- *
- * \ingroup raul
+ * @ingroup raul
  */
-class Path {
+class Path : public std::basic_string<char> {
 public:
-	class BadPath : public std::exception {
+	/** Attempt to construct an invalid Path. */
+	class BadPath : public Exception {
 	public:
-		explicit BadPath(const std::string& path) : _path(path) {}
-		~BadPath() throw() {}
-		const char* what() const throw() { return _path.c_str(); }
-	private:
-		const std::string _path;
+		explicit BadPath(const std::string& path) : Exception(path) {}
 	};
 
 	/** Construct an uninitialzed path, because the STL is annoying. */
-	Path() : _str(g_intern_string("/")) {}
+	Path() : std::basic_string<char>("/") {}
 
-	/** Construct a Path from an std::string.
+	/** Construct a Path from a C++ string.
 	 *
-	 * It is a fatal error to construct a Path from an invalid string,
-	 * use is_valid first to check.
+	 * This will throw an exception if @p path is invalid.  To avoid this, use
+	 * is_valid() first to check.
 	 */
-	Path(const std::basic_string<char>& path) throw (BadPath)
-		: _str(g_intern_string(path.c_str()))
+	explicit Path(const std::basic_string<char>& path)
+		: std::basic_string<char>(path)
 	{
 		if (!is_valid(path)) {
 			throw BadPath(path);
@@ -67,56 +57,81 @@ public:
 
 	/** Construct a Path from a C string.
 	 *
-	 * It is a fatal error to construct a Path from an invalid string,
-	 * use is_valid first to check.
+	 * This will throw an exception if @p path is invalid.  To avoid this, use
+	 * is_valid() first to check.
 	 */
-	Path(const char* cpath) throw(BadPath)
-		: _str(g_intern_string(cpath))
+	explicit Path(const char* path)
+		: std::basic_string<char>(path)
 	{
-		if (!is_valid(cpath)) {
-			throw BadPath(cpath);
+		if (!is_valid(path)) {
+			throw BadPath(path);
 		}
 	}
 
-	/** Construct a Path from another path.
+	/** Copy a Path.
 	 *
-	 * This is faster than constructing a path from the other path's string
-	 * representation, since validity checking is avoided.
+	 * Note this is faster than constructing a Path from another Path's string
+	 * since validation is unnecessary.
 	 */
-	Path& operator=(const Path& other) {
-		_str = other._str;
-		return *this;
+	Path(const Path& path)
+		: std::basic_string<char>(path)
+	{}
+
+	/** Return true iff @p c is a valid Path character. */
+	static inline bool is_valid_char(char c) {
+		return c == '/' || Symbol::is_valid_char(c);
 	}
 
-	static bool is_valid(const std::basic_string<char>& path);
+	/** Return true iff @p str is a valid Path. */
+	static inline bool is_valid(const std::basic_string<char>& str) {
+		if (str.empty() || (str[0] != '/')) {
+			return false;  // Must start with '/'
+		}
 
-	/** Convert a string to a valid Path. */
-	static Path pathify(const std::basic_string<char>& str);
+		if (str != "/" && *str.rbegin() == '/') {
+			return false;  // Must not end with '/' except for the root
+		}
 
-	static void replace_invalid_chars(std::string& str,
-	                                  size_t       start,
-	                                  bool         replace_slash = false);
+		for (size_t i = 1; i < str.length(); ++i) {
+			if (!is_valid_char(str[i])) {
+				return false;  // All characters must be /, _, a-z, A-Z, 0-9
+			} else if (str[i - 1] == '/') {
+				if (str[i] == '/') {
+					return false;  // Must not contain "//"
+				} else if (!Symbol::is_valid_start_char(str[i])) {
+					return false;  // Invalid symbol start character (digit)
+				}
+			}
+		}
 
-	bool is_root() const { return !strcmp(_str, "/"); }
+		return true;
+	}
 
-	bool is_child_of(const Path& parent) const;
-	bool is_parent_of(const Path& child) const;
+	/** Return true iff this path is the root path ("/"). */
+	inline bool is_root() const { return *this == "/"; }
 
-	Path operator+(const Path& p) const { return child(p); }
+	/** Return true iff this path is a child of @p parent at any depth. */
+	inline bool is_child_of(const Path& parent) const {
+		const std::string parent_base = parent.base();
+		return substr(0, parent_base.length()) == parent_base;
+	}
 
-	/** Return the lowest common ancestor of a and b. */
-	static Path lca(const Path& a, const Path& b);
+	/** Return true iff this path is a parent of @p child at any depth. */
+	inline bool is_parent_of(const Path& child) const {
+		return child.is_child_of(*this);
+	}
 
 	/** Return the symbol of this path (everything after the last '/').
-	 * This is e.g. the "method name" for OSC paths, the filename
-	 * for filesystem paths, etc.
-	 * The empty string may be returned (if the path is the root path).
+	 *
+	 * This is what is called the "basename" for file paths, the "method name"
+	 * for OSC paths, and so on.  Since the root path does not have a symbol,
+	 * this does not return a Raul::Symbol but may return the empty string.
 	 */
 	inline const char* symbol() const {
 		if (!is_root()) {
-			const char* last_slash = strrchr(c_str(), '/');
-			if (last_slash) {
-				return last_slash + 1;
+			const size_t last_sep = rfind('/');
+			if (last_sep != std::string::npos) {
+				return c_str() + last_sep + 1;
 			}
 		}
 		return "";
@@ -131,83 +146,65 @@ public:
 		if (is_root()) {
 			return *this;
 		} else {
-			const std::string str(this->str());
-			const size_t first_slash = str.find('/');
-			const size_t last_slash  = str.find_last_of('/');
-			return (first_slash == last_slash) ? Path("/") : str.substr(0, last_slash);
+			const size_t first_sep = find('/');
+			const size_t last_sep  = find_last_of('/');
+			return (first_sep == last_sep) ? Path("/") : Path(substr(0, last_sep));
 		}
 	}
 
-	Path child(const Path& p) const {
-		return base() + p.str().substr(1);
+	/** Return a child Path of this path. */
+	inline Path child(const Path& p) const {
+		return p.is_root() ? *this : Path(base() + p.substr(1));
 	}
 
-	/** Return the path's child with the given symbol
-	 */
+	/** Return a direct child Path of this Path with the given Symbol. */
 	inline Path child(const Raul::Symbol& symbol) const {
-		return base() + symbol.c_str();
-	}
-
-	/** Return path relative to some base path (chop prefix)
-	 */
-	inline Path relative_to_base(const Path& base) const {
-		if ((*this) == base) {
-			return "/";
-		} else {
-			assert(length() > base.base().length());
-			return str().substr(base.base().length() - 1);
-		}
+		return Path(base() + symbol.c_str());
 	}
 
 	/** Return path with a trailing "/".
 	 *
-	 * Returned value is guaranteed to be a valid parent path, i.e. a valid
-	 * child path can be made using parent.base() + symbol.
+	 * The returned string is such that appending a valid Symbol to it is
+	 * guaranteed to form a valid path.
 	 */
 	inline const std::string base() const {
-		std::string ret = str();
-		if (is_root() && ret[ret.length() - 1] == '/')
-			return ret;
-		else
-			return ret + '/';
+		if (is_root()) {
+			return *this;
+		} else {
+			return *this + '/';
+		}
 	}
 
-	/** Return true if \a child is equal to, or a descendant of \a parent */
-	static bool descendant_comparator(const Path& parent, const Path& child) {
+	/** Return the lowest common ancestor of a and b. */
+	static inline Path lca(const Path& a, const Path& b) {
+		const size_t len      = std::min(a.length(), b.length());
+		size_t       last_sep = 0;
+		for (size_t i = 0; i < len; ++i) {
+			if (a[i] == '/' && b[i] == '/') {
+				last_sep = i;
+			}
+			if (a[i] != b[i]) {
+				break;
+			}
+		}
+
+		if (last_sep <= 1) {
+			return Path("/");
+		}
+
+		return Path(a.substr(0, last_sep));
+	}
+
+	/** Return true iff @p child is equal to, or a descendant of @p parent. */
+	static inline bool descendant_comparator(const Path& parent,
+	                                         const Path& child) {
 		return (child == parent ||
 		        (child.length() > parent.length() &&
-		         (!std::strncmp(parent.c_str(), child.c_str(), parent.length())
-		          && (parent.is_root() || child.str()[parent.length()] == '/'))) );
+		         (!parent.compare(0, parent.length(), child, 0, parent.length())
+		          && (parent.is_root() || child[parent.length()] == '/'))));
 	}
-
-	inline std::string substr(size_t start, size_t end=std::string::npos) const {
-		return str().substr(start, end);
-	}
-
-	inline bool operator<(const Path& path)  const { return strcmp(_str, path.c_str()) < 0; }
-	inline bool operator<=(const Path& path) const { return (*this) == path || (*this) < path; }
-	inline bool operator==(const Path& path) const { return _str == path._str; }
-	inline bool operator!=(const Path& path) const { return _str != path._str; }
-
-	inline char operator[](int i) const { return _str[i]; }
-
-	inline size_t length()                   const { return str().length(); }
-	inline size_t find(const std::string& s) const { return str().find(s); }
-
-	inline const std::string str()   const { return _str; }
-	inline const char*       c_str() const { return _str; }
-
-private:
-	const char* _str;
 };
 
 } // namespace Raul
-
-static inline
-std::ostream&
-operator<<(std::ostream& os, const Raul::Path& path)
-{
-	return (os << path.c_str());
-}
 
 #endif // RAUL_PATH_HPP

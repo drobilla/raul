@@ -18,39 +18,30 @@
 #define RAUL_URI_HPP
 
 #include <string>
-#include <cstring>
-#include <exception>
-#include <ostream>
-#include <glib.h>
 
-#include "raul/Path.hpp"
+#include "raul/Exception.hpp"
 
 namespace Raul {
 
-/** Simple wrapper around standard string with useful URI-specific methods.
+/** A URI (RFC3986) string.
  *
- * This "should" be used for proper URIs (RFC3986), but not much support or
- * validation is built-in yet.  The URI string MUST have a scheme though.
- * \ingroup raul
+ * @ingroup raul
  */
-class URI {
+class URI : public std::basic_string<char> {
 public:
-	class BadURI : public std::exception {
+	/** Attempt to construct an invalid URI. */
+	class BadURI : public Exception {
 	public:
-		explicit BadURI(const std::string& uri) : _uri(uri) {}
-		~BadURI() throw() {}
-		const char* what() const throw() { return _uri.c_str(); }
-	private:
-		const std::string _uri;
+		explicit BadURI(const std::string& uri) : Exception(uri) {}
 	};
 
-	/** Construct a URI from an std::string.
+	/** Construct a URI from a C++ string.
 	 *
-	 * It is a fatal error to construct a URI from an invalid string,
-	 * use is_valid first to check.
+	 * This will throw an exception if @p uri is invalid.  To avoid this, use
+	 * is_valid() first to check.
 	 */
-	URI(const std::basic_string<char>& uri="nil:0") throw(BadURI)
-		: _str(g_intern_string(uri.c_str()))
+	explicit URI(const std::basic_string<char>& uri)
+		: std::basic_string<char>(uri)
 	{
 		if (!is_valid(uri)) {
 			throw BadURI(uri);
@@ -59,67 +50,63 @@ public:
 
 	/** Construct a URI from a C string.
 	 *
-	 * It is a fatal error to construct a URI from an invalid string,
-	 * use is_valid first to check.
+	 * This will throw an exception if @p uri is invalid.  To avoid this, use
+	 * is_valid() first to check.
 	 */
-	URI(const char* uri) throw(BadURI)
-		: _str(g_intern_string(uri))
+	explicit URI(const char* uri)
+		: std::basic_string<char>(uri)
 	{
-		if (!is_valid(uri))
+		if (!is_valid(uri)) {
 			throw BadURI(uri);
+		}
 	}
 
-	/** Construct a URI from a base URI and a Path. */
-	URI(const URI& base, const Path& path)
-		: _str(g_intern_string((base.str() + path.c_str()).c_str()))
+	/** Copy a URI.
+	 *
+	 * Note this is faster than constructing a URI from another URI's string
+	 * since validation is unnecessary.
+	 */
+	URI(const URI& uri)
+		: std::basic_string<char>(uri)
 	{}
 
-	static bool is_valid(const std::basic_string<char>& uri) {
-		return uri.find(":") != std::string::npos;
+	/** Return true iff @p c is a valid URI start character. */
+	static inline bool is_valid_start_char(char c) {
+		return (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z');
 	}
 
-	/** Return path with everything up to and including the first occurence of str chopped */
-	inline const std::string chop_start(const std::string& str) const {
-		return substr(find(str) + str.length());
+	/** Return true iff @p c is a valid URI scheme character. */
+	static inline bool is_valid_scheme_char(char c) {
+		// S3.1: scheme ::= ALPHA *( ALPHA / DIGIT / "+" / "-" / "." )
+		return is_valid_start_char(c) || (c >= '0' && c <= '9') ||
+			c == '+' || c == '-' || c == '.';
 	}
 
-	/** Return the URI with the scheme removed (as a string) */
-	std::string chop_scheme() const { return chop_start(":"); }
+	/** Return true iff @p str is a valid URI.
+	 *
+	 * Currently this only checks that @p starts with a valid URI scheme.
+	 */
+	static inline bool is_valid(const std::basic_string<char>& str) {
+		if (!is_valid_start_char(str[0])) {
+			return false;  // Must start with a-z A-Z
+		}
+
+		for (size_t i = 1; i < str.length(); ++i) {
+			if (str[i] == ':') {
+				return true;  // Starts with a valid scheme
+			} else if (!is_valid_scheme_char(str[i])) {
+				return false;  // Invalid scheme character encountered
+			}
+		}
+
+		return false;  // Must start with a scheme followed by ':'
+	}
 
 	/** Return the URI scheme (everything before the first ':') */
 	inline std::string scheme() const { return substr(0, find(":")); }
-
-	inline const std::string str()   const { return _str; }
-	inline const char*       c_str() const { return _str; }
-
-	inline std::string substr(size_t start, size_t end=std::string::npos) const {
-		return str().substr(start, end);
-	}
-
-	inline bool operator<(const URI& uri)  const { return strcmp(_str, uri.c_str()) < 0; }
-	inline bool operator<=(const URI& uri) const { return (*this) == uri || (*this) < uri; }
-	inline bool operator==(const URI& uri) const { return _str == uri._str; }
-	inline bool operator!=(const URI& uri) const { return _str != uri._str; }
-
-	inline char operator[](int i) const { return _str[i]; }
-
-	inline size_t length()                   const { return str().length(); }
-	inline size_t find(const std::string& s) const { return str().find(s); }
-	inline size_t find_last_of(char c)       const { return str().find_last_of(c); }
-
-private:
-	const char* _str;
 };
 
 } // namespace Raul
-
-static inline
-std::ostream&
-operator<<(std::ostream& os, const Raul::URI& uri)
-{
-	return (os << uri.c_str());
-}
-
 
 #endif // RAUL_URI_HPP
 

@@ -51,10 +51,6 @@ def configure(conf):
     autowaf.configure(conf)
     conf.line_just = 40
     autowaf.display_header('Raul Configuration')
-    autowaf.check_pkg(conf, 'glib-2.0', atleast_version='2.2',
-                      uselib_store='GLIB', mandatory=True)
-    autowaf.check_pkg(conf, 'gthread-2.0', atleast_version='2.14.0',
-                      uselib_store='GTHREAD', mandatory=True)
 
     if Options.platform == 'darwin':
         conf.check(framework_name='CoreServices')
@@ -95,9 +91,11 @@ tests = '''
         test/queue_test
         test/ringbuffer_test
         test/sem_test
+        test/symbol_test
         test/table_test
         test/thread_test
         test/time_test
+        test/uri_test
 '''
 
 def build(bld):
@@ -115,8 +113,6 @@ def build(bld):
     lib_source = '''
             src/Configuration.cpp
             src/Maid.cpp
-            src/Path.cpp
-            src/Symbol.cpp
             src/Thread.cpp
             src/log.cpp
     '''
@@ -144,7 +140,7 @@ def build(bld):
     set_defines(obj);
 
     if bld.env.BUILD_TESTS:
-        test_libs     = []
+        test_libs     = ['pthread', 'rt']
         test_cxxflags = []
         if bld.is_defined('HAVE_GCOV'):
             test_libs     += ['gcov']
