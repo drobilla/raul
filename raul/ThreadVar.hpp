@@ -17,16 +17,18 @@
 #ifndef RAUL_THREADVAR_HPP
 #define RAUL_THREADVAR_HPP
 
+#include "raul/Noncopyable.hpp"
+
 #include <pthread.h>
 
 namespace Raul {
 
-struct ThreadVarImpl;
-
 /** Thread-specific variable.
+ *
+ * A ThreadVar is a variable which has a different value for each thread.
  */
 template<typename T>
-class ThreadVar
+class ThreadVar : public Noncopyable
 {
 public:
 	ThreadVar(const T& default_value)
@@ -39,6 +41,7 @@ public:
 		pthread_key_delete(_key);
 	}
 
+	/** Set the value for the calling thread. */
 	ThreadVar& operator=(const T& value) {
 		T* val = (T*)pthread_getspecific(_key);
 		if (val) {
@@ -50,15 +53,13 @@ public:
 		return *this;
 	}
 
+	/** Get the value for the calling thread. */
 	operator T() const {
 		T* val = (T*)pthread_getspecific(_key);
 		return val ? *val : _default_value;
 	}
 
 private:
-	ThreadVar(const ThreadVar& noncopyable);
-	ThreadVar& operator=(const ThreadVar& noncopyable);
-
 	static void destroy_value(void* ptr) {
 		delete (T*)ptr;
 	}
