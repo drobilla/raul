@@ -17,10 +17,11 @@
 #ifndef RAUL_ARRAY_HPP
 #define RAUL_ARRAY_HPP
 
+#include <algorithm>
 #include <cassert>
 #include <cstddef>
-#include <algorithm>
-#include "Deletable.hpp"
+
+#include "raul/Disposable.hpp"
 
 namespace Raul {
 
@@ -32,7 +33,7 @@ namespace Raul {
  * \ingroup raul
  */
 template <class T>
-class Array : public Deletable
+class Array : public Disposable
 {
 public:
 	explicit Array(size_t size = 0) : _size(size), _elems(NULL) {

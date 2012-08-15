@@ -85,7 +85,6 @@ tests = '''
         test/atom_test
         test/atomic_test
         test/double_buffer_test
-        test/list_test
         test/path_test
         test/ptr_test
         test/queue_test
@@ -111,7 +110,6 @@ def build(bld):
 
     lib_source = '''
             src/Configuration.cpp
-            src/Maid.cpp
             src/Thread.cpp
             src/log.cpp
     '''

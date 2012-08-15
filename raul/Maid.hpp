@@ -17,57 +17,100 @@
 #ifndef RAUL_MAID_HPP
 #define RAUL_MAID_HPP
 
-#include "raul/Deletable.hpp"
-#include "raul/List.hpp"
+#include "raul/AtomicPtr.hpp"
+#include "raul/Disposable.hpp"
+#include "raul/Manageable.hpp"
 #include "raul/Noncopyable.hpp"
-#include "raul/SRSWQueue.hpp"
 #include "raul/SharedPtr.hpp"
 
 namespace Raul {
 
-/** Explicitly driven garbage collector.
+/** Explicit quasi-garbage-collector.
  *
- * This is used by realtime threads to allow hard realtime deletion of objects
- * (push() is realtime safe).
- *
- * You can also manage a SharedPtr, so cleanup() will delete it when all
- * references are dropped (except the one held by the Maid itself).
- * This allows using a SharedPtr freely in hard realtime threads without having
- * to worry about deletion accidentally occuring in the realtime thread.
- *
- * cleanup() should be called periodically to free memory, often enough to
- * prevent the queue from overflowing.  This is probably best done by the main
- * thread to avoid the overhead of having a thread just to delete things.
+ * This allows objects to be disposed of in a real-time thread, but actually
+ * deleted later by another thread which calls cleanup().
  *
  * \ingroup raul
  */
-class Maid : Noncopyable
+class Maid : public Noncopyable
 {
 public:
-	explicit Maid(size_t size);
-	~Maid();
+	Maid() {}
 
-	/** Push a raw pointer to be deleted when cleanup() is called next.
-	 * Realtime safe.
-	 */
-	inline void push(Raul::Deletable* obj) {
-		if (obj)
-			_objects.push(obj);
+	inline ~Maid() {
+		cleanup();
 	}
 
-	void manage(SharedPtr<Raul::Deletable> ptr);
+	/** Dispose of an object when cleanup() is called next.
+	 *
+	 * This is thread safe, and real-time safe assuming reasonably low
+	 * contention.  If real-time threads need to push, do not call this very
+	 * rapidly from many threads.
+	 */
+	inline void dispose(Disposable* obj) {
+		if (obj) {
+			while (true) {
+				obj->_maid_next = _disposed.get();
+				if (_disposed.compare_and_exchange(obj->_maid_next, obj)) {
+					return;
+				}
+			}
+		}
+	}
 
-	void cleanup();
+	/** Manage an object held by a SharedPtr.
+	 *
+	 * This will hold a reference to @p ptr ensuring it will not be deleted
+	 * except by cleanup().  This is mainly useful to allow dropping SharedPtr
+	 * references in real-time threads without causing a deletion.
+	 *
+	 * This is not thread-safe.
+	 *
+	 * Note this mechanism scales linearly.  If a very large number of objects
+	 * are managed cleanup() will become very expensive.
+	 */
+	inline void manage(SharedPtr<Manageable> ptr) {
+		ptr->_maid_next = _managed;
+		_managed        = ptr;
+	}
+
+	/** Free all dead and managed objects immediately.
+	 *
+	 * Obviously not real-time safe, but may be called while other threads are
+	 * calling dispose().
+	 */
+	inline void cleanup() {
+		// Atomically get the head of the disposed list
+		Disposable* disposed;
+		while (true) {
+			disposed = _disposed.get();
+			if (_disposed.compare_and_exchange(disposed, NULL)) {
+				break;
+			}
+		}
+
+		// Free the disposed list
+		for (Disposable* obj = _disposed.get(); obj;) {
+			Disposable* const next = obj->_maid_next;
+			delete obj;
+			obj = next;
+		}
+
+		// Free the managed list
+		SharedPtr<Manageable> managed = _managed;
+		_managed.reset();
+		for (SharedPtr<Manageable> obj = managed; obj;) {
+			const SharedPtr<Manageable> next = obj->_maid_next;
+			obj->_maid_next.reset();
+			obj = next;
+		}
+	}
 
 private:
-	typedef Raul::SRSWQueue<Raul::Deletable*>       Objects;
-	typedef Raul::List<SharedPtr<Raul::Deletable> > Managed;
-
-	Objects _objects;
-	Managed _managed;
+	AtomicPtr<Disposable> _disposed;
+	SharedPtr<Manageable> _managed;
 };
 
 } // namespace Raul
 
 #endif // RAUL_MAID_HPP
-
