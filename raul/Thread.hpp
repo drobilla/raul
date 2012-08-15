@@ -30,21 +30,12 @@ struct ThreadImpl;
  * Extend this and override the _run method to easily create a thread
  * to perform some task.
  *
- * The current Thread can be accessed using the get() method.
- *
  * \ingroup raul
  */
 class Thread : Noncopyable
 {
 public:
 	virtual ~Thread();
-
-	/** Return the calling thread.
-	 *
-	 * If the calling thread does not yet have a Thread object associated with
-	 * it yet, one will be created with the given name.
-	 */
-	static Thread& get(const std::string& name="");
 
 	/** Start the thread if it is not already running. */
 	virtual void start();

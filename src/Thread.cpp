@@ -33,8 +33,6 @@ struct ThreadImpl {
 	pthread_t pthread;
 };
 
-static ThreadVar<Thread*> self(NULL);
-
 Thread::Thread(const std::string& name)
 	: _impl(new ThreadImpl())
 	, _name(name)
@@ -61,21 +59,10 @@ Thread::~Thread()
 	delete _impl;
 }
 
-Thread&
-Thread::get(const std::string& name)
-{
-	if (!self) {
-		self = new Thread(pthread_self(), name);
-	}
-
-	return *self;
-}
-
 void*
 Thread::_static_run(void* thread)
 {
 	Thread* me = static_cast<Thread*>(thread);
-	self = me;
 	me->_run();
 	me->_thread_exists = false;
 	return NULL;
