@@ -56,7 +56,6 @@ public:
 
 protected:
 	explicit Thread(const std::string& name="");
-	Thread(pthread_t thread, const std::string& name="");
 
 	/** Thread function to execute.
 	 *
@@ -74,7 +73,6 @@ private:
 	ThreadImpl* _impl;
 	std::string _name;
 	bool        _thread_exists;
-	bool        _own_thread;
 
 protected:
 	bool _exit_flag;

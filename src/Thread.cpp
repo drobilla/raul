@@ -37,20 +37,8 @@ Thread::Thread(const std::string& name)
 	: _impl(new ThreadImpl())
 	, _name(name)
 	, _thread_exists(false)
-	, _own_thread(true)
 	, _exit_flag(false)
 {
-}
-
-/** Must be called from thread */
-Thread::Thread(pthread_t thread, const std::string& name)
-	: _impl(new ThreadImpl())
-	, _name(name)
-	, _thread_exists(true)
-	, _own_thread(false)
-	, _exit_flag(false)
-{
-	_impl->pthread = thread;
 }
 
 Thread::~Thread()
@@ -87,11 +75,9 @@ void
 Thread::stop()
 {
 	if (_thread_exists) {
-		if (_own_thread) {
-			_exit_flag = true;
-			pthread_cancel(_impl->pthread);
-			pthread_join(_impl->pthread, NULL);
-		}
+		_exit_flag = true;
+		pthread_cancel(_impl->pthread);
+		pthread_join(_impl->pthread, NULL);
 		_thread_exists = false;
 		LOG(info) << "Exiting thread" << endl;
 	}
