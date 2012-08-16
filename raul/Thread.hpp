@@ -37,13 +37,18 @@ class Thread : Noncopyable
 public:
 	virtual ~Thread();
 
-	/** Start the thread if it is not already running. */
+	/** Start the thread if it is not already running.
+	 *
+	 * This is separate from construction to prevent race conditions during
+	 * construction of derived classes.
+	 */
 	virtual void start();
 
-	/** Stop the thread if it is running. */
-	virtual void stop();
-
-	/** Wait until the thread exits. */
+	/** Stop the thread and block the caller until the thread exits.
+	 *
+	 * This sets _exit_flag to true, derived classes must ensure they actually
+	 * exit when this occurs.
+	 */
 	virtual void join();
 
 	/** Set the scheduling policy for this thread.
@@ -55,6 +60,11 @@ public:
 	const std::string& name() const { return _name; }
 
 protected:
+	/** Construct a thread.
+	 *
+	 * Note this does not actually start a thread to prevent race conditions
+	 * during construction.  To actually begin execution, call start().
+	 */
 	explicit Thread(const std::string& name="");
 
 	/** Thread function to execute.

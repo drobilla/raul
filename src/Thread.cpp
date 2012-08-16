@@ -43,7 +43,7 @@ Thread::Thread(const std::string& name)
 
 Thread::~Thread()
 {
-	stop();
+	join();
 	delete _impl;
 }
 
@@ -72,21 +72,14 @@ Thread::start()
 }
 
 void
-Thread::stop()
+Thread::join()
 {
 	if (_thread_exists) {
 		_exit_flag = true;
-		pthread_cancel(_impl->pthread);
 		pthread_join(_impl->pthread, NULL);
 		_thread_exists = false;
 		LOG(info) << "Exiting thread" << endl;
 	}
-}
-
-void
-Thread::join()
-{
-	pthread_join(_impl->pthread, NULL);
 }
 
 bool
