@@ -17,8 +17,6 @@
 #ifndef RAUL_THREAD_HPP
 #define RAUL_THREAD_HPP
 
-#include <string>
-
 #include "raul/Noncopyable.hpp"
 
 namespace Raul {
@@ -56,16 +54,13 @@ public:
 	 */
 	virtual bool set_scheduling(bool realtime, unsigned priority);
 
-	/** Return the name of this thread. */
-	const std::string& name() const { return _name; }
-
 protected:
 	/** Construct a thread.
 	 *
 	 * Note this does not actually start a thread to prevent race conditions
 	 * during construction.  To actually begin execution, call start().
 	 */
-	explicit Thread(const std::string& name="");
+	explicit Thread();
 
 	/** Thread function to execute.
 	 *
@@ -81,7 +76,6 @@ private:
 	static void* _static_run(void* me);
 
 	ThreadImpl* _impl;
-	std::string _name;
 	bool        _thread_exists;
 
 protected:

@@ -14,18 +14,9 @@
   along with Raul.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include <cstring>
-#include <string>
-
 #include <pthread.h>
 
-#include "raul/log.hpp"
 #include "raul/Thread.hpp"
-#include "raul/ThreadVar.hpp"
-
-#define LOG(s) (s("[")(_name)("] "))
-
-using std::endl;
 
 namespace Raul {
 
@@ -33,9 +24,8 @@ struct ThreadImpl {
 	pthread_t pthread;
 };
 
-Thread::Thread(const std::string& name)
+Thread::Thread()
 	: _impl(new ThreadImpl())
-	, _name(name)
 	, _thread_exists(false)
 	, _exit_flag(false)
 {
@@ -60,8 +50,6 @@ void
 Thread::start()
 {
 	if (!_thread_exists) {
-		LOG(info) << "Starting thread" << endl;
-
 		pthread_attr_t attr;
 		pthread_attr_init(&attr);
 		pthread_attr_setstacksize(&attr, 1500000);
@@ -78,7 +66,6 @@ Thread::join()
 		_exit_flag = true;
 		pthread_join(_impl->pthread, NULL);
 		_thread_exists = false;
-		LOG(info) << "Exiting thread" << endl;
 	}
 }
 
@@ -88,16 +75,7 @@ Thread::set_scheduling(bool realtime, unsigned priority)
 	sched_param sp;
 	sp.sched_priority = priority;
 	const int policy = realtime ? SCHED_FIFO : SCHED_OTHER;
-	const int result = pthread_setschedparam(_impl->pthread, policy, &sp);
-	if (!result) {
-		LOG(info) << (fmt("Set scheduling policy to %1% priority %2%\n")
-		              % (realtime ? "realtime" : "normal")
-		              % sp.sched_priority);
-	} else {
-		LOG(warn) << (fmt("Unable to set scheduling policy (%1%)\n")
-		              % strerror(result));
-	}
-	return !result;
+	return !pthread_setschedparam(_impl->pthread, policy, &sp);
 }
 
 } // namespace Raul
