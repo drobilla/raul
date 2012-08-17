@@ -24,7 +24,6 @@
 #include <string>
 
 #include "raul/Noncopyable.hpp"
-#include "raul/log.hpp"
 
 namespace Raul {
 
@@ -46,9 +45,6 @@ public:
 			: command;
 
         const std::string arguments = command.substr((command.find(" ") + 1));
-
-        info << "Launching child process '" << executable << "' with arguments '"
-             << arguments << "'" << std::endl;
 
         // Use the same double fork() trick as JACK to prevent zombie children
         const int err = fork();

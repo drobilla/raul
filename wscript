@@ -111,7 +111,6 @@ def build(bld):
     lib_source = '''
             src/Configuration.cpp
             src/Thread.cpp
-            src/log.cpp
     '''
 
     framework = ''
