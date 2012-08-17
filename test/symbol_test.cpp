@@ -18,7 +18,6 @@
 #include <iostream>
 #include <list>
 
-#include "raul/log.hpp"
 #include "raul/Path.hpp"
 
 using namespace std;
@@ -29,7 +28,7 @@ main()
 {
 #define CHECK(cond) \
 	do { if (!(cond)) { \
-		error << "Test failed: " << (cond) << endl; \
+		cerr << "Test failed: " << (cond) << endl; \
 		return 1; \
 	} } while (0)
 

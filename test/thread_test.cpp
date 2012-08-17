@@ -16,7 +16,6 @@
 
 #include <iostream>
 
-#include "raul/log.hpp"
 #include "raul/AtomicInt.hpp"
 #include "raul/Semaphore.hpp"
 #include "raul/Thread.hpp"
@@ -30,16 +29,16 @@ Raul::AtomicInt      n_errors(0);
 
 class Waiter : public Raul::Thread {
 public:
-	Waiter(Semaphore& sem) : Raul::Thread("Waiter"), _sem(sem) {
+	Waiter(Semaphore& sem) : Raul::Thread(), _sem(sem) {
 		if (set_scheduling(true, 10)) {
-			Raul::warn << "Set priority on non-existent thread" << endl;
+			cerr << "Set priority on non-existent thread" << endl;
 		}
 	}
 
 private:
 	void _run() {
 		if (!set_scheduling(true, 10)) {
-			Raul::error << "Failed to set priority" << endl;
+			cerr << "Failed to set priority" << endl;
 		}
 		var = 41;
 		cout << "[Waiter] Waiting for signal..." << endl;
@@ -47,7 +46,7 @@ private:
 		cout << "[Waiter] Received signal, exiting" << endl;
 		var = 42;
 		if (var != 42) {
-			Raul::error << "[Waiter] var != 42" << endl;
+			cerr << "[Waiter] var != 42" << endl;
 			++n_errors;
 		}
 	}
@@ -58,12 +57,6 @@ private:
 int
 main()
 {
-	Thread& main_thread = Thread::get("Main");
-	if (main_thread.name() != "Main") {
-		Raul::error << "[Main] Thread name is not 'Main'" << endl;
-		return 1;
-	}
-
 	Semaphore sem(0);
 	Waiter waiter(sem);
 	waiter.start();
@@ -79,7 +72,7 @@ main()
 	cout << "[Main] Exiting" << endl;
 
 	if (var != 24) {
-		Raul::error << "[Main] var != 24" << endl;
+		cerr << "[Main] var != 24" << endl;
 		++n_errors;
 	}
 

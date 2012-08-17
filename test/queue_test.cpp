@@ -27,7 +27,7 @@
 #include "raul/SRMWQueue.hpp"
 #include "raul/SRSWQueue.hpp"
 #include "raul/Thread.hpp"
-#include "raul/log.hpp"
+#include "raul/fmt.hpp"
 
 using namespace std;
 using namespace Raul;
@@ -63,11 +63,11 @@ SRMWQueue<WriteAction> queue(QUEUE_SIZE);
 
 class WriteThread : public Thread {
 public:
-	WriteThread(const std::string& name) : Thread(name) {}
+	WriteThread() {}
 
 protected:
 	void _run() {
-		while (true) {
+		while (!_exit_flag) {
 			for (unsigned j=0; j < PUSHES_PER_ITERATION; ++j) {
 				unsigned i = rand() % NUM_DATA;
 				if (queue.push(WriteAction(i))) {
@@ -77,10 +77,6 @@ protected:
 					//cerr << "FAILED WRITE\r\n";
 				}
 			}
-
-			// This thread will never cancel without this here since
-			// this loop is hard RT safe and thus cancellation point free
-			pthread_testcancel();
 		}
 
 		cout << "Writer exiting." << endl;
@@ -136,7 +132,7 @@ main()
 	vector<WriteThread*> writers(NUM_WRITERS, NULL);
 
 	for (unsigned i=0; i < NUM_WRITERS; ++i) {
-		writers[i] = new WriteThread((Raul::fmt("Writer %1%") % i).str());
+		writers[i] = new WriteThread();
 		writers[i]->start();
 	}
 
@@ -163,7 +159,7 @@ main()
 
 	// Stop the writers
 	for (unsigned i=0; i < NUM_WRITERS; ++i)
-		writers[i]->stop();
+		writers[i]->join();
 
 	//cout << "\n\n****************** DONE *********************\n\n";
 

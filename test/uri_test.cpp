@@ -14,9 +14,9 @@
   along with Raul.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+#include <cassert>
 #include <iostream>
 
-#include "raul/log.hpp"
 #include "raul/URI.hpp"
 
 using namespace std;
@@ -27,7 +27,7 @@ main()
 {
 #define CHECK(cond) \
 	do { if (!(cond)) { \
-		error << "Test failed: " << (cond) << endl; \
+		cerr << "Test failed: " << (cond) << endl; \
 		assert(0); \
 		return 1; \
 	} } while (0)

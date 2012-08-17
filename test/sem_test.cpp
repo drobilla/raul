@@ -26,8 +26,8 @@ using namespace Raul;
 
 class Waiter : public Raul::Thread {
 public:
-	Waiter(Semaphore& sem) : Raul::Thread("Waiter"), _sem(sem) {
-	}
+	Waiter(Semaphore& sem) : Raul::Thread(), _sem(sem)
+	{}
 
 private:
 	void _run() {

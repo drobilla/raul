@@ -20,7 +20,6 @@
 #include <cstring>
 #include <iostream>
 
-#include "raul/log.hpp"
 #include "raul/RingBuffer.hpp"
 
 using namespace std;
