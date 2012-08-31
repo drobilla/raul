@@ -71,7 +71,7 @@ public:
 	}
 
 	inline bool operator==(const Atom& other) const {
-		if (_type == other.type()) {
+		if (_type == other.type() && _size == other.size()) {
 			if (is_reference()) {
 				return !memcmp(_val._blob, other._val._blob, _size);
 			} else {
