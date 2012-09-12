@@ -1,8 +1,7 @@
 #!/usr/bin/env python
 import subprocess
-
-from waflib.extras import autowaf as autowaf
 import waflib.Options as Options
+import waflib.extras.autowaf as autowaf
 
 # Version of this package (even if built as a child)
 RAUL_VERSION = '0.8.5'
@@ -26,24 +25,18 @@ RAUL_VERSION = '0.8.5'
 #   0.8.0 = 10,0,0
 RAUL_LIB_VERSION = '10.0.0'
 
-# Variables for 'waf dist'
-APPNAME = 'raul'
-VERSION = RAUL_VERSION
-
-# Mandatory variables
-top = '.'
-out = 'build'
+# Mandatory waf variables
+APPNAME = 'raul'        # Package name for waf dist
+VERSION = RAUL_VERSION  # Package version for waf dist
+top     = '.'           # Source directory
+out     = 'build'       # Build directory
 
 def options(opt):
     opt.load('compiler_cxx')
     autowaf.set_options(opt)
-    opt.add_option('--test', action='store_true', default=False, dest='build_tests',
+    opt.add_option('--test', action='store_true', dest='build_tests',
                    help="Build unit tests")
-    opt.add_option('--log-colour', action='store_true', default=True, dest='log_colour',
-                   help="Coloured console/log output")
-    opt.add_option('--log-debug', action='store_true', default=False, dest='log_debug',
-                   help="Print debugging output")
-    opt.add_option('--cpp0x', action='store_true', default=False, dest='cpp0x',
+    opt.add_option('--cpp0x', action='store_true', dest='cpp0x',
                    help="Use C++0x smart pointers instead of boost")
 
 def configure(conf):
@@ -62,13 +55,8 @@ def configure(conf):
                        define_name='HAVE_GCOV',
                        mandatory=False)
 
-    if Options.options.log_colour:
-        autowaf.define(conf, 'RAUL_LOG_COLOUR', 1)
-    if Options.options.log_debug:
-        autowaf.define(conf, 'RAUL_LOG_DEBUG', 1)
-
     if Options.options.cpp0x:
-        conf.env.append_value('CXXFLAGS', [ '-std=c++0x' ])
+        conf.env.append_value('CXXFLAGS', ['-std=c++0x'])
         autowaf.check_header(conf, 'cxx', 'memory')
         autowaf.check_header(conf, 'cxx', 'atomic')
         autowaf.define(conf, 'RAUL_CPP0x', 1)
