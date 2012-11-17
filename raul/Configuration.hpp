@@ -135,7 +135,9 @@ public:
 
 	void print(std::ostream& os, const std::string mime_type="text/plain") const;
 
-	const Value& option(const std::string& long_name);
+	const Value& option(const std::string& long_name) const;
+	bool         set(const std::string& long_name, const Value& value);
+
 	const std::list<std::string>& files() const { return _files; }
 
 private:

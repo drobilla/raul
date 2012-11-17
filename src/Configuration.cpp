@@ -152,14 +152,26 @@ Configuration::print(std::ostream& os, const std::string mime_type) const
 }
 
 const Raul::Configuration::Value&
-Configuration::option(const std::string& long_name)
+Configuration::option(const std::string& long_name) const
 {
 	static const Value nil;
-	Options::iterator o = _options.find(long_name);
-	if (o == _options.end())
+	Options::const_iterator o = _options.find(long_name);
+	if (o == _options.end()) {
 		return nil;
-	else
+	} else {
 		return o->second.value;
+	}
+}
+
+bool
+Configuration::set(const std::string& long_name, const Value& value)
+{
+	Options::iterator o = _options.find(long_name);
+	if (o != _options.end()) {
+		o->second.value = value;
+		return true;
+	}
+	return false;
 }
 
 } // namespace Raul
