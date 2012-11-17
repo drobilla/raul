@@ -118,7 +118,12 @@ public:
 				out[i] = '_';
 			}
 		}
-		return Symbol(out);
+
+		if (is_valid_start_char(out[0])) {
+			return Symbol(out);
+		} else {
+			return Symbol(std::string("_") + out);
+		}
 	}
 };
 

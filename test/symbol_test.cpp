@@ -44,6 +44,7 @@ main()
 	names.push_back("Gain dB");
 	names.push_back("Dry/Wet Balance");
 	names.push_back("Phaser1 - Similar to CSound's phaser1 by Sean Costello");
+	names.push_back("1");
 	names.push_back("");
 
 	for (list<string>::iterator i = names.begin(); i != names.end(); ++i) {
