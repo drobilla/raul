@@ -21,8 +21,6 @@
 
 namespace Raul {
 
-struct ThreadImpl;
-
 /** Abstract base class for a thread.
  *
  * Extend this and override the _run method to easily create a thread

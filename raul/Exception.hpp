@@ -20,6 +20,8 @@
 #ifndef RAUL_EXCEPTION_HPP
 #define RAUL_EXCEPTION_HPP
 
+namespace Raul {
+
 /** An exception (unexpected error). */
 class Exception : public std::exception {
 public:
@@ -30,5 +32,7 @@ protected:
 private:
 	const std::string _what;
 };
+
+} // namespace Raul
 
 #endif // RAUL_EXCEPTION_HPP
