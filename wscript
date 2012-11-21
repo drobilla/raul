@@ -97,7 +97,6 @@ def build(bld):
                      'GLIB GTHREAD', subst_dict=dict)
 
     lib_source = '''
-            src/Configuration.cpp
             src/Thread.cpp
     '''
 
