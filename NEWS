@@ -2,6 +2,7 @@ raul (9999) unstable;
 
   * Remove glib dpendency
   * Remove OSC and RDF library dependent code
+  * Remove remaining library code, now header only
   * Improve RingBuffer
   * Add ThreadVar, a thread-specific variable class
   * Implement Semaphore for Windows

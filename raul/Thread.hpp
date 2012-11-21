@@ -33,26 +33,48 @@ struct ThreadImpl;
 class Thread : Noncopyable
 {
 public:
-	virtual ~Thread();
+	virtual ~Thread() {
+		join();
+	}
 
 	/** Start the thread if it is not already running.
 	 *
 	 * This is separate from construction to prevent race conditions during
 	 * construction of derived classes.
 	 */
-	virtual void start();
+	virtual void start() {
+		if (!_thread_exists) {
+			pthread_attr_t attr;
+			pthread_attr_init(&attr);
+			pthread_attr_setstacksize(&attr, 1500000);
+
+			pthread_create(&_pthread, &attr, _static_run, this);
+			_thread_exists = true;
+		}
+	}
 
 	/** Stop the thread and block the caller until the thread exits.
 	 *
 	 * This sets _exit_flag to true, derived classes must ensure they actually
 	 * exit when this occurs.
 	 */
-	virtual void join();
+	virtual void join() {
+		if (_thread_exists) {
+			_exit_flag = true;
+			pthread_join(_pthread, NULL);
+			_thread_exists = false;
+		}
+	}
 
 	/** Set the scheduling policy for this thread.
 	 * @return True on success.
 	 */
-	virtual bool set_scheduling(bool realtime, unsigned priority);
+	virtual bool set_scheduling(bool realtime, unsigned priority) {
+		sched_param sp;
+		sp.sched_priority = priority;
+		const int policy = realtime ? SCHED_FIFO : SCHED_OTHER;
+		return !pthread_setschedparam(_pthread, policy, &sp);
+	}
 
 protected:
 	/** Construct a thread.
@@ -60,7 +82,11 @@ protected:
 	 * Note this does not actually start a thread to prevent race conditions
 	 * during construction.  To actually begin execution, call start().
 	 */
-	explicit Thread();
+	explicit Thread()
+		: _thread_exists(false)
+		, _exit_flag(false)
+	{}
+
 
 	/** Thread function to execute.
 	 *
@@ -73,10 +99,15 @@ protected:
 	virtual void _run() {}
 
 private:
-	static void* _static_run(void* me);
+	static void* _static_run(void* thread) {
+		Thread* me = static_cast<Thread*>(thread);
+		me->_run();
+		me->_thread_exists = false;
+		return NULL;
+	}
 
-	ThreadImpl* _impl;
-	bool        _thread_exists;
+	pthread_t _pthread;
+	bool      _thread_exists;
 
 protected:
 	bool _exit_flag;

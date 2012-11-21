@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+import os
 import subprocess
 import waflib.Options as Options
 import waflib.extras.autowaf as autowaf
@@ -64,6 +65,10 @@ def configure(conf):
         autowaf.check_header(conf, 'cxx', 'boost/shared_ptr.hpp')
         autowaf.check_header(conf, 'cxx', 'boost/weak_ptr.hpp')
 
+    # TODO: Version includes and use autowaf.set_lib_env() here
+    conf.env['INCLUDES_RAUL'] = [os.path.abspath(top) + '/raul']
+
+    autowaf.define(conf, 'RAUL_VERSION', RAUL_VERSION)
     conf.write_config_header('raul_config.h', remove=False)
 
     autowaf.display_msg(conf, "Unit tests", str(conf.env.BUILD_TESTS))
@@ -96,31 +101,9 @@ def build(bld):
     autowaf.build_pc(bld, 'RAUL', RAUL_VERSION, '',
                      'GLIB GTHREAD', subst_dict=dict)
 
-    lib_source = '''
-            src/Thread.cpp
-    '''
-
     framework = ''
     if Options.platform == 'darwin':
         framework = ' CoreServices '
-
-    def set_defines(obj):
-        if bld.env.RAUL_CPP0x:
-            obj.defines = ['RAUL_CPP0x']
-
-    # Library
-    obj = bld(features        = 'cxx cxxshlib',
-              export_includes = ['.'],
-              source          = lib_source,
-              includes        = ['.', './src'],
-              name            = 'libraul',
-              target          = 'raul',
-              uselib          = 'GLIB GTHREAD',
-              lib             = ['pthread'],
-              framework       = framework,
-              install_path    = '${LIBDIR}',
-              vnum            = RAUL_LIB_VERSION)
-    set_defines(obj);
 
     if bld.env.BUILD_TESTS:
         test_libs     = ['pthread', 'rt']
@@ -128,19 +111,6 @@ def build(bld):
         if bld.is_defined('HAVE_GCOV'):
             test_libs     += ['gcov']
             test_cxxflags += ['-fprofile-arcs', '-ftest-coverage']
-
-        # Static library (for unit test code coverage)
-        obj = bld(features     = 'cxx cxxstlib',
-                  source       = lib_source,
-                  includes     = ['.', './src'],
-                  lib          = test_libs,
-                  name         = 'libraul_static',
-                  target       = 'raul_static',
-                  uselib       = 'GLIB GTHREAD',
-                  framework    = framework,
-                  install_path = '',
-                  cxxflags     = test_cxxflags)
-        set_defines(obj);
 
         # Unit tests
         for i in tests.split():
@@ -154,12 +124,11 @@ def build(bld):
                       target       = i,
                       install_path = '',
                       cxxflags     = test_cxxflags)
-            set_defines(obj);
+            if bld.env.RAUL_CPP0x:
+                obj.defines = ['RAUL_CPP0x']
 
     # Documentation
     autowaf.build_dox(bld, 'RAUL', RAUL_VERSION, top, out)
-
-    bld.add_post_fun(autowaf.run_ldconfig)
 
 def test(ctx):
     autowaf.pre_test(ctx, APPNAME, dirs=['.', 'src', 'test'])
