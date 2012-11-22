@@ -73,7 +73,7 @@ public:
 	 * Note this is faster than constructing a Symbol from another Symbol's
 	 * string since validation is unnecessary.
 	 */
-	Symbol(const Raul::Symbol& symbol)
+	Symbol(const Symbol& symbol)
 		: std::basic_string<char>(symbol)
 	{}
 

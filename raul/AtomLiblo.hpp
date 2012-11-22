@@ -55,7 +55,8 @@ lo_message_add_atom(lo_message m, const Atom& atom)
 		break;
 	case Atom::BLOB:
 		if (atom.data_size() > 0)
-			lo_message_add_blob(m, lo_blob_new(atom.data_size(), atom.get_blob()));
+			lo_message_add_blob(
+				m, lo_blob_new(atom.data_size(), atom.get_blob()));
 		else
 			lo_message_add_nil(m);
 		break;

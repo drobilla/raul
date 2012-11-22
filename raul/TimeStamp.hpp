@@ -17,11 +17,12 @@
 #ifndef RAUL_TIME_STAMP_HPP
 #define RAUL_TIME_STAMP_HPP
 
-#include <limits>
-#include <stdint.h>
 #include <math.h>
+#include <stdint.h>
+
 #include <cassert>
 #include <iostream>
+#include <limits>
 
 namespace Raul {
 
@@ -76,7 +77,7 @@ private:
  */
 class TimeStamp {
 public:
-	inline TimeStamp(TimeUnit unit, uint32_t ticks=0, uint32_t subticks=0)
+	inline TimeStamp(TimeUnit unit, uint32_t ticks = 0, uint32_t subticks = 0)
 		: _ticks(ticks)
 		, _subticks(subticks)
 		, _unit(unit)
@@ -123,7 +124,7 @@ public:
 	}
 
 	inline bool operator!=(const TimeStamp& rhs) const {
-		return ! operator==(rhs);
+		return !operator==(rhs);
 	}
 
 	inline bool operator<(const TimeStamp& rhs) const {
@@ -211,14 +212,14 @@ operator<<(std::ostream& os, const TimeStamp& t)
 
 class FrameStamp : public TimeStamp {
 public:
-	inline FrameStamp(uint32_t rate, uint32_t ticks=0, uint32_t subticks=0)
+	inline FrameStamp(uint32_t rate, uint32_t ticks = 0, uint32_t subticks = 0)
 		: TimeStamp(TimeUnit(TimeUnit::FRAMES, rate), ticks, subticks)
 	{}
 };
 
 class BeatStamp : public TimeStamp {
 public:
-	inline BeatStamp(uint32_t ppqn, uint32_t ticks=0, uint32_t subticks=0)
+	inline BeatStamp(uint32_t ppqn, uint32_t ticks = 0, uint32_t subticks = 0)
 		: TimeStamp(TimeUnit(TimeUnit::BEATS, ppqn), ticks, subticks)
 	{}
 };

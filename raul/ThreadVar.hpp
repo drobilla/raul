@@ -17,9 +17,9 @@
 #ifndef RAUL_THREADVAR_HPP
 #define RAUL_THREADVAR_HPP
 
-#include "raul/Noncopyable.hpp"
-
 #include <pthread.h>
+
+#include "raul/Noncopyable.hpp"
 
 namespace Raul {
 
@@ -31,7 +31,7 @@ template<typename T>
 class ThreadVar : public Noncopyable
 {
 public:
-	ThreadVar(const T& default_value)
+	explicit ThreadVar(const T& default_value)
 		: _default_value(default_value)
 	{
 		pthread_key_create(&_key, destroy_value);

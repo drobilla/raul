@@ -148,7 +148,7 @@ private:
 	TimeStamp    _start_beats;  ///< Current window start in beats
 	TimeDuration _length_beats; ///< Current window length in beats
 
-	TimeDuration _offset_ticks; ///< Offset to global time (ie Jack sub-cycle offset)
+	TimeDuration _offset_ticks; ///< Offset to global time
 };
 
 } // namespace Raul

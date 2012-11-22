@@ -35,7 +35,6 @@ namespace Raul {
 template<typename T>
 class DoubleBuffer {
 public:
-
 	inline DoubleBuffer(T val)
 		: _state(RAUL_DB_READ_WRITE)
 	{
@@ -56,8 +55,8 @@ public:
 	}
 
 	inline bool set(T new_val) {
-		if (_state.compare_and_exchange(RAUL_DB_READ_WRITE, RAUL_DB_READ_LOCK)) {
-
+		if (_state.compare_and_exchange(RAUL_DB_READ_WRITE,
+		                                RAUL_DB_READ_LOCK)) {
 			// locked _vals[1] for write
 			_vals[1] = new_val;
 			_read_val = &_vals[1];
@@ -67,8 +66,8 @@ public:
 			// concurrent calls here are fine.  good, actually - caught
 			// the WRITE_READ state immediately after it was set above
 
-		} else if (_state.compare_and_exchange(RAUL_DB_WRITE_READ, RAUL_DB_LOCK_READ)) {
-
+		} else if (_state.compare_and_exchange(RAUL_DB_WRITE_READ,
+		                                       RAUL_DB_LOCK_READ)) {
 			// locked _vals[0] for write
 			_vals[0] = new_val;
 			_read_val = &_vals[0];
@@ -76,9 +75,7 @@ public:
 			return true;
 
 		} else {
-
 			return false;
-
 		}
 	}
 

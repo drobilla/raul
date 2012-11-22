@@ -36,12 +36,18 @@ template <class T>
 class Array : public Disposable
 {
 public:
-	explicit Array(size_t size = 0) : _size(size), _elems(NULL) {
+	explicit Array(size_t size = 0)
+		: _size(size)
+		, _elems(NULL)
+	{
 		if (size > 0)
 			_elems = new T[size];
 	}
 
-	Array(size_t size, T initial_value) : _size(size), _elems(NULL) {
+	Array(size_t size, T initial_value)
+		: _size(size)
+		, _elems(NULL)
+	{
 		if (size > 0) {
 			_elems = new T[size];
 			for (size_t i = 0; i < size; ++i)
@@ -49,14 +55,18 @@ public:
 		}
 	}
 
-	Array(size_t size, const Array<T>& contents) : _size(size) {
+	Array(size_t size, const Array<T>& contents)
+		: _size(size)
+	{
 		assert(contents.size() >= size);
 		_elems = new T[size];
 		for (size_t i = 0; i < std::min(size, contents.size()); ++i)
 			_elems[i] = contents[i];
 	}
 
-	Array(size_t size, const Array<T>& contents, T initial_value=T()) : _size(size) {
+	Array(size_t size, const Array<T>& contents, T initial_value = T())
+		: _size(size)
+	{
 		_elems = new T[size];
 		const size_t end = std::min(size, contents.size());
 		for (size_t i = 0; i < end; ++i)
@@ -91,9 +101,15 @@ public:
 
 	inline size_t size() const  { return _size; }
 
-	inline T& operator[](size_t i) const { assert(i < _size); return _elems[i]; }
+	inline T& operator[](size_t i) const {
+		assert(i < _size);
+		return _elems[i];
+	}
 
-	inline T& at(size_t i) const { assert(i < _size); return _elems[i]; }
+	inline T& at(size_t i) const {
+		assert(i < _size);
+		return _elems[i];
+	}
 
 private:
 	size_t _size;

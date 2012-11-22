@@ -17,6 +17,7 @@
 #ifndef RAUL_PATH_HPP
 #define RAUL_PATH_HPP
 
+#include <algorithm>
 #include <string>
 
 #include "raul/Exception.hpp"
@@ -148,7 +149,8 @@ public:
 		} else {
 			const size_t first_sep = find('/');
 			const size_t last_sep  = find_last_of('/');
-			return (first_sep == last_sep) ? Path("/") : Path(substr(0, last_sep));
+			return (first_sep == last_sep)
+				? Path("/") : Path(substr(0, last_sep));
 		}
 	}
 

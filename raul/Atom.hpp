@@ -81,7 +81,9 @@ public:
 		return false;
 	}
 
-	inline bool operator!=(const Atom& other) const { return ! operator==(other); }
+	inline bool operator!=(const Atom& other) const {
+		return !operator==(other);
+	}
 
 	inline bool operator<(const Atom& other) const {
 		if (_type == other.type()) {
@@ -162,8 +164,8 @@ public:
 	virtual ~Forge() {}
 
 	Atom make()          { return Atom(); }
-	Atom make(int32_t v) { return Atom(sizeof(int32_t), Int, &v); }
-	Atom make(float v)   { return Atom(sizeof(float), Float, &v); }
+	Atom make(int32_t v) { return Atom(sizeof(v), Int, &v); }
+	Atom make(float v)   { return Atom(sizeof(v), Float, &v); }
 	Atom make(bool v) {
 		const int32_t iv = v ? 1 : 0;
 		return Atom(sizeof(int32_t), Bool, &iv);

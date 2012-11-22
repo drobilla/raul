@@ -96,7 +96,7 @@ SRMWQueue<T>::SRMWQueue(size_t size)
 	assert(size > 1);
 	assert(_size-1 == (unsigned)_write_space.get());
 
-	for (unsigned i=0; i < _size; ++i) {
+	for (unsigned i = 0; i < _size; ++i) {
 		assert(_valid[i].get() == 0);
 	}
 }
@@ -129,15 +129,14 @@ template <typename T>
 inline bool
 SRMWQueue<T>::push(const T& elem)
 {
-	const int old_write_space = _write_space.exchange_and_add(-1);
-	const bool already_full   = ( old_write_space <= 0 );
+	const int  old_write_space = _write_space.exchange_and_add(-1);
+	const bool already_full    = (old_write_space <= 0);
 
 	/* Technically right here pop could be called in the reader thread and
 	 * make space available, but no harm in failing anyway - this queue
 	 * really isn't designed to be filled... */
 
 	if (already_full) {
-
 		/* if multiple threads simultaneously get here, _write_space may be 0
 		 * or negative.  The next call to pop() will set _write_space back to
 		 * a sane value.  Note that _write_space is not exposed, so this is okay
@@ -146,7 +145,6 @@ SRMWQueue<T>::push(const T& elem)
 		return false;
 
 	} else {
-
 		// Note: _size must be a power of 2 for this to not explode when _back overflows
 		const unsigned write_index = (unsigned)_back.exchange_and_add(1) % _size;
 
@@ -155,7 +153,6 @@ SRMWQueue<T>::push(const T& elem)
 		++(_valid[write_index]);
 
 		return true;
-
 	}
 }
 

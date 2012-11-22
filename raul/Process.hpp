@@ -68,11 +68,11 @@ public:
 
 				case -1:
 					// (second) fork failed, there is no grandchild
-					_exit (-1);
+					_exit(-1);
 
 					/* exit the child process here */
 				default:
-					_exit (0);
+					_exit(0);
 			}
 		}
 
