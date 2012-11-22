@@ -68,10 +68,14 @@ public:
 	 * @return True on success.
 	 */
 	virtual bool set_scheduling(bool realtime, unsigned priority) {
-		sched_param sp;
-		sp.sched_priority = priority;
-		const int policy = realtime ? SCHED_FIFO : SCHED_OTHER;
-		return !pthread_setschedparam(_pthread, policy, &sp);
+		if (_thread_exists) {
+			sched_param sp;
+			sp.sched_priority = priority;
+			const int policy = realtime ? SCHED_FIFO : SCHED_OTHER;
+			return !pthread_setschedparam(_pthread, policy, &sp);
+		} else {
+			return false;
+		}
 	}
 
 protected:
