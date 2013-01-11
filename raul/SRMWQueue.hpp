@@ -21,7 +21,6 @@
 #include <cstdlib>
 #include <cmath>
 
-#include "raul/AtomicInt.hpp"
 #include "raul/Noncopyable.hpp"
 
 namespace Raul {
@@ -71,16 +70,15 @@ public:
 
 private:
 
-	// Note that _front doesn't need to be an AtomicInt since it's only accessed
-	// by the (single) reader thread
+	// Note that _front needn't be atomic since it's only used by reader
 
-	unsigned       _front; ///< Circular index of element at front of queue (READER ONLY)
-	AtomicInt      _back; ///< Circular index 1 past element at back of queue (WRITERS ONLY)
-	AtomicInt      _write_space; ///< Remaining free space for new elements (all threads)
-	const unsigned _size; ///< Size of @ref _objects (you can store _size-1 objects)
+	unsigned         _front; ///< Circular index of element at front of queue (READER ONLY)
+	std::atomic<int> _back; ///< Circular index 1 past element at back of queue (WRITERS ONLY)
+	std::atomic<int> _write_space; ///< Remaining free space for new elements (all threads)
+	const unsigned   _size; ///< Size of @ref _objects (you can store _size-1 objects)
 
-	T* const         _objects; ///< Fixed array containing queued elements
-	AtomicInt* const _valid; ///< Parallel array to _objects, whether loc is written or not
+	T* const                _objects; ///< Fixed array containing queued elements
+	std::atomic<bool>* const _valid; ///< Parallel array to _objects, whether loc is written or not
 };
 
 template<typename T>
@@ -90,20 +88,21 @@ SRMWQueue<T>::SRMWQueue(size_t size)
 	, _write_space(size)
 	, _size(size+1)
 	, _objects((T*)calloc(_size, sizeof(T)))
-	, _valid((AtomicInt*)calloc(_size, sizeof(AtomicInt)))
+	, _valid(new std::atomic<bool>[_size])
 {
 	assert(log2(size) - (int)log2(size) == 0);
 	assert(size > 1);
-	assert(_size-1 == (unsigned)_write_space.get());
+	assert(_size-1 == (unsigned)_write_space.load());
 
 	for (unsigned i = 0; i < _size; ++i) {
-		assert(_valid[i].get() == 0);
+		assert(!_valid[i]);
 	}
 }
 
 template <typename T>
 SRMWQueue<T>::~SRMWQueue()
 {
+	delete _valid;
 	free(_objects);
 }
 
@@ -115,7 +114,7 @@ template <typename T>
 inline bool
 SRMWQueue<T>::full() const
 {
-	return (_write_space.get() <= 0);
+	return (_write_space.load() <= 0);
 }
 
 /** Push an item onto the back of the SRMWQueue - realtime-safe, not thread-safe.
@@ -129,7 +128,7 @@ template <typename T>
 inline bool
 SRMWQueue<T>::push(const T& elem)
 {
-	const int  old_write_space = _write_space.exchange_and_add(-1);
+	const int  old_write_space = _write_space--;
 	const bool already_full    = (old_write_space <= 0);
 
 	/* Technically right here pop could be called in the reader thread and
@@ -146,11 +145,11 @@ SRMWQueue<T>::push(const T& elem)
 
 	} else {
 		// Note: _size must be a power of 2 for this to not explode when _back overflows
-		const unsigned write_index = (unsigned)_back.exchange_and_add(1) % _size;
+		const unsigned write_index = _back++ % _size;
 
-		assert(_valid[write_index] == 0);
+		assert(!_valid[write_index]);
 		_objects[write_index] = elem;
-		++(_valid[write_index]);
+		_valid[write_index] = true;
 
 		return true;
 	}
@@ -164,7 +163,7 @@ template <typename T>
 inline bool
 SRMWQueue<T>::empty() const
 {
-	return (_valid[_front].get() == 0);
+	return (!_valid[_front].load());
 }
 
 /** Return the element at the front of the queue without removing it.
@@ -190,12 +189,11 @@ template <typename T>
 inline void
 SRMWQueue<T>::pop()
 {
-	assert(_valid[_front] == 1);
-	--(_valid[_front]);
+	_valid[_front] = false;
 
 	_front = (_front + 1) % (_size);
 
-	if (_write_space.get() < 0)
+	if (_write_space.load() < 0)
 		_write_space = 1;
 	else
 		++_write_space;

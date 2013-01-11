@@ -14,9 +14,9 @@
   along with Raul.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+#include <atomic>
 #include <iostream>
 
-#include "raul/AtomicInt.hpp"
 #include "raul/Semaphore.hpp"
 #include "raul/Thread.hpp"
 #include "raul/ThreadVar.hpp"
@@ -25,7 +25,7 @@ using namespace std;
 using namespace Raul;
 
 Raul::ThreadVar<int> var(0);
-Raul::AtomicInt      n_errors(0);
+std::atomic<int>     n_errors(0);
 
 class Waiter : public Raul::Thread {
 public:

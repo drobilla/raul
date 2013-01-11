@@ -17,8 +17,7 @@
 #ifndef RAUL_DOUBLE_BUFFER_HPP
 #define RAUL_DOUBLE_BUFFER_HPP
 
-#include "raul/AtomicInt.hpp"
-#include "raul/AtomicPtr.hpp"
+#include <atomic>
 
 namespace Raul {
 
@@ -88,9 +87,9 @@ private:
 		RAUL_DB_LOCK_READ
 	};
 
-	AtomicInt    _state;
-	AtomicPtr<T> _read_val;
-	T            _vals[2];
+	std::atomic<States> _state;
+	std::atomic<T*>     _read_val;
+	T                   _vals[2];
 };
 
 } // namespace Raul

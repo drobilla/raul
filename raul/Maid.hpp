@@ -17,7 +17,8 @@
 #ifndef RAUL_MAID_HPP
 #define RAUL_MAID_HPP
 
-#include "raul/AtomicPtr.hpp"
+#include <atomic>
+
 #include "raul/Disposable.hpp"
 #include "raul/Manageable.hpp"
 #include "raul/Noncopyable.hpp"
@@ -50,8 +51,8 @@ public:
 	inline void dispose(Disposable* obj) {
 		if (obj) {
 			while (true) {
-				obj->_maid_next = _disposed.get();
-				if (_disposed.compare_and_exchange(obj->_maid_next, obj)) {
+				obj->_maid_next = _disposed.load();
+				if (_disposed.compare_exchange_strong(obj->_maid_next, obj)) {
 					return;
 				}
 			}
@@ -83,14 +84,14 @@ public:
 		// Atomically get the head of the disposed list
 		Disposable* disposed;
 		while (true) {
-			disposed = _disposed.get();
-			if (_disposed.compare_and_exchange(disposed, NULL)) {
+			disposed = _disposed.load();
+			if (_disposed.compare_exchange_strong(disposed, NULL)) {
 				break;
 			}
 		}
 
 		// Free the disposed list
-		for (Disposable* obj = _disposed.get(); obj;) {
+		for (Disposable* obj = _disposed.load(); obj;) {
 			Disposable* const next = obj->_maid_next;
 			delete obj;
 			obj = next;
@@ -107,8 +108,8 @@ public:
 	}
 
 private:
-	AtomicPtr<Disposable> _disposed;
-	SharedPtr<Manageable> _managed;
+	std::atomic<Disposable*> _disposed;
+	SharedPtr<Manageable>    _managed;
 };
 
 } // namespace Raul

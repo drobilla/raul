@@ -17,9 +17,9 @@
 #ifndef RAUL_SRSW_QUEUE_HPP
 #define RAUL_SRSW_QUEUE_HPP
 
+#include <atomic>
 #include <cassert>
 
-#include "raul/AtomicInt.hpp"
 #include "raul/Noncopyable.hpp"
 
 namespace Raul {
@@ -60,9 +60,9 @@ public:
 	inline void pop();
 
 private:
-	AtomicInt    _front;   ///< Index to front of queue (circular)
-	AtomicInt    _back;    ///< Index to back of queue (one past last element) (circular)
-	const size_t _size;    ///< Size of @ref _objects (you can store _size-1 objects)
+	std::atomic<size_t> _front; ///< Index to front of queue (circular)
+	std::atomic<size_t> _back; ///< Index to back of queue (one past last element) (circular)
+	const size_t _size; ///< Size of @ref _objects (you can store _size-1 objects)
 	T* const     _objects; ///< Fixed array containing queued elements
 };
 
@@ -88,7 +88,7 @@ template <typename T>
 inline bool
 SRSWQueue<T>::empty() const
 {
-	return (_back.get() == _front.get());
+	return (_back.load() == _front.load());
 }
 
 /** Return whether or not the queue is full.
@@ -97,7 +97,7 @@ template <typename T>
 inline bool
 SRSWQueue<T>::full() const
 {
-	return (((_front.get() - _back.get() + _size) % _size) == 1);
+	return (((_front.load() - _back.load() + _size) % _size) == 1);
 }
 
 /** Return the element at the front of the queue without removing it
@@ -106,7 +106,7 @@ template <typename T>
 inline T&
 SRSWQueue<T>::front() const
 {
-	return _objects[_front.get()];
+	return _objects[_front.load()];
 }
 
 /** Push an item onto the back of the SRSWQueue - realtime-safe, not thread-safe.
@@ -121,7 +121,7 @@ SRSWQueue<T>::push(const T& elem)
 	if (full()) {
 		return false;
 	} else {
-		unsigned back = _back.get();
+		unsigned back = _back.load();
 		_objects[back] = elem;
 		_back = (back + 1) % _size;
 		return true;
@@ -141,7 +141,7 @@ SRSWQueue<T>::pop()
 	assert(!empty());
 	assert(_size > 0);
 
-	_front = (_front.get() + 1) % (_size);
+	_front = (_front.load() + 1) % (_size);
 }
 
 } // namespace Raul

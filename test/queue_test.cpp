@@ -19,11 +19,11 @@
 #include <stdlib.h>
 
 #include <algorithm>
+#include <atomic>
 #include <iostream>
 #include <string>
 #include <vector>
 
-#include "raul/AtomicInt.hpp"
 #include "raul/SRMWQueue.hpp"
 #include "raul/SRSWQueue.hpp"
 #include "raul/Thread.hpp"
@@ -41,8 +41,8 @@ static const unsigned PUSHES_PER_ITERATION = 3;
 struct Record {
 	Record() : read_count(0), write_count(0) {}
 
-	AtomicInt read_count;
-	AtomicInt write_count;
+	std::atomic<int> read_count;
+	std::atomic<int> write_count;
 };
 
 Record data[NUM_DATA];
@@ -90,7 +90,7 @@ data_is_sane()
 {
 	unsigned ret = 0;
 	for (unsigned i = 0; i < NUM_DATA; ++i) {
-		unsigned diff = abs(data[i].read_count.get() - data[i].write_count.get());
+		unsigned diff = abs(data[i].read_count.load() - data[i].write_count.load());
 		ret += diff;
 	}
 

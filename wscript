@@ -43,6 +43,7 @@ def options(opt):
 def configure(conf):
     conf.load('compiler_cxx')
     autowaf.configure(conf)
+    conf.env.append_unique('CXXFLAGS', ['-std=c++11'])
     conf.line_just = 40
     autowaf.display_header('Raul Configuration')
 
@@ -76,7 +77,6 @@ def configure(conf):
 
 tests = '''
         test/atom_test
-        test/atomic_test
         test/double_buffer_test
         test/path_test
         test/ptr_test
