@@ -19,6 +19,7 @@
 
 #include <stdint.h>
 
+#include <cassert>
 #include <cstdlib>
 #include <cstring>
 #include <string>
@@ -41,6 +42,22 @@ public:
 	~Atom() { dealloc(); }
 
 	typedef uint32_t TypeID;
+
+	/** Contruct a raw atom.
+	 *
+	 * Typically this is not used directly, use Forge methods to make atoms.
+	 */
+	Atom(uint32_t size, TypeID type, const void* body)
+		: _size(size)
+		, _type(type)
+	{
+		if (is_reference()) {
+			_val._blob = malloc(size);
+		}
+		if (body) {
+			memcpy(get_body(), body, size);
+		}
+	}
 
 	Atom(const Atom& copy)
 		: _size(copy._size)
@@ -108,6 +125,11 @@ public:
 		return is_reference() ? _val._blob : &_val;
 	}
 
+	template <typename T> const T& get() const {
+		assert(size() == sizeof(T));
+		return *static_cast<const T*>(get_body());
+	}
+
 	inline int32_t     get_int32()  const { return _val._int; }
 	inline float       get_float()  const { return _val._float; }
 	inline bool        get_bool()   const { return _val._bool; }
@@ -116,18 +138,6 @@ public:
 
 private:
 	friend class Forge;
-
-	Atom(uint32_t s, TypeID t, const void* v)
-		: _size(s)
-		, _type(t)
-	{
-		if (is_reference()) {
-			_val._blob = malloc(s);
-		}
-		if (v) {
-			memcpy(get_body(), v, s);
-		}
-	}
 
 	inline void dealloc() {
 		if (is_reference()) {

@@ -17,6 +17,7 @@
 #ifndef RAUL_MANAGEABLE_HPP
 #define RAUL_MANAGEABLE_HPP
 
+#include "raul/Deletable.hpp"
 #include "raul/SharedPtr.hpp"
 
 namespace Raul {

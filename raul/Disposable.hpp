@@ -17,6 +17,8 @@
 #ifndef RAUL_DISPOSABLE_HPP
 #define RAUL_DISPOSABLE_HPP
 
+#include <stddef.h>
+
 #include "raul/Deletable.hpp"
 
 namespace Raul {
