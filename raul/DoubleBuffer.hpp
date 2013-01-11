@@ -35,61 +35,56 @@ template<typename T>
 class DoubleBuffer {
 public:
 	inline DoubleBuffer(T val)
-		: _state(RAUL_DB_READ_WRITE)
+		: _state(State::READ_WRITE)
 	{
-		_vals[0] = val;
+		_vals[0]  = val;
 		_read_val = &_vals[0];
 	}
 
 	inline DoubleBuffer(const DoubleBuffer& copy)
-		: _state(RAUL_DB_READ_WRITE)
+		: _state(State::READ_WRITE)
 	{
-		T val = copy.get();
-		_vals[0] = val;
+		_vals[0]  = copy.get();
 		_read_val = &_vals[0];
 	}
 
 	inline T& get() const {
-		return *_read_val.get();
+		return *_read_val.load();
 	}
 
 	inline bool set(T new_val) {
-		if (_state.compare_and_exchange(RAUL_DB_READ_WRITE,
-		                                RAUL_DB_READ_LOCK)) {
-			// locked _vals[1] for write
-			_vals[1] = new_val;
+		State expected = State::READ_WRITE;
+		if (_state.compare_exchange_strong(expected, State::READ_LOCK)) {
+			// Locked _vals[1] for writing
+			_vals[1]  = new_val;
 			_read_val = &_vals[1];
-			_state = RAUL_DB_WRITE_READ;
+			_state    = State::WRITE_READ;
 			return true;
-
-			// concurrent calls here are fine.  good, actually - caught
-			// the WRITE_READ state immediately after it was set above
-
-		} else if (_state.compare_and_exchange(RAUL_DB_WRITE_READ,
-		                                       RAUL_DB_LOCK_READ)) {
-			// locked _vals[0] for write
-			_vals[0] = new_val;
-			_read_val = &_vals[0];
-			_state = RAUL_DB_READ_WRITE;
-			return true;
-
-		} else {
-			return false;
 		}
+
+		expected = State::WRITE_READ;
+		if (_state.compare_exchange_strong(expected, State::LOCK_READ)) {
+			// Locked _vals[0] for writing
+			_vals[0]  = new_val;
+			_read_val = &_vals[0];
+			_state    = State::READ_WRITE;
+			return true;
+		}
+
+		return false;
 	}
 
 private:
-	enum States {
-		// vals[0] state _ vals[1] state
-		RAUL_DB_READ_WRITE = 0,
-		RAUL_DB_READ_LOCK,
-		RAUL_DB_WRITE_READ,
-		RAUL_DB_LOCK_READ
+	enum class State {
+		READ_WRITE,  ///< Read vals[0], Write vals[1]
+		READ_LOCK,   ///< Read vals[0], Lock vals[1]
+		WRITE_READ,  ///< Write vals[0], Write vals[1]
+		LOCK_READ    ///< Lock vals[0], Read vals[1]
 	};
 
-	std::atomic<States> _state;
-	std::atomic<T*>     _read_val;
-	T                   _vals[2];
+	std::atomic<State> _state;
+	std::atomic<T*>    _read_val;
+	T                  _vals[2];
 };
 
 } // namespace Raul

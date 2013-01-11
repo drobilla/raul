@@ -76,5 +76,5 @@ main()
 		++n_errors;
 	}
 
-	return n_errors.get();
+	return n_errors.load();
 }
