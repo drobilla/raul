@@ -77,7 +77,7 @@ private:
 	std::atomic<int> _write_space; ///< Remaining free space for new elements (all threads)
 	const unsigned   _size; ///< Size of @ref _objects (you can store _size-1 objects)
 
-	T* const                _objects; ///< Fixed array containing queued elements
+	T* const                 _objects; ///< Fixed array containing queued elements
 	std::atomic<bool>* const _valid; ///< Parallel array to _objects, whether loc is written or not
 };
 

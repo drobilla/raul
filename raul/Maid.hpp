@@ -36,7 +36,7 @@ namespace Raul {
 class Maid : public Noncopyable
 {
 public:
-	Maid() {}
+	Maid() : _disposed(NULL) {}
 
 	inline ~Maid() {
 		cleanup();
