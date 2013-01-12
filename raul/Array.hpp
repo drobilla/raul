@@ -21,7 +21,7 @@
 #include <cassert>
 #include <cstddef>
 
-#include "raul/Disposable.hpp"
+#include "raul/Maid.hpp"
 
 namespace Raul {
 
@@ -33,7 +33,7 @@ namespace Raul {
  * \ingroup raul
  */
 template <class T>
-class Array : public Disposable
+class Array : public Maid::Disposable
 {
 public:
 	explicit Array(size_t size = 0)

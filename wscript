@@ -57,14 +57,8 @@ def configure(conf):
                        define_name='HAVE_GCOV',
                        mandatory=False)
 
-    if Options.options.cpp0x:
-        conf.env.append_value('CXXFLAGS', ['-std=c++0x'])
-        autowaf.check_header(conf, 'cxx', 'memory')
-        autowaf.check_header(conf, 'cxx', 'atomic')
-        autowaf.define(conf, 'RAUL_CPP0x', 1)
-    else:
-        autowaf.check_header(conf, 'cxx', 'boost/shared_ptr.hpp')
-        autowaf.check_header(conf, 'cxx', 'boost/weak_ptr.hpp')
+    autowaf.check_header(conf, 'cxx', 'memory')
+    autowaf.check_header(conf, 'cxx', 'atomic')
 
     # TODO: Version includes and use autowaf.set_lib_env() here
     conf.env['INCLUDES_RAUL'] = [os.path.abspath(top) + '/raul']
@@ -79,7 +73,6 @@ tests = '''
         test/atom_test
         test/double_buffer_test
         test/path_test
-        test/ptr_test
         test/queue_test
         test/ringbuffer_test
         test/sem_test
@@ -124,8 +117,6 @@ def build(bld):
                       target       = i,
                       install_path = '',
                       cxxflags     = test_cxxflags)
-            if bld.env.RAUL_CPP0x:
-                obj.defines = ['RAUL_CPP0x']
 
     # Documentation
     autowaf.build_dox(bld, 'RAUL', RAUL_VERSION, top, out)

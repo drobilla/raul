@@ -18,11 +18,10 @@
 #define RAUL_MAID_HPP
 
 #include <atomic>
+#include <memory>
 
-#include "raul/Disposable.hpp"
-#include "raul/Manageable.hpp"
+#include "raul/Deletable.hpp"
 #include "raul/Noncopyable.hpp"
-#include "raul/SharedPtr.hpp"
 
 namespace Raul {
 
@@ -36,6 +35,26 @@ namespace Raul {
 class Maid : public Noncopyable
 {
 public:
+	/** An object that can be managed by the maid using shared_ptr. */
+	class Manageable : public Deletable {
+	public:
+		Manageable() {}
+
+	private:
+		friend class Maid;
+		std::shared_ptr<Manageable> _maid_next;
+	};
+
+	/** An object that can be disposed via Maid::dispose(). */
+	class Disposable : public Deletable {
+	public:
+		Disposable() : _maid_next(NULL) {}
+
+	private:
+		friend class Maid;
+		Disposable* _maid_next;
+	};
+
 	Maid() : _disposed(NULL) {}
 
 	inline ~Maid() {
@@ -59,18 +78,18 @@ public:
 		}
 	}
 
-	/** Manage an object held by a SharedPtr.
+	/** Manage an object held by a shared pointer.
 	 *
 	 * This will hold a reference to @p ptr ensuring it will not be deleted
-	 * except by cleanup().  This is mainly useful to allow dropping SharedPtr
-	 * references in real-time threads without causing a deletion.
+	 * except by cleanup().  This is mainly useful to allow dropping references
+	 * in real-time threads without causing a deletion.
 	 *
 	 * This is not thread-safe.
 	 *
 	 * Note this mechanism scales linearly.  If a very large number of objects
 	 * are managed cleanup() will become very expensive.
 	 */
-	inline void manage(SharedPtr<Manageable> ptr) {
+	inline void manage(std::shared_ptr<Manageable> ptr) {
 		ptr->_maid_next = _managed;
 		_managed        = ptr;
 	}
@@ -98,18 +117,18 @@ public:
 		}
 
 		// Free the managed list
-		SharedPtr<Manageable> managed = _managed;
+		std::shared_ptr<Manageable> managed = _managed;
 		_managed.reset();
-		for (SharedPtr<Manageable> obj = managed; obj;) {
-			const SharedPtr<Manageable> next = obj->_maid_next;
+		for (std::shared_ptr<Manageable> obj = managed; obj;) {
+			const std::shared_ptr<Manageable> next = obj->_maid_next;
 			obj->_maid_next.reset();
 			obj = next;
 		}
 	}
 
 private:
-	std::atomic<Disposable*> _disposed;
-	SharedPtr<Manageable>    _managed;
+	std::atomic<Disposable*>    _disposed;
+	std::shared_ptr<Manageable> _managed;
 };
 
 } // namespace Raul
