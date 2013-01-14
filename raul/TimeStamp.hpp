@@ -84,12 +84,14 @@ public:
 	{}
 
 	inline TimeStamp(TimeUnit unit, double dec)
-		: _ticks(static_cast<uint32_t>(floor(dec)))
-		, _subticks((dec - floor(dec)) * unit.ppt())
-		, _unit(unit)
+		: _unit(unit)
 	{
-		assert(dec >= 0);
-		assert(dec <= std::numeric_limits<uint32_t>::max());
+		dec = std::max(0.0, dec);
+		dec = std::min(double(std::numeric_limits<uint32_t>::max()), dec);
+		double       integral;
+		const double fractional = modf(dec, &integral);
+		_ticks    = integral;
+		_subticks = fractional * unit.ppt();
 	}
 
 	inline TimeUnit unit()     const { return _unit; }
