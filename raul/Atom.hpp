@@ -28,14 +28,17 @@ namespace Raul {
 
 class Forge;
 
-/** A piece of data with some type.
- *
- * An Atom is either a primitive type (int, float, etc.) or a blob.  Primitives
- * are contained entirely within this struct so everything is realtime safe.
- * Blob creation/copying/destruction allocates and is not realtime safe.
- *
- * \ingroup raul
- */
+/**
+   A generic typed data container.
+ 
+   An Atom holds a value with some type and size, both specified by a uint32_t.
+   Values with size less than sizeof(void*) are stored inline: no dynamic
+   allocation occurs so Atoms may be created in hard real-time threads.
+   Otherwise, if the size is larger than sizeof(void*), the value will be
+   dynamically allocated in a separate chunk of memory.
+ 
+   @ingroup raul
+*/
 class Atom {
 public:
 	Atom() : _size(0), _type(0) { _val._blob = NULL; }
@@ -130,21 +133,21 @@ public:
 		return *static_cast<const T*>(get_body());
 	}
 
-	inline int32_t     get_int32()  const { return _val._int; }
-	inline float       get_float()  const { return _val._float; }
-	inline bool        get_bool()   const { return _val._bool; }
-	inline const char* get_uri()    const { return (const char*)get_body(); }
-	inline const char* get_string() const { return (const char*)get_body(); }
+	template <typename T> const T* ptr() const {
+		return static_cast<const T*>(get_body());
+	}
 
 private:
 	friend class Forge;
 
+	/** Free dynamically allocated value, if applicable. */
 	inline void dealloc() {
 		if (is_reference()) {
 			free(_val._blob);
 		}
 	}
 
+	/** Return true iff this value is dynamically allocated. */
 	inline bool is_reference() const {
 		return _size > sizeof(_val);
 	}
