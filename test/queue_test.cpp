@@ -22,11 +22,11 @@
 #include <atomic>
 #include <iostream>
 #include <string>
+#include <thread>
 #include <vector>
 
 #include "raul/SRMWQueue.hpp"
 #include "raul/SRSWQueue.hpp"
-#include "raul/Thread.hpp"
 #include "raul/fmt.hpp"
 
 using namespace std;
@@ -61,26 +61,22 @@ struct WriteAction {
 // The victim
 SRMWQueue<WriteAction> queue(QUEUE_SIZE);
 
-class WriteThread : public Thread {
-public:
-	WriteThread() {}
-
-protected:
-	void _run() {
-		while (!_exit_flag) {
-			for (unsigned j=0; j < PUSHES_PER_ITERATION; ++j) {
-				unsigned i = rand() % NUM_DATA;
-				if (queue.push(WriteAction(i))) {
-					++(data[i].write_count);
-					//cout << "WRITE " << i << "\r\n";
-				} else {
-					//cerr << "FAILED WRITE\r\n";
-				}
+static void
+test_write(bool* exit_flag)
+{
+	while (!*exit_flag) {
+		for (unsigned j=0; j < PUSHES_PER_ITERATION; ++j) {
+			unsigned i = rand() % NUM_DATA;
+			if (queue.push(WriteAction(i))) {
+				++(data[i].write_count);
+				//cout << "WRITE " << i << "\r\n";
+			} else {
+				//cerr << "FAILED WRITE\r\n";
 			}
 		}
-
-		cout << "Writer exiting." << endl;
 	}
+
+	cout << "Writer exiting." << endl;
 };
 
 // Returns 0 if all read count/write count pairs are equal,
@@ -129,11 +125,12 @@ main()
 	}
 
 	cout << "Testing concurrent reading/writing" << endl;
-	vector<WriteThread*> writers(NUM_WRITERS, NULL);
+	bool                 exit_flags[NUM_WRITERS];
+	vector<std::thread*> writers(NUM_WRITERS, NULL);
 
-	for (unsigned i=0; i < NUM_WRITERS; ++i) {
-		writers[i] = new WriteThread();
-		writers[i]->start();
+	for (unsigned i = 0; i < NUM_WRITERS; ++i) {
+		exit_flags[i] = false;
+		writers[i]    = new std::thread(test_write, &exit_flags[i]);
 	}
 
 	// Read
@@ -158,8 +155,10 @@ main()
 	cout << "Processed " << total_processed << " requests" << endl;
 
 	// Stop the writers
-	for (unsigned i=0; i < NUM_WRITERS; ++i)
+	for (unsigned i = 0; i < NUM_WRITERS; ++i) {
+		exit_flags[i] = true;
 		writers[i]->join();
+	}
 
 	//cout << "\n\n****************** DONE *********************\n\n";
 

@@ -16,9 +16,9 @@
 
 #include <atomic>
 #include <iostream>
+#include <thread>
 
 #include "raul/Semaphore.hpp"
-#include "raul/Thread.hpp"
 #include "raul/ThreadVar.hpp"
 
 using namespace std;
@@ -27,39 +27,25 @@ using namespace Raul;
 Raul::ThreadVar<int> var(0);
 std::atomic<int>     n_errors(0);
 
-class Waiter : public Raul::Thread {
-public:
-	Waiter(Semaphore& sem) : Raul::Thread(), _sem(sem) {
-		if (set_scheduling(true, 10)) {
-			cerr << "Set priority on non-existent thread" << endl;
-		}
+static void
+wait(Semaphore* sem)
+{
+	var = 41;
+	cout << "[Waiter] Waiting for signal..." << endl;
+	sem->wait();
+	cout << "[Waiter] Received signal, exiting" << endl;
+	var = 42;
+	if (var != 42) {
+		cerr << "[Waiter] var != 42" << endl;
+		++n_errors;
 	}
-
-private:
-	void _run() {
-		if (!set_scheduling(true, 10)) {
-			cerr << "Failed to set priority" << endl;
-		}
-		var = 41;
-		cout << "[Waiter] Waiting for signal..." << endl;
-		_sem.wait();
-		cout << "[Waiter] Received signal, exiting" << endl;
-		var = 42;
-		if (var != 42) {
-			cerr << "[Waiter] var != 42" << endl;
-			++n_errors;
-		}
-	}
-
-	Semaphore& _sem;
-};
+}
 
 int
 main()
 {
-	Semaphore sem(0);
-	Waiter waiter(sem);
-	waiter.start();
+	Semaphore   sem(0);
+	std::thread waiter(wait, &sem);
 
 	var = 24;
 

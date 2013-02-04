@@ -14,36 +14,30 @@
   along with Raul.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include <iostream>
 #include <limits.h>
 #include <unistd.h>
 
-#include "raul/Thread.hpp"
+#include <iostream>
+#include <thread>
+
 #include "raul/Semaphore.hpp"
 
 using namespace std;
 using namespace Raul;
 
-class Waiter : public Raul::Thread {
-public:
-	Waiter(Semaphore& sem) : Raul::Thread(), _sem(sem)
-	{}
-
-private:
-	void _run() {
-		while (true) {
-			if (_sem.timed_wait(250)) {
-				cout << "[Waiter] Received signal" << endl;
-				break;
-			} else {
-				cout << "[Waiter] Timed out" << endl;
-			}
+static void
+wait(Semaphore* sem)
+{
+	while (true) {
+		if (sem->timed_wait(250)) {
+			cout << "[Waiter] Received signal" << endl;
+			break;
+		} else {
+			cout << "[Waiter] Timed out" << endl;
 		}
-		cout << "[Waiter] Exiting" << endl;
 	}
-
-	Semaphore& _sem;
-};
+	cout << "[Waiter] Exiting" << endl;
+}
 
 int
 main()
@@ -60,8 +54,7 @@ main()
 		return 1;
 	}
 
-	Waiter waiter(sem);
-	waiter.start();
+	std::thread waiter(wait, &sem);
 
 	sleep(1);
 
