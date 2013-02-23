@@ -73,7 +73,6 @@ def configure(conf):
     print('')
 
 tests = '''
-        test/atom_test
         test/double_buffer_test
         test/path_test
         test/queue_test
