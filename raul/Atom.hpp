@@ -156,10 +156,8 @@ private:
 	TypeID   _type;
 
 	union {
-		int32_t _int;
-		float   _float;
-		int32_t _bool;
-		void*   _blob;
+		intptr_t _val;
+		void*    _blob;
 	} _val;
 };
 
