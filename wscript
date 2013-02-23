@@ -37,8 +37,6 @@ def options(opt):
     autowaf.set_options(opt)
     opt.add_option('--test', action='store_true', dest='build_tests',
                    help="Build unit tests")
-    opt.add_option('--cpp0x', action='store_true', dest='cpp0x',
-                   help="Use C++0x smart pointers instead of boost")
 
 def configure(conf):
     conf.load('compiler_cxx')

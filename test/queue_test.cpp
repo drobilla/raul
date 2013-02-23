@@ -27,7 +27,6 @@
 
 #include "raul/SRMWQueue.hpp"
 #include "raul/SRSWQueue.hpp"
-#include "raul/fmt.hpp"
 
 using namespace std;
 using namespace Raul;

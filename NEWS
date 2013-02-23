@@ -1,6 +1,7 @@
 raul (9999) unstable;
 
   * Remove glib dpendency
+  * Remove boost dependency
   * Remove OSC and RDF library dependent code
   * Remove remaining library code, now header only
   * Improve RingBuffer
