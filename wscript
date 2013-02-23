@@ -76,6 +76,7 @@ tests = '''
         test/queue_test
         test/ringbuffer_test
         test/sem_test
+        test/socket_test
         test/symbol_test
         test/thread_test
         test/time_test
