@@ -25,8 +25,8 @@ protected:
 	~Noncopyable() {}
 
 private:
-	Noncopyable(const Noncopyable&);
-	const Noncopyable& operator=(const Noncopyable&);
+	Noncopyable(const Noncopyable&) = delete;
+	const Noncopyable& operator=(const Noncopyable&) = delete;
 };
 
 } // namespace Raul
