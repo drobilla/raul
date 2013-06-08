@@ -25,11 +25,8 @@
 
 namespace Raul {
 
-/** An array.
+/** A disposable array with size.
  *
- * Has a stack-like push_back(), but is NOT a resizeable array (the size given
- * to the constructor or alloc method is the maximum number of elements which
- * can be pushed).
  * \ingroup raul
  */
 template <class T>
@@ -40,8 +37,9 @@ public:
 		: _size(size)
 		, _elems(NULL)
 	{
-		if (size > 0)
+		if (size > 0) {
 			_elems = new T[size];
+		}
 	}
 
 	Array(size_t size, T initial_value)
@@ -50,8 +48,18 @@ public:
 	{
 		if (size > 0) {
 			_elems = new T[size];
-			for (size_t i = 0; i < size; ++i)
+			for (size_t i = 0; i < size; ++i) {
 				_elems[i] = initial_value;
+			}
+		}
+	}
+
+	explicit Array(const Array<T>& copy)
+		: _size(copy._size)
+	{
+		_elems = new T[_size];
+		for (size_t i = 0; i < _size; ++i) {
+			_elems[i] = copy._elems[i];
 		}
 	}
 
@@ -60,8 +68,9 @@ public:
 	{
 		assert(contents.size() >= size);
 		_elems = new T[size];
-		for (size_t i = 0; i < std::min(size, contents.size()); ++i)
+		for (size_t i = 0; i < std::min(size, contents.size()); ++i) {
 			_elems[i] = contents[i];
+		}
 	}
 
 	Array(size_t size, const Array<T>& contents, T initial_value = T())
@@ -69,10 +78,12 @@ public:
 	{
 		_elems = new T[size];
 		const size_t end = std::min(size, contents.size());
-		for (size_t i = 0; i < end; ++i)
+		for (size_t i = 0; i < end; ++i) {
 			_elems[i] = contents[i];
-		for (size_t i = end; i < size; ++i)
+		}
+		for (size_t i = end; i < size; ++i) {
 			_elems[i] = initial_value;
+		}
 	}
 
 	~Array() {
@@ -80,23 +91,28 @@ public:
 	}
 
 	virtual void alloc(size_t num_elems) {
-		assert(num_elems > 0);
-
 		delete[] _elems;
 		_size = num_elems;
 
-		_elems = new T[num_elems];
+		if (num_elems > 0) {
+			_elems = new T[num_elems];
+		} else {
+			_elems = NULL;
+		}
 	}
 
 	virtual void alloc(size_t num_elems, T initial_value) {
-		assert(num_elems > 0);
-
 		delete[] _elems;
 		_size = num_elems;
 
-		_elems = new T[num_elems];
-		for (size_t i = 0; i < _size; ++i)
-			_elems[i] = initial_value;
+		if (num_elems > 0) {
+			_elems = new T[num_elems];
+			for (size_t i = 0; i < _size; ++i) {
+				_elems[i] = initial_value;
+			}
+		} else {
+			_elems = NULL;
+		}
 	}
 
 	inline size_t size() const  { return _size; }

@@ -71,7 +71,10 @@ def configure(conf):
     print('')
 
 tests = '''
+        test/array_test
+        test/build_test
         test/double_buffer_test
+        test/maid_test
         test/path_test
         test/queue_test
         test/ringbuffer_test
