@@ -41,12 +41,11 @@ def options(opt):
 def configure(conf):
     conf.load('compiler_cxx')
     autowaf.configure(conf)
+    conf.line_just = 40
+    autowaf.display_header('Raul Configuration')
 
     conf.check_cxx(cxxflags=["-std=c++0x"])
     conf.env.append_unique('CXXFLAGS', ['-std=c++0x'])
-
-    conf.line_just = 40
-    autowaf.display_header('Raul Configuration')
 
     if Options.platform == 'darwin':
         conf.check(framework_name='CoreServices')
