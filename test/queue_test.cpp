@@ -157,6 +157,7 @@ main()
 	for (unsigned i = 0; i < NUM_WRITERS; ++i) {
 		exit_flags[i] = true;
 		writers[i]->join();
+		delete writers[i];
 	}
 
 	//cout << "\n\n****************** DONE *********************\n\n";

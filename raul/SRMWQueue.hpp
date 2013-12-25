@@ -95,14 +95,14 @@ SRMWQueue<T>::SRMWQueue(size_t size)
 	assert(_size-1 == (unsigned)_write_space.load());
 
 	for (unsigned i = 0; i < _size; ++i) {
-		assert(!_valid[i]);
+		_valid[i] = false;
 	}
 }
 
 template <typename T>
 SRMWQueue<T>::~SRMWQueue()
 {
-	delete _valid;
+	delete[] _valid;
 	free(_objects);
 }
 
