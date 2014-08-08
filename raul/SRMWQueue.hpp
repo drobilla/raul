@@ -75,7 +75,7 @@ private:
 	unsigned         _front; ///< Circular index of element at front of queue (READER ONLY)
 	std::atomic<int> _back; ///< Circular index 1 past element at back of queue (WRITERS ONLY)
 	std::atomic<int> _write_space; ///< Remaining free space for new elements (all threads)
-	const unsigned   _size; ///< Size of @ref _objects (you can store _size-1 objects)
+	const unsigned   _size; ///< Size of `_objects` (you can store _size-1 objects)
 
 	T* const                 _objects; ///< Fixed array containing queued elements
 	std::atomic<bool>* const _valid; ///< Parallel array to _objects, whether loc is written or not
@@ -121,7 +121,7 @@ SRMWQueue<T>::full() const
  *
  * Write thread(s) only.
  *
- * @returns true if @a elem was successfully pushed onto the queue,
+ * @returns true if `elem` was successfully pushed onto the queue,
  * false otherwise (queue is full).
  */
 template <typename T>

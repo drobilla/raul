@@ -104,7 +104,7 @@ public:
 
 	/** Convert a string to a valid symbol.
 	 *
-	 * This will make a best effort at turning @a str into a complete, valid
+	 * This will make a best effort at turning `str` into a complete, valid
 	 * Symbol, and will always return one.
 	 */
 	static inline Symbol symbolify(const std::basic_string<char>& in) {

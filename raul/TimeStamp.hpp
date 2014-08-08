@@ -37,8 +37,8 @@ public:
 		SECONDS
 	};
 
-	/** @a ppt (parts per tick) is the sample rate for FRAMES,
-	 *         PPQN for BEATS, and ignored for SECONDS.
+	/** `ppt` (parts per tick) is the sample rate for FRAMES, PPQN for BEATS,
+	 *  and ignored for SECONDS.
 	 */
 	inline TimeUnit(Type type, uint32_t ppt) {
 		assert(type == SECONDS || ppt != 0);

@@ -62,7 +62,7 @@ public:
 private:
 	std::atomic<size_t> _front; ///< Index to front of queue (circular)
 	std::atomic<size_t> _back; ///< Index to back of queue (one past last element) (circular)
-	const size_t _size; ///< Size of @ref _objects (you can store _size-1 objects)
+	const size_t _size; ///< Size of `_objects` (you can store _size-1 objects)
 	T* const     _objects; ///< Fixed array containing queued elements
 };
 
@@ -111,7 +111,7 @@ SRSWQueue<T>::front() const
 
 /** Push an item onto the back of the SRSWQueue - realtime-safe, not thread-safe.
  *
- * @returns true if @a elem was successfully pushed onto the queue,
+ * @returns true if `elem` was successfully pushed onto the queue,
  * false otherwise (queue is full).
  */
 template <typename T>
