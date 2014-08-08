@@ -37,7 +37,7 @@ public:
 
 	/** Construct a URI from a C++ string.
 	 *
-	 * This will throw an exception if @p uri is invalid.  To avoid this, use
+	 * This will throw an exception if `uri` is invalid.  To avoid this, use
 	 * is_valid() first to check.
 	 */
 	explicit URI(const std::basic_string<char>& uri)
@@ -50,7 +50,7 @@ public:
 
 	/** Construct a URI from a C string.
 	 *
-	 * This will throw an exception if @p uri is invalid.  To avoid this, use
+	 * This will throw an exception if `uri` is invalid.  To avoid this, use
 	 * is_valid() first to check.
 	 */
 	explicit URI(const char* uri)
@@ -70,21 +70,21 @@ public:
 		: std::basic_string<char>(uri)
 	{}
 
-	/** Return true iff @p c is a valid URI start character. */
+	/** Return true iff `c` is a valid URI start character. */
 	static inline bool is_valid_start_char(char c) {
 		return (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z');
 	}
 
-	/** Return true iff @p c is a valid URI scheme character. */
+	/** Return true iff `c` is a valid URI scheme character. */
 	static inline bool is_valid_scheme_char(char c) {
 		// S3.1: scheme ::= ALPHA *( ALPHA / DIGIT / "+" / "-" / "." )
 		return is_valid_start_char(c) || (c >= '0' && c <= '9') ||
 			c == '+' || c == '-' || c == '.';
 	}
 
-	/** Return true iff @p str is a valid URI.
+	/** Return true iff `str` is a valid URI.
 	 *
-	 * Currently this only checks that @p starts with a valid URI scheme.
+	 * Currently this only checks that `starts` with a valid URI scheme.
 	 */
 	static inline bool is_valid(const std::basic_string<char>& str) {
 		if (!is_valid_start_char(str[0])) {

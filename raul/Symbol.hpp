@@ -44,7 +44,7 @@ public:
 
 	/** Construct a Symbol from a C++ string.
 	 *
-	 * This will throw an exception if @p symbol is invalid.  To avoid this,
+	 * This will throw an exception if `symbol` is invalid.  To avoid this,
 	 * use is_valid() first to check.
 	 */
 	explicit Symbol(const std::basic_string<char>& symbol)
@@ -57,7 +57,7 @@ public:
 
 	/** Construct a Symbol from a C string.
 	 *
-	 * This will throw an exception if @p symbol is invalid.  To avoid this,
+	 * This will throw an exception if `symbol` is invalid.  To avoid this,
 	 * use is_valid() first to check.
 	 */
 	explicit Symbol(const char* symbol)
@@ -77,17 +77,17 @@ public:
 		: std::basic_string<char>(symbol)
 	{}
 
-	/** Return true iff @p c is a valid Symbol start character. */
+	/** Return true iff `c` is a valid Symbol start character. */
 	static inline bool is_valid_start_char(char c) {
 		return (c == '_') || (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z');
 	}
 
-	/** Return true iff @p c is a valid Symbol character. */
+	/** Return true iff `c` is a valid Symbol character. */
 	static inline bool is_valid_char(char c) {
 		return is_valid_start_char(c) || (c >= '0' && c <= '9');
 	}
 
-	/** Return true iff @p str is a valid Symbol. */
+	/** Return true iff `str` is a valid Symbol. */
 	static inline bool is_valid(const std::basic_string<char>& str) {
 		if (str.empty() || (str[0] >= '0' && str[0] <= '9')) {
 			return false;  // Must start with a letter or underscore

@@ -45,7 +45,7 @@ public:
 
 	/** Construct a Path from a C++ string.
 	 *
-	 * This will throw an exception if @p path is invalid.  To avoid this, use
+	 * This will throw an exception if `path` is invalid.  To avoid this, use
 	 * is_valid() first to check.
 	 */
 	explicit Path(const std::basic_string<char>& path)
@@ -58,7 +58,7 @@ public:
 
 	/** Construct a Path from a C string.
 	 *
-	 * This will throw an exception if @p path is invalid.  To avoid this, use
+	 * This will throw an exception if `path` is invalid.  To avoid this, use
 	 * is_valid() first to check.
 	 */
 	explicit Path(const char* path)
@@ -78,12 +78,12 @@ public:
 		: std::basic_string<char>(path)
 	{}
 
-	/** Return true iff @p c is a valid Path character. */
+	/** Return true iff `c` is a valid Path character. */
 	static inline bool is_valid_char(char c) {
 		return c == '/' || Symbol::is_valid_char(c);
 	}
 
-	/** Return true iff @p str is a valid Path. */
+	/** Return true iff `str` is a valid Path. */
 	static inline bool is_valid(const std::basic_string<char>& str) {
 		if (str.empty() || (str[0] != '/')) {
 			return false;  // Must start with '/'
@@ -111,13 +111,13 @@ public:
 	/** Return true iff this path is the root path ("/"). */
 	inline bool is_root() const { return *this == "/"; }
 
-	/** Return true iff this path is a child of @p parent at any depth. */
+	/** Return true iff this path is a child of `parent` at any depth. */
 	inline bool is_child_of(const Path& parent) const {
 		const std::string parent_base = parent.base();
 		return substr(0, parent_base.length()) == parent_base;
 	}
 
-	/** Return true iff this path is a parent of @p child at any depth. */
+	/** Return true iff this path is a parent of `child` at any depth. */
 	inline bool is_parent_of(const Path& child) const {
 		return child.is_child_of(*this);
 	}
@@ -197,7 +197,7 @@ public:
 		return Path(a.substr(0, last_sep));
 	}
 
-	/** Return true iff @p child is equal to, or a descendant of @p parent. */
+	/** Return true iff `child` is equal to, or a descendant of `parent`. */
 	static inline bool descendant_comparator(const Path& parent,
 	                                         const Path& child) {
 		return (child == parent || child.is_child_of(parent));

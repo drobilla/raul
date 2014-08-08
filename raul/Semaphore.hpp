@@ -76,7 +76,7 @@ public:
 	/** Attempt Wait/Decrement.  Return true iff decremented. */
 	inline bool try_wait();
 
-	/** Wait for at most @p ms milliseconds.  Return true iff decremented. */
+	/** Wait for at most `ms` milliseconds.  Return true iff decremented. */
 	inline bool timed_wait(unsigned ms);
 
 private:

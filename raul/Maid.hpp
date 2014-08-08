@@ -80,7 +80,7 @@ public:
 
 	/** Manage an object held by a shared pointer.
 	 *
-	 * This will hold a reference to @p ptr ensuring it will not be deleted
+	 * This will hold a reference to `ptr` ensuring it will not be deleted
 	 * except by cleanup().  This is mainly useful to allow dropping references
 	 * in real-time threads without causing a deletion.
 	 *
