@@ -71,7 +71,7 @@ public:
 		if (obj) {
 			while (true) {
 				obj->_maid_next = _disposed.load();
-				if (_disposed.compare_exchange_strong(obj->_maid_next, obj)) {
+				if (_disposed.compare_exchange_weak(obj->_maid_next, obj)) {
 					return;
 				}
 			}
@@ -104,13 +104,13 @@ public:
 		Disposable* disposed;
 		while (true) {
 			disposed = _disposed.load();
-			if (_disposed.compare_exchange_strong(disposed, NULL)) {
+			if (_disposed.compare_exchange_weak(disposed, NULL)) {
 				break;
 			}
 		}
 
 		// Free the disposed list
-		for (Disposable* obj = _disposed.load(); obj;) {
+		for (Disposable* obj = disposed; obj;) {
 			Disposable* const next = obj->_maid_next;
 			delete obj;
 			obj = next;
