@@ -102,8 +102,10 @@ def build(bld):
         framework = ' CoreServices '
 
     if bld.env.BUILD_TESTS:
-        test_libs     = ['pthread', 'rt']
+        test_libs     = ['pthread']
         test_cxxflags = []
+        if bld.env.DEST_OS != 'darwin' and bld.env.DEST_OS != 'win32':
+            test_libs += ['rt']
         if bld.is_defined('HAVE_GCOV'):
             test_libs     += ['gcov']
             test_cxxflags += ['-fprofile-arcs', '-ftest-coverage']

@@ -134,8 +134,9 @@ Semaphore::try_wait()
 inline bool
 Semaphore::timed_wait(unsigned ms)
 {
-	const unsigned seconds = ms / 1000;
-	const mach_timespec_t t = { seconds, (ms - (seconds * 1000)) * 1000000 };
+	const unsigned        s    = ms / 1000;
+	const int             nsec = ((int)ms - (s * 1000)) * 1000000;
+	const mach_timespec_t t    = { s, nsec };
 	return semaphore_timedwait(_sem, t) == KERN_SUCCESS;
 }
 
