@@ -35,7 +35,5 @@ main(int argc, char** argv)
 	maid.dispose(dis);
 	maid.cleanup();
 
-	delete dis;
-
 	return 0;
 }
