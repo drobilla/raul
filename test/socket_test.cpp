@@ -28,21 +28,25 @@ int
 main(int argc, char** argv)
 {
 	Raul::URI unix_uri("unix:///tmp/raul_test_sock");
-	Raul::URI tcp_uri("tcp://localhost:12345");
+	Raul::URI tcp_uri("tcp://127.0.0.1:12345");
 
 	Raul::Socket unix_server_sock(Socket::Type::UNIX);
 	Raul::Socket tcp_server_sock(Socket::Type::TCP);
 	if (!unix_server_sock.bind(unix_uri)) {
-		fprintf(stderr, "Failed to bind UNIX server socket\n");
+		fprintf(stderr, "Failed to bind UNIX server socket (%s)\n",
+		        strerror(errno));
 		return 1;
 	} else if (!unix_server_sock.listen()) {
-		fprintf(stderr, "Failed to listen on UNIX server socket\n");
+		fprintf(stderr, "Failed to listen on UNIX server socket (%s)\n",
+		        strerror(errno));
 		return 1;
 	} else if (!tcp_server_sock.bind(tcp_uri)) {
-		fprintf(stderr, "Failed to bind TCP server socket\n");
+		fprintf(stderr, "Failed to bind TCP server socket (%s)\n",
+		        strerror(errno));
 		return 1;
 	} else if (!tcp_server_sock.listen()) {
-		fprintf(stderr, "Failed to listen on TCP server socket\n");
+		fprintf(stderr, "Failed to listen on TCP server socket (%s)\n",
+		        strerror(errno));
 		return 1;
 	}
 
