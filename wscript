@@ -66,7 +66,7 @@ def configure(conf):
     autowaf.define(conf, 'RAUL_VERSION', RAUL_VERSION)
     conf.write_config_header('raul_config.h', remove=False)
 
-    autowaf.display_msg(conf, "Unit tests", str(conf.env.BUILD_TESTS))
+    autowaf.display_msg(conf, "Unit tests", bool(conf.env.BUILD_TESTS))
     print('')
 
 tests = '''
