@@ -26,7 +26,7 @@ using namespace std;
 using namespace Raul;
 
 static void
-wait(Semaphore* sem)
+wait_for_sem(Semaphore* sem)
 {
 	while (true) {
 		if (sem->timed_wait(250)) {
@@ -54,7 +54,7 @@ main()
 		return 1;
 	}
 
-	std::thread waiter(wait, &sem);
+	std::thread waiter(wait_for_sem, &sem);
 
 	sleep(1);
 

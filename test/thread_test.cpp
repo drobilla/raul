@@ -28,7 +28,7 @@ Raul::ThreadVar<int> var(0);
 std::atomic<int>     n_errors(0);
 
 static void
-wait(Semaphore* sem)
+wait_for_sem(Semaphore* sem)
 {
 	var = 41;
 	cout << "[Waiter] Waiting for signal..." << endl;
@@ -45,7 +45,7 @@ int
 main()
 {
 	Semaphore   sem(0);
-	std::thread waiter(wait, &sem);
+	std::thread waiter(wait_for_sem, &sem);
 
 	var = 24;
 
