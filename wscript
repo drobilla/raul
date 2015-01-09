@@ -57,8 +57,8 @@ def configure(conf):
                        define_name='HAVE_GCOV',
                        mandatory=False)
 
-    autowaf.check_header(conf, 'cxx', 'memory')
-    autowaf.check_header(conf, 'cxx', 'atomic')
+    conf.check_cxx(header_name='memory')
+    conf.check_cxx(header_name='atomic')
 
     # TODO: Version includes and use autowaf.set_lib_env() here
     conf.env['INCLUDES_RAUL'] = [os.path.abspath(top) + '/raul']
