@@ -227,10 +227,13 @@ Socket::accept()
 	}
 
 	Raul::URI client_uri = _uri;
-	char      host[NI_MAXHOST];
-	if (getnameinfo(client_addr, client_addr_len,
-	                host, sizeof(host), NULL, 0, 0)) {
-		client_uri = Raul::URI(_uri.scheme() + "://" + host);
+	if (_type != Type::UNIX) {
+		char host[NI_MAXHOST];
+		char serv[NI_MAXSERV];
+		if (!getnameinfo(client_addr, client_addr_len,
+		                 host, sizeof(host), serv, sizeof(serv), 0)) {
+			client_uri = Raul::URI(_uri.scheme() + "://" + host + ":" + serv);
+		}
 	}
 
 	return std::shared_ptr<Socket>(
