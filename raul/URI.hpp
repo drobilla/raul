@@ -109,4 +109,3 @@ public:
 } // namespace Raul
 
 #endif // RAUL_URI_HPP
-
