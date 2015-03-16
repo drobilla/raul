@@ -34,49 +34,48 @@ namespace Raul {
 class Process : Noncopyable
 {
 public:
-
 	/** Launch a sub process.
 	 *
-	 * @param command can be a typical shell command with parameters, the PATH is searched etc.
+	 * @param argv List of arguments, where argv[0] is the command name.
+	 * @return True on success.
 	 */
-	static bool launch(const std::string& command) {
-		const std::string executable = (command.find(" ") != std::string::npos)
-			? command.substr(0, command.find(" "))
-			: command;
+	static bool launch(const char* const argv[]) {
+		// Use the same double fork() trick as JACK to prevent zombie children
+		const int child = fork();
 
-        const std::string arguments = command.substr((command.find(" ") + 1));
+		if (child == 0) {
+			// (in child)
 
-        // Use the same double fork() trick as JACK to prevent zombie children
-        const int err = fork();
-
-        if (err == 0) {
-            // (child)
-
-            // close all nonstandard file descriptors
-            struct rlimit max_fds;
-            getrlimit(RLIMIT_NOFILE, &max_fds);
-
-            for (rlim_t fd = 3; fd < max_fds.rlim_cur; ++fd)
-                close(fd);
-
-            switch (fork()) {
-                case 0:
-                    // (grandchild)
-                    setsid();
-                    execlp(executable.c_str(), arguments.c_str(), NULL);
-					_exit(-1);
-
-				case -1:
-					// (second) fork failed, there is no grandchild
-					_exit(-1);
-
-					/* exit the child process here */
-				default:
-					_exit(0);
+			// Close all nonstandard file descriptors
+			struct rlimit max_fds;
+			getrlimit(RLIMIT_NOFILE, &max_fds);
+			for (rlim_t fd = 3; fd < max_fds.rlim_cur; ++fd) {
+				close(fd);
 			}
+
+			// Fork child
+			const int grandchild = fork();
+			switch (grandchild) {
+			case 0:
+				// (in grandchild)
+				setsid();
+				execvp(argv[0], (char*const*)argv);
+				_exit(-1);
+
+			case -1:
+				// Fork failed, there is no grandchild
+				_exit(-1);
+
+			default:
+				// Fork succeeded, return grandchild PID
+				_exit(grandchild);
+			}
+		} else if (child < 0) {
+			// Fork failed, there is no child
+			return false;
 		}
 
-		return (err > 0);
+		return true;
 	}
 
 private:

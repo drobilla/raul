@@ -60,10 +60,10 @@ public:
 	inline void pop();
 
 private:
-	std::atomic<size_t> _front; ///< Index to front of queue (circular)
-	std::atomic<size_t> _back; ///< Index to back of queue (one past last element) (circular)
-	const size_t _size; ///< Size of `_objects` (you can store _size-1 objects)
-	T* const     _objects; ///< Fixed array containing queued elements
+	std::atomic<size_t> _front;    ///< Index to front of queue
+	std::atomic<size_t> _back;     ///< Index to back of queue (one past end)
+	const size_t        _size;     ///< Size of `_objects` (at most _size-1)
+	T* const            _objects;  ///< Fixed array containing queued elements
 };
 
 template<typename T>
