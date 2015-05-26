@@ -56,7 +56,8 @@ public:
 	~Socket();
 
 	/** Bind a server socket to an address.
-	 * @param uri Address URI, e.g. unix:///tmp/foo or tcp://somehost:1234
+	 * @param uri Address URI, e.g. unix:///tmp/foo, tcp://somehost:1234, or
+	 *        tcp://*:1234 to listen on all interfaces.
 	 * @return True on success.
 	 */
 	bool bind(const Raul::URI& uri);
@@ -165,8 +166,11 @@ Socket::set_addr(const Raul::URI& uri)
 			return false;
 		}
 
-		const std::string host = authority.substr(0, port_sep);
+		std::string       host = authority.substr(0, port_sep);
 		const std::string port = authority.substr(port_sep + 1).c_str();
+		if (host.empty() || host == "*") {
+			host = "0.0.0.0";  // INADDR_ANY
+		}
 
 		struct addrinfo* ainfo;
 		int              st = 0;
