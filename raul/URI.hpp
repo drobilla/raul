@@ -84,7 +84,7 @@ public:
 
 	/** Return true iff `str` is a valid URI.
 	 *
-	 * Currently this only checks that `starts` with a valid URI scheme.
+	 * Currently this only checks that `str` starts with a valid URI scheme.
 	 */
 	static inline bool is_valid(const std::basic_string<char>& str) {
 		if (!is_valid_start_char(str[0])) {

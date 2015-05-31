@@ -56,8 +56,8 @@ public:
 	~Socket();
 
 	/** Bind a server socket to an address.
-	 * @param uri Address URI, e.g. unix:///tmp/foo, tcp://somehost:1234, or
-	 *        tcp://*:1234 to listen on all interfaces.
+	 * @param uri Address URI, e.g. unix:///tmp/foo, or tcp://hostname:1234.
+	 *            Use "*" as hostname to listen on all interfaces.
 	 * @return True on success.
 	 */
 	bool bind(const Raul::URI& uri);
