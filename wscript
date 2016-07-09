@@ -37,6 +37,8 @@ def options(opt):
     autowaf.set_options(opt)
     opt.add_option('--test', action='store_true', dest='build_tests',
                    help="Build unit tests")
+    opt.add_option('--no-coverage', action='store_true', dest='no_coverage',
+                   help='Do not use gcov for code coverage')
 
 def configure(conf):
     conf.line_just = 40
@@ -52,7 +54,7 @@ def configure(conf):
         conf.env.FRAMEWORK_RAUL = ['CoreServices']
 
     conf.env.BUILD_TESTS = Options.options.build_tests
-    if conf.env.BUILD_TESTS:
+    if conf.env.BUILD_TESTS and not Options.options.no_coverage:
         conf.check_cxx(lib='gcov',
                        define_name='HAVE_GCOV',
                        mandatory=False)
