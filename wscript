@@ -34,11 +34,7 @@ out     = 'build'       # Build directory
 
 def options(opt):
     opt.load('compiler_cxx')
-    autowaf.set_options(opt)
-    opt.add_option('--test', action='store_true', dest='build_tests',
-                   help="Build unit tests")
-    opt.add_option('--no-coverage', action='store_true', dest='no_coverage',
-                   help='Do not use gcov for code coverage')
+    autowaf.set_options(opt, test=True)
 
 def configure(conf):
     conf.line_just = 40
@@ -52,12 +48,6 @@ def configure(conf):
     if Options.platform == 'darwin':
         conf.check(framework_name='CoreServices')
         conf.env.FRAMEWORK_RAUL = ['CoreServices']
-
-    conf.env.BUILD_TESTS = Options.options.build_tests
-    if conf.env.BUILD_TESTS and not Options.options.no_coverage:
-        conf.check_cxx(lib='gcov',
-                       define_name='HAVE_GCOV',
-                       mandatory=False)
 
     conf.check_cxx(header_name='memory')
     conf.check_cxx(header_name='atomic')
@@ -104,13 +94,14 @@ def build(bld):
         framework = ' CoreServices '
 
     if bld.env.BUILD_TESTS:
-        test_libs     = ['pthread']
-        test_cxxflags = []
+        test_libs      = ['pthread']
+        test_cxxflags  = []
+        test_linkflags = []
         if bld.env.DEST_OS != 'darwin' and bld.env.DEST_OS != 'win32':
             test_libs += ['rt']
-        if bld.is_defined('HAVE_GCOV'):
-            test_libs     += ['gcov']
-            test_cxxflags += ['-fprofile-arcs', '-ftest-coverage']
+        if not bld.env.NO_COVERAGE:
+            test_cxxflags  += ['--coverage']
+            test_linkflags += ['--coverage']
 
         # Unit tests
         for i in tests.split():
@@ -123,7 +114,9 @@ def build(bld):
                       framework    = framework,
                       target       = i,
                       install_path = '',
-                      cxxflags     = test_cxxflags)
+                      cxxflags     = test_cxxflags,
+                      linkflags    = test_linkflags,
+                      libs         = test_libs)
 
     # Documentation
     autowaf.build_dox(bld, 'RAUL', RAUL_VERSION, top, out)
