@@ -64,5 +64,11 @@ main()
 	waiter.join();
 	cout << "[Main] Exiting" << endl;
 
+	cout << "[Main] Waiting for 1/4 s..." << std::endl;
+	if (sem.timed_wait(250)) {
+		cerr << "error: Spurious wakeup" << std::endl;
+	}
+	cout << "[Main] Done" << std::endl;
+
 	return 0;
 }
