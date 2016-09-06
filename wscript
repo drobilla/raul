@@ -94,9 +94,12 @@ def build(bld):
         framework = ' CoreServices '
 
     if bld.env.BUILD_TESTS:
-        test_libs      = ['pthread']
+        test_libs      = []
         test_cxxflags  = []
         test_linkflags = []
+        if bld.env.DEST_OS != 'win32':
+            test_cxxflags  = ['-pthread']
+            test_linkflags = ['-pthread']
         if bld.env.DEST_OS != 'darwin' and bld.env.DEST_OS != 'win32':
             test_libs += ['rt']
         if not bld.env.NO_COVERAGE:
