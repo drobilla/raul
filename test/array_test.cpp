@@ -1,6 +1,6 @@
 /*
   This file is part of Raul.
-  Copyright 2007-2013 David Robillard <http://drobilla.net>
+  Copyright 2007-2016 David Robillard <http://drobilla.net>
 
   Raul is free software: you can redistribute it and/or modify it under the
   terms of the GNU General Public License as published by the Free Software
@@ -21,11 +21,14 @@
 int
 main(int argc, char** argv)
 {
-	Raul::Array<int> array1(32);
+	Raul::Array<int> array1(32, 2);
 
 	array1[0] = 42;
 	if (array1[0] != 42) {
 		fprintf(stderr, "array1[0] != 42\n");
+		return 1;
+	} else if (array1[1] != 2) {
+		fprintf(stderr, "array1[1] != 2\n");
 		return 1;
 	} else if (array1.size() != 32) {
 		fprintf(stderr, "array1.size() != 1\n");
@@ -44,7 +47,7 @@ main(int argc, char** argv)
 		return 1;
 	}
 
-	array1.alloc(8);
+	array1.alloc(8, 0);
 	if (array1.size() != 8) {
 		fprintf(stderr, "array1.size() != 8\n");
 		return 1;
