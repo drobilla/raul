@@ -1,6 +1,6 @@
 /*
   This file is part of Raul.
-  Copyright 2007-2013 David Robillard <http://drobilla.net>
+  Copyright 2007-2015 David Robillard <http://drobilla.net>
 
   Raul is free software: you can redistribute it and/or modify it under the
   terms of the GNU General Public License as published by the Free Software
