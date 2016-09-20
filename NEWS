@@ -4,6 +4,7 @@ raul (0.8.5) unstable;
   * Remove boost dependency
   * Remove OSC and RDF library dependent code
   * Remove remaining library code, now header only
+  * Remove features now provided by C++11
   * Improve RingBuffer
   * Add ThreadVar, a thread-specific variable class
   * Implement Semaphore for Windows
@@ -12,7 +13,7 @@ raul (0.8.5) unstable;
   * Add INSTALL file
   * Update license to GPL3+
 
- -- David Robillard <d@drobilla.net>  Wed, 25 Dec 2013 15:15:08 -0500
+ -- David Robillard <d@drobilla.net>  Mon, 26 Sep 2016 13:08:52 -0400
 
 raul (0.8.0) stable;
 

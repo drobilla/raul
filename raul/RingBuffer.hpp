@@ -18,12 +18,12 @@
 #define RAUL_RING_BUFFER_HPP
 
 #include <assert.h>
+#include <atomic>
 #include <stdint.h>
 #include <stdlib.h>
 #include <string.h>
 
 #include "raul/Noncopyable.hpp"
-#include "raul/barrier.hpp"
 
 namespace Raul {
 
@@ -103,7 +103,7 @@ public:
 		const uint32_t w = _write_head;
 
 		if (peek_internal(r, w, size, dst)) {
-			Raul::barrier();
+			std::atomic_thread_fence(std::memory_order_acquire);
 			_read_head = (r + size) & _size_mask;
 			return size;
 		} else {
@@ -121,7 +121,7 @@ public:
 			return 0;
 		}
 
-		Raul::barrier();
+		std::atomic_thread_fence(std::memory_order_acquire);
 		_read_head = (r + size) & _size_mask;
 		return size;
 	}
@@ -138,7 +138,7 @@ public:
 
 		if (w + size <= _size) {
 			memcpy(&_buf[w], src, size);
-			Raul::barrier();
+			std::atomic_thread_fence(std::memory_order_release);
 			_write_head = (w + size) & _size_mask;
 		} else {
 			const uint32_t this_size = _size - w;
@@ -146,7 +146,7 @@ public:
 			assert(w + this_size <= _size);
 			memcpy(&_buf[w], src, this_size);
 			memcpy(&_buf[0], (const char*)src + this_size, size - this_size);
-			Raul::barrier();
+			std::atomic_thread_fence(std::memory_order_release);
 			_write_head = size - this_size;
 		}
 
