@@ -1,4 +1,4 @@
-raul (0.8.5) unstable;
+raul (0.8.7) unstable;
 
   * Remove glib dpendency
   * Remove boost dependency
@@ -7,13 +7,14 @@ raul (0.8.5) unstable;
   * Remove features now provided by C++11
   * Improve RingBuffer
   * Add ThreadVar, a thread-specific variable class
+  * Add managed_ptr for automatic real-time safe garbage collection
   * Implement Semaphore for Windows
   * Improve test suite
   * Remove several questionable classes
   * Add INSTALL file
   * Update license to GPL3+
 
- -- David Robillard <d@drobilla.net>  Mon, 26 Sep 2016 13:08:52 -0400
+ -- David Robillard <d@drobilla.net>  Sun, 12 Feb 2017 15:08:23 +0100
 
 raul (0.8.0) stable;
 

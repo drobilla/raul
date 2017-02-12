@@ -1,6 +1,6 @@
 /*
   This file is part of Raul.
-  Copyright 2007-2014 David Robillard <http://drobilla.net>
+  Copyright 2007-2017 David Robillard <http://drobilla.net>
 
   Raul is free software: you can redistribute it and/or modify it under the
   terms of the GNU General Public License as published by the Free Software
@@ -25,76 +25,77 @@
 
 namespace Raul {
 
-/** Explicit quasi-garbage-collector.
+/** Explicit garbage-collector.
  *
  * This allows objects to be disposed of in a real-time thread, but actually
- * deleted later by another thread which calls cleanup().
+ * deleted later by another thread which calls cleanup().  Disposable objects
+ * may be explicitly disposed by calling dispose(), or automatically managed
+ * with a managed_ptr which can safely be dropped in any thread, including
+ * real-time threads.
  *
  * \ingroup raul
  */
 class Maid : public Noncopyable
 {
 public:
-	/** An object that can be managed by the maid using shared_ptr. */
-	class Manageable : public Deletable {
-	public:
-		Manageable() {}
-
-	private:
-		friend class Maid;
-		std::shared_ptr<Manageable> _maid_next;
-	};
-
 	/** An object that can be disposed via Maid::dispose(). */
 	class Disposable : public Deletable {
 	public:
-		Disposable() : _maid_next(NULL) {}
+		Disposable() : _maid_next(nullptr) {}
 
 	private:
 		friend class Maid;
 		Disposable* _maid_next;
 	};
 
-	Maid() : _disposed(NULL) {}
+	/** Deleter for Disposable objects. */
+	template<typename T>
+	class Disposer {
+	public:
+		Disposer(Maid& maid) : _maid(&maid) {}
+		Disposer()           : _maid(nullptr) {}
 
-	inline ~Maid() {
-		cleanup();
+		void operator()(T* obj) {
+			if (_maid) { _maid->dispose(obj); }
+		}
+
+		Maid* _maid;
+	};
+
+	/** A managed pointer that automatically disposes of its contents.
+	 *
+	 * This is a unique_ptr so that it is possible to statically verify that
+	 * code is real-time safe.
+	 */
+	template<typename T> using managed_ptr = std::unique_ptr<T, Disposer<T>>;
+
+	Maid() : _disposed(nullptr) {}
+
+	inline ~Maid() { cleanup(); }
+
+	/** Return false iff there is currently no garbage. */
+	inline bool empty() const {
+		return !(bool)_disposed.load(std::memory_order_relaxed);
 	}
 
-	/** Dispose of an object when cleanup() is called next.
+	/** Enqueue an object for deletion when cleanup() is called next.
 	 *
-	 * This is thread safe, and real-time safe assuming reasonably low
-	 * contention.  If real-time threads need to push, do not call this very
-	 * rapidly from many threads.
+	 * This is thread-safe, and real-time safe assuming reasonably low
+	 * contention.
 	 */
 	inline void dispose(Disposable* obj) {
 		if (obj) {
-			while (true) {
-				obj->_maid_next = _disposed.load();
-				if (_disposed.compare_exchange_weak(obj->_maid_next, obj)) {
-					return;
-				}
-			}
+			// Atomically add obj to the head of the disposed list
+			do {
+				obj->_maid_next = _disposed.load(std::memory_order_relaxed);
+			} while (!_disposed.compare_exchange_weak(
+				         obj->_maid_next, obj,
+				         std::memory_order_release,
+				         std::memory_order_relaxed));
 		}
 	}
 
-	/** Manage an object held by a shared pointer.
-	 *
-	 * This will hold a reference to `ptr` ensuring it will not be deleted
-	 * except by cleanup().  This is mainly useful to allow dropping references
-	 * in real-time threads without causing a deletion.
-	 *
-	 * This is not thread-safe.
-	 *
-	 * Note this mechanism scales linearly.  If a very large number of objects
-	 * are managed cleanup() will become very expensive.
-	 */
-	inline void manage(std::shared_ptr<Manageable> ptr) {
-		ptr->_maid_next = _managed;
-		_managed        = ptr;
-	}
-
-	/** Free all dead and managed objects immediately.
+	/** Delete all disposed objects immediately.
 	 *
 	 * Obviously not real-time safe, but may be called while other threads are
 	 * calling dispose().
@@ -102,12 +103,12 @@ public:
 	inline void cleanup() {
 		// Atomically get the head of the disposed list
 		Disposable* disposed;
-		while (true) {
-			disposed = _disposed.load();
-			if (_disposed.compare_exchange_weak(disposed, NULL)) {
-				break;
-			}
-		}
+		do {
+			disposed = _disposed.load(std::memory_order_relaxed);
+		} while (!_disposed.compare_exchange_weak(
+			         disposed, nullptr,
+			         std::memory_order_acquire,
+			         std::memory_order_relaxed));
 
 		// Free the disposed list
 		for (Disposable* obj = disposed; obj;) {
@@ -115,21 +116,21 @@ public:
 			delete obj;
 			obj = next;
 		}
+	}
 
-		// Free the managed list
-		std::shared_ptr<Manageable> managed = _managed;
-		_managed.reset();
-		for (std::shared_ptr<Manageable> obj = managed; obj;) {
-			const std::shared_ptr<Manageable> next = obj->_maid_next;
-			obj->_maid_next.reset();
-			obj = next;
-		}
+	/** Make a unique_ptr that will dispose its object when dropped. */
+	template<class T, class... Args>
+	managed_ptr<T> make_managed(Args&&... args) {
+		T* obj = new T(args...);
+		return std::unique_ptr<T, Disposer<T> >(obj, Disposer<T>(*this));
 	}
 
 private:
-	std::atomic<Disposable*>    _disposed;
-	std::shared_ptr<Manageable> _managed;
+	std::atomic<Disposable*> _disposed;
 };
+
+template<typename T>
+using managed_ptr = Maid::managed_ptr<T>;
 
 } // namespace Raul
 
