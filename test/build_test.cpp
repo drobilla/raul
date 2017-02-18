@@ -1,6 +1,6 @@
 /*
   This file is part of Raul.
-  Copyright 2007-2013 David Robillard <http://drobilla.net>
+  Copyright 2007-2017 David Robillard <http://drobilla.net>
 
   Raul is free software: you can redistribute it and/or modify it under the
   terms of the GNU General Public License as published by the Free Software
@@ -15,7 +15,6 @@
 */
 
 #include "raul/Array.hpp"
-#include "raul/barrier.hpp"
 #include "raul/Deletable.hpp"
 #include "raul/DoubleBuffer.hpp"
 #include "raul/Exception.hpp"
@@ -24,12 +23,11 @@
 #include "raul/Path.hpp"
 #include "raul/Process.hpp"
 #include "raul/RingBuffer.hpp"
-#include "raul/Semaphore.hpp"
-#include "raul/Socket.hpp"
 #include "raul/SRMWQueue.hpp"
 #include "raul/SRSWQueue.hpp"
+#include "raul/Semaphore.hpp"
+#include "raul/Socket.hpp"
 #include "raul/Symbol.hpp"
-#include "raul/ThreadVar.hpp"
 #include "raul/TimeSlice.hpp"
 #include "raul/TimeStamp.hpp"
 #include "raul/URI.hpp"
