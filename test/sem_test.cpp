@@ -1,6 +1,6 @@
 /*
   This file is part of Raul.
-  Copyright 2007-2016 David Robillard <http://drobilla.net>
+  Copyright 2007-2017 David Robillard <http://drobilla.net>
 
   Raul is free software: you can redistribute it and/or modify it under the
   terms of the GNU General Public License as published by the Free Software
@@ -14,61 +14,59 @@
   along with Raul.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include <limits.h>
-#include <unistd.h>
-
+#include <cassert>
+#include <chrono>
 #include <iostream>
+#include <limits>
 #include <thread>
 
 #include "raul/Semaphore.hpp"
 
-using namespace std;
-using namespace Raul;
+static void
+wait_for_sem(Raul::Semaphore* sem)
+{
+	sem->wait();
+}
 
 static void
-wait_for_sem(Semaphore* sem)
+timed_wait_for_sem(Raul::Semaphore* sem)
 {
-	while (true) {
-		if (sem->timed_wait(250)) {
-			cout << "[Waiter] Received signal" << endl;
-			break;
-		} else {
-			cout << "[Waiter] Timed out" << endl;
-		}
-	}
-	cout << "[Waiter] Exiting" << endl;
+	while (!sem->timed_wait(100)) {}
 }
 
 int
 main()
 {
-	try {
-		Semaphore fail(UINT_MAX);
-	} catch (...) {
-	}
+	Raul::Semaphore sem(0);
+	assert(!sem.try_wait());
 
-	Semaphore sem(0);
-
-	if (sem.try_wait()) {
-		cerr << "Successfully try-waited a 0 Semaphore" << endl;
-		return 1;
-	}
-
+	// Check that semaphore wakes up strict waiter
 	std::thread waiter(wait_for_sem, &sem);
-
-	sleep(1);
-
-	cout << "[Main] Signalling..." << endl;
+	std::this_thread::sleep_for(std::chrono::milliseconds(100));
 	sem.post();
-
 	waiter.join();
-	cout << "[Main] Exiting" << endl;
 
-	cout << "[Main] Waiting for 1/4 s..." << std::endl;
-	if (sem.timed_wait(250)) {
-		cerr << "error: Spurious wakeup" << std::endl;
-	}
-	cout << "[Main] Done" << std::endl;
+	// Check that semaphore wakes up timed waiter
+	std::thread timed_waiter(timed_wait_for_sem, &sem);
+	std::this_thread::sleep_for(std::chrono::milliseconds(100));
+	sem.post();
+	timed_waiter.join();
+
+	// Check that timed_wait actually waits
+	const auto start = std::chrono::steady_clock::now();
+	sem.timed_wait(100);
+	const auto end = std::chrono::steady_clock::now();
+	assert(end - start > std::chrono::milliseconds(100));
+	assert(end - start < std::chrono::milliseconds(200));
+
+	// Check that we can't successfully wait on a zero semaphore
+	assert(!sem.timed_wait(100));
+
+	// Check that initial value works correctly
+	sem = Raul::Semaphore(2);
+	assert(sem.wait());
+	assert(sem.wait());
+	assert(!sem.try_wait());
 
 	return 0;
 }
