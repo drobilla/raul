@@ -102,13 +102,8 @@ public:
 	 */
 	inline void cleanup() {
 		// Atomically get the head of the disposed list
-		Disposable* disposed;
-		do {
-			disposed = _disposed.load(std::memory_order_relaxed);
-		} while (!_disposed.compare_exchange_weak(
-			         disposed, nullptr,
-			         std::memory_order_acquire,
-			         std::memory_order_relaxed));
+		Disposable* const disposed = _disposed.exchange(
+			nullptr, std::memory_order_acquire);
 
 		// Free the disposed list
 		for (Disposable* obj = disposed; obj;) {
