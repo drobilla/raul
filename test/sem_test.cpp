@@ -62,11 +62,26 @@ main()
 	// Check that we can't successfully wait on a zero semaphore
 	assert(!sem.timed_wait(100));
 
-	// Check that initial value works correctly
-	sem = Raul::Semaphore(2);
+	// Check resetting to a value
+	sem.reset(2);
 	assert(sem.wait());
 	assert(sem.wait());
 	assert(!sem.try_wait());
+
+	// Check creating with an initial value
+	Raul::Semaphore sem2(2);
+	assert(sem2.wait());
+	assert(sem2.wait());
+	assert(!sem2.try_wait());
+
+	// Check that creation with nonsense values throws
+	bool caught_exception = false;
+	try {
+		Raul::Semaphore sem3(static_cast<unsigned>(-1));
+	} catch (std::runtime_error& e) {
+		caught_exception = true;
+	}
+	assert(caught_exception);
 
 	return 0;
 }

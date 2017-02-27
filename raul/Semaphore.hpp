@@ -1,6 +1,6 @@
 /*
   This file is part of Raul.
-  Copyright 2007-2014 David Robillard <http://drobilla.net>
+  Copyright 2007-2017 David Robillard <http://drobilla.net>
 
   Raul is free software: you can redistribute it and/or modify it under the
   terms of the GNU General Public License as published by the Free Software
@@ -61,6 +61,9 @@ public:
 		destroy();
 	}
 
+	Semaphore(const Semaphore&) = delete;
+	Semaphore& operator=(const Semaphore&) = delete;
+
 	/** Destroy and reset to a new initial value. */
 	inline void reset(unsigned initial) {
 		destroy();
@@ -97,7 +100,7 @@ private:
 inline bool
 Semaphore::init(unsigned initial)
 {
-	if (semaphore_create(mach_task_self(), &_sem, SYNC_POLICY_FIFO, 0)) {
+	if (semaphore_create(mach_task_self(), &_sem, SYNC_POLICY_FIFO, initial)) {
 		return false;
 	}
 	return true;
@@ -118,10 +121,7 @@ Semaphore::post()
 inline bool
 Semaphore::wait()
 {
-	if (semaphore_wait(_sem) != KERN_SUCCESS) {
-		return false;
-	}
-	return true;
+	return (semaphore_wait(_sem) == KERN_SUCCESS);
 }
 
 inline bool
@@ -212,9 +212,9 @@ Semaphore::wait()
 {
 	while (sem_wait(&_sem)) {
 		if (errno != EINTR) {
-			return false;  // We are all doomed
+			return false;  // Genuine error
 		}
-		/* Otherwise, interrupted (rare/weird), so try again. */
+		// Otherwise, interrupted for whatever reason, try again
 	}
 
 	return true;
