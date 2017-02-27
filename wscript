@@ -43,7 +43,7 @@ def configure(conf):
     autowaf.display_header('Raul Configuration')
     autowaf.set_cxx11_mode(conf)
 
-    if Options.platform == 'darwin':
+    if conf.env.DEST_OS == 'darwin':
         conf.check(framework_name='CoreServices')
         conf.env.FRAMEWORK_RAUL = ['CoreServices']
 
@@ -82,13 +82,13 @@ def build(bld):
 
     # Pkgconfig file
     dict = {'RAUL_PC_LIBS': ' '}
-    if Options.platform == 'darwin':
+    if bld.env.DEST_OS == 'darwin':
         dict = {'RAUL_PC_LIBS': '-framework CoreServices'}
     autowaf.build_pc(bld, 'RAUL', RAUL_VERSION, '',
                      'GLIB GTHREAD', subst_dict=dict)
 
     framework = ''
-    if Options.platform == 'darwin':
+    if bld.env.DEST_OS == 'darwin':
         framework = ' CoreServices '
 
     if bld.env.BUILD_TESTS:
