@@ -14,6 +14,8 @@
   along with Raul.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+#undef NDEBUG
+
 #include <cassert>
 #include <cstdio>
 #include <thread>
