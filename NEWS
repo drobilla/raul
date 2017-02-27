@@ -1,4 +1,4 @@
-raul (0.8.7) unstable;
+raul (0.8.9) unstable;
 
   * Remove glib dpendency
   * Remove boost dependency
@@ -14,7 +14,7 @@ raul (0.8.7) unstable;
   * Add INSTALL file
   * Update license to GPL3+
 
- -- David Robillard <d@drobilla.net>  Sun, 12 Feb 2017 15:08:23 +0100
+ -- David Robillard <d@drobilla.net>  Mon, 27 Feb 2017 20:36:43 +0100
 
 raul (0.8.0) stable;
 
