@@ -41,9 +41,7 @@ def configure(conf):
     conf.load('compiler_cxx')
     autowaf.configure(conf)
     autowaf.display_header('Raul Configuration')
-
-    conf.check_cxx(cxxflags=["-std=c++0x"])
-    conf.env.append_unique('CXXFLAGS', ['-std=c++0x'])
+    autowaf.set_cxx11_mode(conf)
 
     if Options.platform == 'darwin':
         conf.check(framework_name='CoreServices')
