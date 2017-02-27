@@ -17,6 +17,7 @@
 #ifndef RAUL_SEMAPHORE_HPP
 #define RAUL_SEMAPHORE_HPP
 
+#include <chrono>
 #include <stdexcept>
 
 #ifdef __APPLE__
@@ -80,7 +81,8 @@ public:
 	inline bool try_wait();
 
 	/** Wait for at most `ms` milliseconds.  Return true iff decremented. */
-	inline bool timed_wait(unsigned ms);
+	template<class Rep, class Period>
+	inline bool timed_wait(const std::chrono::duration<Rep, Period>& wait);
 
 private:
 	inline bool init(unsigned initial);
@@ -131,12 +133,17 @@ Semaphore::try_wait()
 	return semaphore_timedwait(_sem, zero) == KERN_SUCCESS;
 }
 
+template<class Rep, class Period>
 inline bool
-Semaphore::timed_wait(unsigned ms)
+Semaphore::timed_wait(const std::chrono::duration<Rep, Period>& wait)
 {
-	const unsigned        s    = ms / 1000;
-	const int             nsec = ((int)ms - (s * 1000)) * 1000000;
-	const mach_timespec_t t    = { s, nsec };
+	namespace chr = std::chrono;
+
+	const chr::seconds     sec(chr::duration_cast<chr::seconds>(wait));
+	const chr::nanoseconds nsec(wait - sec);
+
+	const mach_timespec_t t = { static_cast<unsigned>(sec.count()),
+	                            static_cast<int>(nsec.count()) };
 	return semaphore_timedwait(_sem, t) == KERN_SUCCESS;
 }
 
@@ -178,10 +185,14 @@ Semaphore::try_wait()
 	return WaitForSingleObject(_sem, 0) == WAIT_OBJECT_0;
 }
 
+template<class Rep, class Period>
 inline bool
-Semaphore::timed_wait(unsigned ms)
+Semaphore::timed_wait(const std::chrono::duration<Rep, Period>& wait)
 {
-	return WaitForSingleObject(_sem, ms) == WAIT_OBJECT_0;
+	namespace chr = std::chrono;
+
+	const chr::milliseconds ms(chr::duration_cast<chr::milliseconds>(wait));
+	return WaitForSingleObject(_sem, ms.count()) == WAIT_OBJECT_0;
 }
 
 #else  /* !defined(__APPLE__) && !defined(_WIN32) */
@@ -226,22 +237,25 @@ Semaphore::try_wait()
 	return (sem_trywait(&_sem) == 0);
 }
 
+template<class Rep, class Period>
 inline bool
-Semaphore::timed_wait(unsigned ms)
+Semaphore::timed_wait(const std::chrono::duration<Rep, Period>& wait)
 {
-	const unsigned seconds = ms / 1000;
+	namespace chr = std::chrono;
 
-	struct timespec now;
-	clock_gettime(CLOCK_REALTIME, &now);
+	// Use clock_gettime to ensure sem_timedwait uses the same clock
+	struct timespec time;
+	clock_gettime(CLOCK_REALTIME, &time);
 
-	struct timespec delta = { seconds, (ms - (seconds * 1000)) * 1000000 };
-	struct timespec end   = { now.tv_sec + delta.tv_sec,
-	                          now.tv_nsec + delta.tv_nsec };
-	if (end.tv_nsec >= 1000000000L) {
-		++end.tv_sec;
-		end.tv_nsec -= 1000000000L;
-	}
-	return (sem_timedwait(&_sem, &end) == 0);
+	const auto now(chr::seconds(time.tv_sec) + chr::nanoseconds(time.tv_nsec));
+	const auto end(now + wait);
+
+	const chr::seconds     end_sec(chr::duration_cast<chr::seconds>(end));
+	const chr::nanoseconds end_nsec(end - end_sec);
+
+	const struct timespec ts_end = { end_sec.count(), end_nsec.count() };
+
+	return (sem_timedwait(&_sem, &ts_end) == 0);
 }
 
 #endif

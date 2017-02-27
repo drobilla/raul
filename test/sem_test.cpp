@@ -31,7 +31,7 @@ wait_for_sem(Raul::Semaphore* sem)
 static void
 timed_wait_for_sem(Raul::Semaphore* sem)
 {
-	while (!sem->timed_wait(100)) {}
+	while (!sem->timed_wait(std::chrono::milliseconds(100))) {}
 }
 
 int
@@ -54,13 +54,13 @@ main()
 
 	// Check that timed_wait actually waits
 	const auto start = std::chrono::steady_clock::now();
-	sem.timed_wait(100);
+	sem.timed_wait(std::chrono::milliseconds(100));
 	const auto end = std::chrono::steady_clock::now();
 	assert(end - start > std::chrono::milliseconds(100));
 	assert(end - start < std::chrono::milliseconds(200));
 
 	// Check that we can't successfully wait on a zero semaphore
-	assert(!sem.timed_wait(100));
+	assert(!sem.timed_wait(std::chrono::milliseconds(100)));
 
 	// Check resetting to a value
 	sem.reset(2);
