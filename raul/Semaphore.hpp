@@ -102,7 +102,7 @@ private:
 inline bool
 Semaphore::init(unsigned initial)
 {
-	if (semaphore_create(mach_task_self(), &_sem, SYNC_POLICY_FIFO, 0)) {
+	if (semaphore_create(mach_task_self(), &_sem, SYNC_POLICY_FIFO, initial)) {
 		return false;
 	}
 	return true;
