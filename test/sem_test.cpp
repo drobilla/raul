@@ -65,10 +65,10 @@ main()
 	assert(!sem.timed_wait(std::chrono::milliseconds(100)));
 
 	// Check that initial value works correctly
-	sem = Raul::Semaphore(2);
-	assert(sem.wait());
-	assert(sem.wait());
-	assert(!sem.try_wait());
+	Raul::Semaphore sem2(2);
+	assert(sem2.wait());
+	assert(sem2.wait());
+	assert(!sem2.try_wait());
 
 	return 0;
 }
