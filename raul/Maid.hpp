@@ -116,7 +116,7 @@ public:
 	/** Make a unique_ptr that will dispose its object when dropped. */
 	template<class T, class... Args>
 	managed_ptr<T> make_managed(Args&&... args) {
-		T* obj = new T(args...);
+		T* obj = new T(std::forward<Args>(args)...);
 		return std::unique_ptr<T, Disposer<T> >(obj, Disposer<T>(*this));
 	}
 
