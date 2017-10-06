@@ -48,6 +48,17 @@ public:
 		Disposable* _maid_next;
 	};
 
+	/** Disposable wrapper for any type. */
+	template<typename T>
+	class Managed : public Raul::Maid::Disposable, public T
+	{
+	public:
+		template<typename... Args>
+		Managed(Args&&... args)
+			: T(std::forward<Args>(args)...)
+		{}
+	};
+
 	/** Deleter for Disposable objects. */
 	template<typename T>
 	class Disposer {
