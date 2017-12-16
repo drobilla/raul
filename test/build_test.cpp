@@ -23,8 +23,6 @@
 #include "raul/Path.hpp"
 #include "raul/Process.hpp"
 #include "raul/RingBuffer.hpp"
-#include "raul/SRMWQueue.hpp"
-#include "raul/SRSWQueue.hpp"
 #include "raul/Semaphore.hpp"
 #include "raul/Socket.hpp"
 #include "raul/Symbol.hpp"
