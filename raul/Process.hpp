@@ -50,7 +50,7 @@ public:
 			struct rlimit max_fds;
 			getrlimit(RLIMIT_NOFILE, &max_fds);
 			for (rlim_t fd = 3; fd < max_fds.rlim_cur; ++fd) {
-				close(fd);
+				close(static_cast<int>(fd));
 			}
 
 			// Fork child

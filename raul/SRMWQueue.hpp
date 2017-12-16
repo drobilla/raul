@@ -85,8 +85,8 @@ template<typename T>
 SRMWQueue<T>::SRMWQueue(size_t size)
 	: _front(0)
 	, _back(0)
-	, _write_space(size)
-	, _size(size+1)
+	, _write_space(int(size))
+	, _size(unsigned(size) + 1)
 	, _objects((T*)calloc(_size, sizeof(T)))
 	, _valid(new std::atomic<bool>[_size])
 {
@@ -145,7 +145,7 @@ SRMWQueue<T>::push(const T& elem)
 
 	} else {
 		// Note: _size must be a power of 2 for this to not explode when _back overflows
-		const unsigned write_index = _back++ % _size;
+		const unsigned write_index = unsigned(_back++) % _size;
 
 		assert(!_valid[write_index]);
 		_objects[write_index] = elem;
@@ -182,8 +182,6 @@ SRMWQueue<T>::front() const
  *
  * It is a fatal error to call pop() if the queue is empty.
  * Read thread only.
- *
- * @return true if queue is now empty, otherwise false.
  */
 template <typename T>
 inline void

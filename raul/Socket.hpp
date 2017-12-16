@@ -95,10 +95,10 @@ public:
 private:
 	bool set_addr(const Raul::URI& uri);
 
-	Type             _type;
 	Raul::URI        _uri;
 	struct sockaddr* _addr;
 	socklen_t        _addr_len;
+	Type             _type;
 	int              _sock;
 };
 
@@ -108,10 +108,10 @@ private:
 
 inline
 Socket::Socket(Type t)
-	: _type(t)
-	, _uri(t == Type::UNIX ? "unix:" : "tcp:")
+	: _uri(t == Type::UNIX ? "unix:" : "tcp:")
 	, _addr(NULL)
 	, _addr_len(0)
+	, _type(t)
 	, _sock(-1)
 {
 	switch (t) {
@@ -130,10 +130,10 @@ Socket::Socket(Type             t,
                struct sockaddr* addr,
                socklen_t        addr_len,
                int              fd)
-	: _type(t)
-	, _uri(uri)
+	: _uri(uri)
 	, _addr(addr)
 	, _addr_len(addr_len)
+	, _type(t)
 	, _sock(fd)
 {
 }

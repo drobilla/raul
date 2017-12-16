@@ -33,10 +33,10 @@ static std::atomic<size_t> n_finished_threads(0);
 
 class Junk : public Maid::Disposable {
 public:
-	explicit Junk(int v) : val(v) { ++n_junk; }
+	explicit Junk(size_t v) : val(v) { ++n_junk; }
 	~Junk() { --n_junk; }
 
-	int val;
+	size_t val;
 };
 
 static void
@@ -57,9 +57,9 @@ test()
 	// Check basic single-threaded correctness
 	{
 		assert(n_junk == 0);
-		Maid::managed_ptr<Junk> a = maid.make_managed<Junk>(1);
+		Maid::managed_ptr<Junk> a = maid.make_managed<Junk>(1U);
 		assert(n_junk == 1);
-		Maid::managed_ptr<Junk> b = maid.make_managed<Junk>(2);
+		Maid::managed_ptr<Junk> b = maid.make_managed<Junk>(2U);
 		assert(n_junk == 2);
 	}
 
@@ -111,7 +111,7 @@ test()
 	assert(n_junk == 0);
 
 	// Allocate a new object, then let it and the Maid go out of scope
-	Maid::managed_ptr<Junk> c = maid.make_managed<Junk>(5);
+	Maid::managed_ptr<Junk> c = maid.make_managed<Junk>(5U);
 	assert(n_junk == 1);
 }
 

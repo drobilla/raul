@@ -46,7 +46,7 @@ main()
 	bool valid = true;
 	try {
 		URI uri("not/a/uri");
-	} catch (const URI::BadURI& e) {
+	} catch (const URI::BadURI&) {
 		valid = false;
 	}
 	CHECK(!valid);
@@ -54,7 +54,7 @@ main()
 	valid = true;
 	try {
 		URI uri(std::string("/this/is/a/path"));
-	} catch (const URI::BadURI& e) {
+	} catch (const URI::BadURI&) {
 		valid = false;
 	}
 	CHECK(!valid);

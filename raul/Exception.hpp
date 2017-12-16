@@ -25,10 +25,11 @@ namespace Raul {
 /** An exception (unexpected error). */
 class Exception : public std::exception {
 public:
-	const char* what() const throw() { return _what.c_str(); }
-	~Exception() throw() {}
+	const char* what() const noexcept { return _what.c_str(); }
+
 protected:
 	explicit Exception(const std::string& what) : _what(what) {}
+
 private:
 	const std::string _what;
 };

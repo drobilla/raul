@@ -66,9 +66,9 @@ public:
 	 * Note this is faster than constructing a URI from another URI's string
 	 * since validation is unnecessary.
 	 */
-	URI(const URI& uri)
-		: std::basic_string<char>(uri)
-	{}
+	URI(const URI& uri) = default;
+
+	URI& operator=(const URI& uri) = default;
 
 	/** Return true iff `c` is a valid URI start character. */
 	static inline bool is_valid_start_char(char c) {

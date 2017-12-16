@@ -19,6 +19,7 @@
 #include <cstdlib>
 #include <cstring>
 #include <iostream>
+#include <string>
 
 #include "raul/RingBuffer.hpp"
 
@@ -27,11 +28,13 @@ using namespace Raul;
 
 #define MSG_SIZE 20
 
+namespace {
+
 Raul::RingBuffer* ring       = 0;
 size_t            n_writes   = 0;
 bool              ring_error = false;
 
-static int
+int
 gen_msg(int* msg, int start)
 {
 	for (int i = 0; i < MSG_SIZE; ++i) {
@@ -41,7 +44,7 @@ gen_msg(int* msg, int start)
 	return start;
 }
 
-static int
+int
 cmp_msg(int* msg1, int* msg2)
 {
 	for (int i = 0; i < MSG_SIZE; ++i) {
@@ -54,7 +57,7 @@ cmp_msg(int* msg1, int* msg2)
 	return 1;
 }
 
-static void*
+void*
 reader(void* arg)
 {
 	printf("Reader starting\n");
@@ -85,7 +88,7 @@ reader(void* arg)
 	return NULL;
 }
 
-static void*
+void*
 writer(void* arg)
 {
 	printf("Writer starting\n");
@@ -108,6 +111,8 @@ writer(void* arg)
 	return NULL;
 }
 
+} // namespace
+
 int
 main(int argc, char** argv)
 {
@@ -116,21 +121,21 @@ main(int argc, char** argv)
 		return 1;
 	}
 
-	int size = 1024;
+	size_t size = 1024;
 	if (argc > 1) {
-		size = atoi(argv[1]);
+		size = std::stoul(argv[1]);
 	}
 
 	n_writes = size * 1024;
 	if (argc > 2) {
-		n_writes = atoi(argv[2]);
+		n_writes = std::stoul(argv[2]);
 	}
 
-	printf("Testing %zu writes of %d ints to a %d int ring...\n",
+	printf("Testing %zu writes of %u ints to a %zu int ring...\n",
 	       n_writes, MSG_SIZE, size);
 
-	ring = new Raul::RingBuffer(size);
-	if (ring->capacity() < (unsigned)size - 1) {
+	ring = new Raul::RingBuffer(uint32_t(size));
+	if (ring->capacity() < size - 1) {
 		fprintf(stderr, "Ring capacity is smaller than expected\n");
 		return 1;
 	}

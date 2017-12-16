@@ -90,9 +90,12 @@ public:
 		dec = std::min(double(std::numeric_limits<uint32_t>::max()), dec);
 		double       integral;
 		const double fractional = modf(dec, &integral);
-		_ticks    = integral;
-		_subticks = fractional * unit.ppt();
+		_ticks    = static_cast<uint32_t>(integral);
+		_subticks = static_cast<uint32_t>(fractional * unit.ppt());
 	}
+
+	inline TimeStamp(const TimeStamp&) = default;
+	TimeStamp& operator=(const TimeStamp&) = default;
 
 	inline TimeUnit unit()     const { return _unit; }
 	inline uint32_t ticks()    const { return _ticks; }
@@ -104,13 +107,6 @@ public:
 
 	inline bool is_zero() const {
 		return _ticks == 0 && _subticks == 0;
-	}
-
-	inline TimeStamp& operator=(const TimeStamp& rhs) {
-		_ticks = rhs._ticks;
-		_subticks = rhs._subticks;
-		_unit = rhs._unit;
-		return *this;
 	}
 
 	inline TimeStamp& operator=(uint32_t ticks) {

@@ -23,10 +23,12 @@
 using namespace std;
 using namespace Raul;
 
+namespace {
+
 thread_local int var(0);
 std::atomic<int> n_errors(0);
 
-static void
+void
 wait_for_sem(Semaphore* sem)
 {
 	var = 41;
@@ -39,6 +41,8 @@ wait_for_sem(Semaphore* sem)
 		++n_errors;
 	}
 }
+
+} // namespace
 
 int
 main()

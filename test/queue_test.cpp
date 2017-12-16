@@ -31,10 +31,12 @@
 using namespace std;
 using namespace Raul;
 
-static const unsigned NUM_DATA             = 10;
-static const unsigned QUEUE_SIZE           = 128;
-static const unsigned NUM_WRITERS          = 2;
-static const unsigned PUSHES_PER_ITERATION = 3;
+namespace {
+
+const unsigned NUM_DATA             = 10;
+const unsigned QUEUE_SIZE           = 128;
+const unsigned NUM_WRITERS          = 2;
+const unsigned PUSHES_PER_ITERATION = 3;
 
 // Data to read/write using actions pumped through the queue
 struct Record {
@@ -52,7 +54,7 @@ struct WriteAction {
 
 	inline void read() const {
 		++(data[index].read_count);
-	};
+	}
 
 	unsigned index;
 };
@@ -60,12 +62,12 @@ struct WriteAction {
 // The victim
 SRMWQueue<WriteAction> queue(QUEUE_SIZE);
 
-static void
+void
 test_write(bool* exit_flag)
 {
 	while (!*exit_flag) {
 		for (unsigned j=0; j < PUSHES_PER_ITERATION; ++j) {
-			unsigned i = rand() % NUM_DATA;
+			unsigned i = unsigned(rand()) % NUM_DATA;
 			if (queue.push(WriteAction(i))) {
 				++(data[i].write_count);
 				//cout << "WRITE " << i << "\r\n";
@@ -76,21 +78,23 @@ test_write(bool* exit_flag)
 	}
 
 	cout << "Writer exiting." << endl;
-};
+}
 
 // Returns 0 if all read count/write count pairs are equal,
 // otherwise how far off total count was
-static unsigned
+unsigned
 data_is_sane()
 {
 	unsigned ret = 0;
 	for (unsigned i = 0; i < NUM_DATA; ++i) {
-		unsigned diff = abs(data[i].read_count.load() - data[i].write_count.load());
-		ret += diff;
+		ret += unsigned(abs(data[i].read_count.load() -
+		                    data[i].write_count.load()));
 	}
 
 	return ret;
 }
+
+} // namespace
 
 int
 main()
@@ -98,7 +102,7 @@ main()
 	size_t total_processed = 0;
 
 	cout << "Testing size" << endl;
-	for (size_t i=0; i < queue.capacity(); ++i) {
+	for (unsigned i = 0; i < queue.capacity(); ++i) {
 		queue.push(i);
 		if (i == queue.capacity()-1) {
 			if (!queue.full()) {
@@ -185,15 +189,11 @@ main()
 		cout << "(Counter did NOT have to wrap)" << endl;
 
 	const unsigned diff = data_is_sane();
-
-	if (diff == 0) {
-		return EXIT_SUCCESS;
-	} else {
+	if (diff != 0) {
 		cout << "FAILED BY " << diff << endl;
-		return EXIT_FAILURE;
 	}
 
-	return 0;
+	return diff == 0 ? EXIT_SUCCESS : EXIT_FAILURE;
 }
 
 #if 0

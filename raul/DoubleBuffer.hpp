@@ -82,8 +82,8 @@ private:
 		LOCK_READ    ///< Lock vals[0], Read vals[1]
 	};
 
-	std::atomic<State> _state;
 	std::atomic<T*>    _read_val;
+	std::atomic<State> _state;
 	T                  _vals[2];
 };
 
