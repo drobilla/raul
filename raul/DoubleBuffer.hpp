@@ -18,6 +18,7 @@
 #define RAUL_DOUBLE_BUFFER_HPP
 
 #include <atomic>
+#include <utility>
 
 namespace Raul {
 
@@ -37,37 +38,32 @@ public:
 	inline DoubleBuffer(T val)
 		: _state(State::READ_WRITE)
 	{
-		_vals[0]  = val;
-		_read_val = &_vals[0];
+		_vals[0] = std::move(val);
 	}
 
-	inline DoubleBuffer(const DoubleBuffer& copy)
-		: _state(State::READ_WRITE)
-	{
-		_vals[0]  = copy.get();
-		_read_val = &_vals[0];
-	}
+	DoubleBuffer(const DoubleBuffer&) = delete;
+	DoubleBuffer& operator=(const DoubleBuffer&) = delete;
 
-	inline T& get() const {
-		return *_read_val.load();
+	inline const T& get() const {
+		switch (_state.load(std::memory_order_acquire)) {
+		case State::READ_WRITE:
+		case State::READ_LOCK:
+			return _vals[0];
+		default:
+			return _vals[1];
+		}
 	}
 
 	inline bool set(T new_val) {
-		State expected = State::READ_WRITE;
-		if (_state.compare_exchange_strong(expected, State::READ_LOCK)) {
+		if (transition(State::READ_WRITE, State::READ_LOCK)) {
 			// Locked _vals[1] for writing
-			_vals[1]  = new_val;
-			_read_val = &_vals[1];
-			_state    = State::WRITE_READ;
+			_vals[1]  = std::move(new_val);
+			_state.store(State::WRITE_READ, std::memory_order_release);
 			return true;
-		}
-
-		expected = State::WRITE_READ;
-		if (_state.compare_exchange_strong(expected, State::LOCK_READ)) {
+		} else if (transition(State::WRITE_READ, State::LOCK_READ)) {
 			// Locked _vals[0] for writing
-			_vals[0]  = new_val;
-			_read_val = &_vals[0];
-			_state    = State::READ_WRITE;
+			_vals[0]  = std::move(new_val);
+			_state.store(State::READ_WRITE, std::memory_order_release);
 			return true;
 		}
 
@@ -78,11 +74,15 @@ private:
 	enum class State {
 		READ_WRITE,  ///< Read vals[0], Write vals[1]
 		READ_LOCK,   ///< Read vals[0], Lock vals[1]
-		WRITE_READ,  ///< Write vals[0], Write vals[1]
+		WRITE_READ,  ///< Write vals[0], Read vals[1]
 		LOCK_READ    ///< Lock vals[0], Read vals[1]
 	};
 
-	std::atomic<T*>    _read_val;
+	bool transition(State from, const State to) {
+		return _state.compare_exchange_strong(
+			from, to, std::memory_order_release, std::memory_order_relaxed);
+	}
+
 	std::atomic<State> _state;
 	T                  _vals[2];
 };

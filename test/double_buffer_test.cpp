@@ -33,15 +33,8 @@ main(int argc, char** argv)
 		return 1;
 	}
 
-	DoubleBuffer<int> db2(db);
-	if (db2.get() != 42) {
-		return 1;
-	}
-
 	db.set(43);
 	if (db.get() != 43) {
-		return 1;
-	} else if (db2.get() != 42) {
 		return 1;
 	}
 
