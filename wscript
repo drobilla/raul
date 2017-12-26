@@ -37,10 +37,9 @@ def options(opt):
     autowaf.set_options(opt, test=True)
 
 def configure(conf):
-    conf.line_just = 40
-    conf.load('compiler_cxx')
-    autowaf.configure(conf)
     autowaf.display_header('Raul Configuration')
+    conf.load('compiler_cxx', cache=True)
+    conf.load('autowaf', cache=True)
 
     if conf.env.DEST_OS == 'darwin':
         conf.check(framework_name='CoreServices')
@@ -55,6 +54,7 @@ def configure(conf):
     autowaf.define(conf, 'RAUL_VERSION', RAUL_VERSION)
     conf.write_config_header('raul_config.h', remove=False)
 
+    autowaf.display_summary(conf)
     autowaf.display_msg(conf, "Unit tests", bool(conf.env.BUILD_TESTS))
     print('')
 
