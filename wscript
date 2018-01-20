@@ -5,7 +5,7 @@ import waflib.Options as Options
 import waflib.extras.autowaf as autowaf
 
 # Version of this package (even if built as a child)
-RAUL_VERSION = '0.8.9'
+RAUL_VERSION = '0.8.10'
 
 # Library version (UNIX style major, minor, micro)
 # major increment <=> incompatible changes
@@ -71,7 +71,6 @@ tests = '''
         test/symbol_test
         test/thread_test
         test/time_test
-        test/uri_test
 '''
 
 def build(bld):

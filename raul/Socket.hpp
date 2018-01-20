@@ -18,6 +18,7 @@
 #define RAUL_SOCKET_HPP
 
 #include <memory>
+#include <string>
 
 #include <errno.h>
 #include <netdb.h>
@@ -31,7 +32,6 @@
 #include <unistd.h>
 
 #include "raul/Noncopyable.hpp"
-#include "raul/URI.hpp"
 
 namespace Raul {
 
@@ -47,11 +47,11 @@ public:
 	explicit Socket(Type t);
 
 	/** Wrap an existing open socket. */
-	Socket(Type             t,
-	       const Raul::URI& uri,
-	       struct sockaddr* addr,
-	       socklen_t        addr_len,
-	       int              fd);
+	Socket(Type               t,
+	       const std::string& uri,
+	       struct sockaddr*   addr,
+	       socklen_t          addr_len,
+	       int                fd);
 
 	~Socket();
 
@@ -60,13 +60,13 @@ public:
 	 *            Use "*" as hostname to listen on all interfaces.
 	 * @return True on success.
 	 */
-	bool bind(const Raul::URI& uri);
+	bool bind(const std::string& uri);
 
 	/** Connect a client socket to a server address.
 	 * @param uri Address URI, e.g. unix:///tmp/foo or tcp://somehost:1234
 	 * @return True on success.
 	 */
-	bool connect(const Raul::URI& uri);
+	bool connect(const std::string& uri);
 
 	/** Mark server socket as passive to listen for incoming connections.
 	 * @return True on success.
@@ -81,7 +81,7 @@ public:
 	/** Return the file descriptor for the socket. */
 	int fd() { return _sock; }
 
-	const Raul::URI& uri() const { return _uri; }
+	const std::string& uri() const { return _uri; }
 
 	/** Close the socket. */
 	void close();
@@ -93,9 +93,9 @@ public:
 	void shutdown();
 
 private:
-	bool set_addr(const Raul::URI& uri);
+	bool set_addr(const std::string& uri);
 
-	Raul::URI        _uri;
+	std::string      _uri;
 	struct sockaddr* _addr;
 	socklen_t        _addr_len;
 	Type             _type;
@@ -125,16 +125,16 @@ Socket::Socket(Type t)
 }
 
 inline
-Socket::Socket(Type             t,
-               const Raul::URI& uri,
-               struct sockaddr* addr,
-               socklen_t        addr_len,
-               int              fd)
-	: _uri(uri)
-	, _addr(addr)
-	, _addr_len(addr_len)
-	, _type(t)
-	, _sock(fd)
+Socket::Socket(Type               t,
+               const std::string& uri,
+               struct sockaddr*   addr,
+               socklen_t          addr_len,
+               int                fd)
+  : _uri(uri)
+  , _addr(addr)
+  , _addr_len(addr_len)
+  , _type(t)
+  , _sock(fd)
 {
 }
 
@@ -146,7 +146,7 @@ Socket::~Socket()
 }
 
 inline bool
-Socket::set_addr(const Raul::URI& uri)
+Socket::set_addr(const std::string& uri)
 {
 	free(_addr);
 	if (_type == Type::UNIX && uri.substr(0, strlen("unix://")) == "unix://") {
@@ -189,7 +189,7 @@ Socket::set_addr(const Raul::URI& uri)
 }
 
 inline bool
-Socket::bind(const Raul::URI& uri)
+Socket::bind(const std::string& uri)
 {
 	if (set_addr(uri) && ::bind(_sock, _addr, _addr_len) != -1) {
 		return true;
@@ -199,7 +199,7 @@ Socket::bind(const Raul::URI& uri)
 }
 
 inline bool
-Socket::connect(const Raul::URI& uri)
+Socket::connect(const std::string& uri)
 {
 	if (set_addr(uri) && ::connect(_sock, _addr, _addr_len) != -1) {
 		return true;
@@ -230,13 +230,14 @@ Socket::accept()
 		return std::shared_ptr<Socket>();
 	}
 
-	Raul::URI client_uri = _uri;
+	std::string client_uri = _uri;
 	if (_type != Type::UNIX) {
 		char host[NI_MAXHOST];
 		char serv[NI_MAXSERV];
 		if (!getnameinfo(client_addr, client_addr_len,
 		                 host, sizeof(host), serv, sizeof(serv), 0)) {
-			client_uri = Raul::URI(_uri.scheme() + "://" + host + ":" + serv);
+			const std::string scheme = _uri.substr(0, _uri.find(':'));
+			client_uri = std::string(scheme + "://" + host + ":" + serv);
 		}
 	}
 

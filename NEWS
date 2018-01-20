@@ -1,10 +1,11 @@
-raul (0.8.9) unstable;
+raul (0.8.10) unstable;
 
   * Remove glib dpendency
   * Remove boost dependency
   * Remove OSC and RDF library dependent code
   * Remove remaining library code, now header only
   * Remove features now provided by C++11
+  * Remove URI class
   * Improve RingBuffer
   * Add ThreadVar, a thread-specific variable class
   * Add managed_ptr for automatic real-time safe garbage collection

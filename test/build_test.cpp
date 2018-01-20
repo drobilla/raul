@@ -28,7 +28,6 @@
 #include "raul/Symbol.hpp"
 #include "raul/TimeSlice.hpp"
 #include "raul/TimeStamp.hpp"
-#include "raul/URI.hpp"
 
 int
 main(int argc, char** argv)
