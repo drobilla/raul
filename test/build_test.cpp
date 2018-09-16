@@ -30,7 +30,7 @@
 #include "raul/TimeStamp.hpp"
 
 int
-main(int argc, char** argv)
+main()
 {
 	return 0;
 }

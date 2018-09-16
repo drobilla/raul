@@ -17,7 +17,7 @@
 #include "raul/DoubleBuffer.hpp"
 
 int
-main(int argc, char** argv)
+main()
 {
 	Raul::DoubleBuffer<int> db(0);
 

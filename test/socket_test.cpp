@@ -28,7 +28,7 @@
 #include <utility>
 
 int
-main(int argc, char** argv)
+main()
 {
 	using Socket = Raul::Socket;
 

@@ -119,7 +119,7 @@ test()
 }
 
 int
-main(int argc, char** argv)
+main()
 {
 	assert(n_junk == 0);
 	test();

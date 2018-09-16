@@ -19,7 +19,7 @@
 #include <cstdio>
 
 int
-main(int argc, char** argv)
+main()
 {
 	Raul::Array<int> array1(32, 2);
 
