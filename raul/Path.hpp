@@ -74,9 +74,7 @@ public:
 	 * Note this is faster than constructing a Path from another Path's string
 	 * since validation is unnecessary.
 	 */
-	Path(const Path& path)
-		: std::basic_string<char>(path)
-	{}
+	Path(const Path& path) = default;
 
 	/** Return true iff `c` is a valid Path character. */
 	static inline bool is_valid_char(char c) {

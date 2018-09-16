@@ -127,7 +127,35 @@ def test(ctx):
     autowaf.post_test(ctx, APPNAME, dirs=['.', 'src', 'test'])
 
 def lint(ctx):
-    subprocess.call('cpplint.py --filter=-whitespace/comments,-whitespace/tab,-whitespace/braces,-whitespace/labels,-build/header_guard,-readability/casting,-whitespace/line_length,-runtime/references,-readability/streams,-build/include_order raul/*', shell=True)
+    "checks code for style issues"
+    import subprocess
+    cmd = ("clang-tidy -p=. -header-filter=.* -checks=\"*," +
+           "-android*," +
+           "-clang-analyzer-alpha.*," +
+           "-cppcoreguidelines-no-malloc," +
+           "-cppcoreguidelines-owning-memory," +
+           "-cppcoreguidelines-pro-bounds-array-to-pointer-decay," +
+           "-cppcoreguidelines-pro-bounds-pointer-arithmetic," +
+           "-cppcoreguidelines-pro-type-const-cast," +
+           "-cppcoreguidelines-pro-type-reinterpret-cast," +
+           "-cppcoreguidelines-pro-type-vararg," +
+           "-cppcoreguidelines-special-member-functions," +
+           "-fuchsia-default-arguments," +
+           "-fuchsia-overloaded-operator," +
+           "-google-runtime-references," +
+           "-hicpp-no-array-decay," +
+           "-hicpp-no-malloc," +
+           "-hicpp-signed-bitwise," +
+           "-hicpp-special-member-functions," +
+           "-hicpp-vararg," +
+           "-llvm-header-guard," +
+           "-misc-suspicious-string-compare," +
+           "-misc-unused-parameters," +
+           "-modernize-make-unique," +
+           "-readability-else-after-return," +
+           "-readability-implicit-bool-conversion\" " +
+           "../raul/*.hpp ../test/*.cpp")
+    subprocess.call(cmd, cwd='build', shell=True)
 
 def posts(ctx):
     path = str(ctx.path.abspath())

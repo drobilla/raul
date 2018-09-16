@@ -78,8 +78,7 @@ main()
 	CHECK(!strcmp(Path("/").symbol(), ""));
 
 	Path original(std::string("/foo/bar"));
-	Path copy(original);
-	CHECK(original == copy);
+	CHECK(original == Path(original));
 
 	bool valid = true;
 	try {

@@ -27,8 +27,9 @@ namespace Raul {
 class Deletable
 {
 public:
-	Deletable()          {}
-	virtual ~Deletable() {}
+	Deletable() = default;
+
+	virtual ~Deletable() = default;
 };
 
 } // namespace Raul

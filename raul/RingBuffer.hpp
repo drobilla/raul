@@ -43,11 +43,12 @@ public:
 	   @param size Size in bytes (note this may be rounded up).
 	 */
 	explicit RingBuffer(uint32_t size)
-		: _size(next_power_of_two(size))
+		: _write_head(0)
+		, _read_head(0)
+		, _size(next_power_of_two(size))
 		, _size_mask(_size - 1)
-		, _buf(static_cast<char*>(malloc(_size)))
+		, _buf(new char[_size])
 	{
-		reset();
 		assert(read_space() == 0);
 		assert(write_space() == _size - 1);
 	}
@@ -55,9 +56,7 @@ public:
 	/**
 	   Destroy a RingBuffer.
 	*/
-	inline ~RingBuffer() {
-		free(_buf);
-	}
+	inline ~RingBuffer() = default;
 
 	/**
 	   Reset (empty) the RingBuffer.
@@ -160,11 +159,11 @@ private:
 	static inline uint32_t next_power_of_two(uint32_t size) {
 		// http://graphics.stanford.edu/~seander/bithacks.html#RoundUpPowerOf2
 		size--;
-		size |= size >> 1;
-		size |= size >> 2;
-		size |= size >> 4;
-		size |= size >> 8;
-		size |= size >> 16;
+		size |= size >> 1U;
+		size |= size >> 2U;
+		size |= size >> 4U;
+		size |= size >> 8U;
+		size |= size >> 16U;
 		size++;
 		return size;
 	}
@@ -212,7 +211,7 @@ private:
 	const uint32_t _size;       ///< Size (capacity) in bytes
 	const uint32_t _size_mask;  ///< Mask for fast modulo
 
-	char* const _buf;  ///< Contents
+	const std::unique_ptr<char[]> _buf;  ///< Contents
 };
 
 } // namespace Raul

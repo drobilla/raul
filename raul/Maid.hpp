@@ -41,11 +41,11 @@ public:
 	/** An object that can be disposed via Maid::dispose(). */
 	class Disposable : public Deletable {
 	public:
-		Disposable() : _maid_next(nullptr) {}
+		Disposable() = default;
 
 	private:
 		friend class Maid;
-		Disposable* _maid_next;
+		Disposable* _maid_next{};
 	};
 
 	/** Disposable wrapper for any type. */
@@ -54,7 +54,7 @@ public:
 	{
 	public:
 		template<typename... Args>
-		Managed(Args&&... args)
+		explicit Managed(Args&&... args)
 			: T(std::forward<Args>(args)...)
 		{}
 	};
@@ -63,14 +63,14 @@ public:
 	template<typename T>
 	class Disposer {
 	public:
-		Disposer(Maid& maid) : _maid(&maid) {}
-		Disposer()           : _maid(nullptr) {}
+		explicit Disposer(Maid* maid) : _maid(maid) {}
+		Disposer()                    : _maid(nullptr) {}
 
 		void operator()(T* obj) {
 			if (_maid) { _maid->dispose(obj); }
 		}
 
-		Maid* _maid;
+		Maid* _maid{nullptr};
 	};
 
 	/** A managed pointer that automatically disposes of its contents.
@@ -86,7 +86,7 @@ public:
 
 	/** Return false iff there is currently no garbage. */
 	inline bool empty() const {
-		return !(bool)_disposed.load(std::memory_order_relaxed);
+		return !_disposed.load(std::memory_order_relaxed);
 	}
 
 	/** Enqueue an object for deletion when cleanup() is called next.
@@ -127,8 +127,9 @@ public:
 	/** Make a unique_ptr that will dispose its object when dropped. */
 	template<class T, class... Args>
 	managed_ptr<T> make_managed(Args&&... args) {
-		T* obj = new T(std::forward<Args>(args)...);
-		return std::unique_ptr<T, Disposer<T> >(obj, Disposer<T>(*this));
+		return std::unique_ptr<T, Disposer<T> >(
+			new T(std::forward<Args>(args)...),
+			Disposer<T>(this));
 	}
 
 private:

@@ -28,9 +28,13 @@
 
 namespace {
 
-Raul::RingBuffer* ring       = 0;
-size_t            n_writes   = 0;
-bool              ring_error = false;
+using RingBuffer = Raul::RingBuffer;
+
+struct Context {
+	std::unique_ptr<RingBuffer> ring;
+	size_t n_writes{0};
+	size_t ring_errors{0};
+};
 
 int
 gen_msg(int* msg, int start)
@@ -56,7 +60,7 @@ cmp_msg(int* msg1, int* msg2)
 }
 
 void
-reader()
+reader(Context& ctx)
 {
 	printf("Reader starting\n");
 
@@ -64,17 +68,17 @@ reader()
 	int    read_msg[MSG_SIZE];  // Read from ring
 	size_t count = 0;
 	int    start = gen_msg(ref_msg, 0);
-	for (size_t i = 0; i < n_writes; ++i) {
-		if (ring->read_space() >= MSG_SIZE * sizeof(int)) {
-			const uint32_t n_read = ring->read(MSG_SIZE * sizeof(int), read_msg);
+	for (size_t i = 0; i < ctx.n_writes; ++i) {
+		if (ctx.ring->read_space() >= MSG_SIZE * sizeof(int)) {
+			const uint32_t n_read = ctx.ring->read(MSG_SIZE * sizeof(int), read_msg);
 			if (n_read != MSG_SIZE * sizeof(int)) {
 				fprintf(stderr, "FAIL: Read size incorrect\n");
-				ring_error = true;
+				++ctx.ring_errors;
 				return;
 			}
 			if (!cmp_msg(ref_msg, read_msg)) {
 				fprintf(stderr, "FAIL: Message %zu is corrupt\n", count);
-				ring_error = true;
+				++ctx.ring_errors;
 				return;
 			}
 			start = gen_msg(ref_msg, start);
@@ -86,18 +90,18 @@ reader()
 }
 
 void
-writer()
+writer(Context& ctx)
 {
 	printf("Writer starting\n");
 
 	int write_msg[MSG_SIZE];  // Written to ring
 	int start = gen_msg(write_msg, 0);
-	for (size_t i = 0; i < n_writes; ++i) {
-		if (ring->write_space() >= MSG_SIZE * sizeof(int)) {
-			const uint32_t n_write = ring->write(MSG_SIZE * sizeof(int), write_msg);
+	for (size_t i = 0; i < ctx.n_writes; ++i) {
+		if (ctx.ring->write_space() >= MSG_SIZE * sizeof(int)) {
+			const uint32_t n_write = ctx.ring->write(MSG_SIZE * sizeof(int), write_msg);
 			if (n_write != MSG_SIZE * sizeof(int)) {
 				fprintf(stderr, "FAIL: Write size incorrect\n");
-				ring_error = true;
+				++ctx.ring_errors;
 				return;
 			}
 			start = gen_msg(write_msg, start);
@@ -117,20 +121,24 @@ main(int argc, char** argv)
 		return 1;
 	}
 
+	Context ctx;
+
 	size_t size = 1024;
 	if (argc > 1) {
 		size = std::stoul(argv[1]);
 	}
 
-	n_writes = size * 1024;
+	ctx.n_writes = size * 1024;
 	if (argc > 2) {
-		n_writes = std::stoul(argv[2]);
+		ctx.n_writes = std::stoul(argv[2]);
 	}
 
 	printf("Testing %zu writes of %u ints to a %zu int ring...\n",
-	       n_writes, MSG_SIZE, size);
+	       ctx.n_writes, MSG_SIZE, size);
 
-	ring = new Raul::RingBuffer(uint32_t(size));
+	ctx.ring = std::unique_ptr<RingBuffer>(new RingBuffer(uint32_t(size)));
+
+	auto& ring = ctx.ring;
 	if (ring->capacity() < size - 1) {
 		fprintf(stderr, "Ring capacity is smaller than expected\n");
 		return 1;
@@ -187,17 +195,16 @@ main(int argc, char** argv)
 
 	ring->reset();
 
-	std::thread reader_thread(reader);
-	std::thread writer_thread(writer);
+	std::thread reader_thread(reader, std::ref(ctx));
+	std::thread writer_thread(writer, std::ref(ctx));
 
 	reader_thread.join();
 	writer_thread.join();
 
-	if (ring_error) {
+	if (ctx.ring_errors) {
 		fprintf(stderr, "FAIL: Error occurred\n");
 		return 1;
 	}
 
-	delete ring;
 	return 0;
 }

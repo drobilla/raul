@@ -45,9 +45,9 @@ public:
 		_ppt = ppt;
 	}
 
-	static inline TimeUnit frames(uint32_t srate) { return TimeUnit(FRAMES, srate); }
-	static inline TimeUnit beats(uint32_t ppqn)   { return TimeUnit(BEATS, ppqn); }
-	static inline TimeUnit seconds()              { return TimeUnit(BEATS, std::numeric_limits<uint32_t>::max()); }
+	static inline TimeUnit frames(uint32_t srate) { return {FRAMES, srate}; }
+	static inline TimeUnit beats(uint32_t ppqn)   { return {BEATS, ppqn}; }
+	static inline TimeUnit seconds()              { return {BEATS, std::numeric_limits<uint32_t>::max()}; }
 
 	inline Type     type() const { return _type; }
 	inline uint32_t ppt()  const { return _ppt; }
@@ -76,7 +76,7 @@ private:
  */
 class TimeStamp {
 public:
-	inline TimeStamp(TimeUnit unit, uint32_t ticks = 0, uint32_t subticks = 0)
+	explicit TimeStamp(TimeUnit unit, uint32_t ticks = 0, uint32_t subticks = 0)
 		: _ticks(ticks)
 		, _subticks(subticks)
 		, _unit(unit)
@@ -209,21 +209,21 @@ operator<<(std::ostream& os, const TimeStamp& t)
 
 class FrameStamp : public TimeStamp {
 public:
-	inline FrameStamp(uint32_t rate, uint32_t ticks = 0, uint32_t subticks = 0)
+	explicit FrameStamp(uint32_t rate, uint32_t ticks = 0, uint32_t subticks = 0)
 		: TimeStamp(TimeUnit(TimeUnit::FRAMES, rate), ticks, subticks)
 	{}
 };
 
 class BeatStamp : public TimeStamp {
 public:
-	inline BeatStamp(uint32_t ppqn, uint32_t ticks = 0, uint32_t subticks = 0)
+	explicit BeatStamp(uint32_t ppqn, uint32_t ticks = 0, uint32_t subticks = 0)
 		: TimeStamp(TimeUnit(TimeUnit::BEATS, ppqn), ticks, subticks)
 	{}
 };
 
 /** Same thing as TimeStamp really, but makes code clearer and enforces
  * correct semantics via type safety */
-typedef TimeStamp TimeDuration;
+using TimeDuration = TimeStamp;
 
 } // namespace Raul
 

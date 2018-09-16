@@ -52,7 +52,9 @@ public:
 
 	   Chances are you want 1 wait() per 1 post(), an initial value of 0.
 	*/
-	inline Semaphore(unsigned initial) {
+	explicit Semaphore(unsigned initial)
+		: _sem()
+	{
 		if (!init(initial)) {
 			throw std::runtime_error("Failed to create semaphore");
 		}
@@ -203,10 +205,7 @@ Semaphore::timed_wait(const std::chrono::duration<Rep, Period>& wait)
 inline bool
 Semaphore::init(unsigned initial)
 {
-	if (sem_init(&_sem, 0, initial)) {
-		return false;
-	}
-	return true;
+	return !sem_init(&_sem, 0, initial);
 }
 
 inline void
@@ -247,7 +246,7 @@ Semaphore::timed_wait(const std::chrono::duration<Rep, Period>& wait)
 	namespace chr = std::chrono;
 
 	// Use clock_gettime to ensure sem_timedwait uses the same clock
-	struct timespec time;
+	struct timespec time{};
 	clock_gettime(CLOCK_REALTIME, &time);
 
 	const auto now(chr::seconds(time.tv_sec) + chr::nanoseconds(time.tv_nsec));

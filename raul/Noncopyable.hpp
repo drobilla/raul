@@ -20,13 +20,13 @@
 namespace Raul {
 
 class Noncopyable {
-protected:
-	Noncopyable()  {}
-	~Noncopyable() {}
-
-private:
+public:
 	Noncopyable(const Noncopyable&) = delete;
 	const Noncopyable& operator=(const Noncopyable&) = delete;
+
+protected:
+	Noncopyable()  = default;
+	~Noncopyable() = default;
 };
 
 } // namespace Raul

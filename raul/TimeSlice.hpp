@@ -95,19 +95,19 @@ public:
 	}
 
 	inline TimeStamp beats_to_seconds(TimeStamp beats) const {
-		return TimeStamp(real_unit(), beats.to_double() * 1/(double)_beat_rate);
+		return TimeStamp(real_unit(), beats.to_double() * 1/_beat_rate);
 	}
 
 	inline TimeStamp beats_to_ticks(TimeStamp beats) const {
-		return TimeStamp(ticks_unit(), beats.to_double() * (double)_beat_rate * _tick_rate);
+		return TimeStamp(ticks_unit(), beats.to_double() * _beat_rate * _tick_rate);
 	}
 
 	inline TimeStamp ticks_to_seconds(TimeStamp ticks) const {
-		return TimeStamp(real_unit(), ticks.ticks() * 1/(double)_tick_rate);
+		return {real_unit(), ticks.ticks() * 1/_tick_rate};
 	}
 
 	inline TimeStamp ticks_to_beats(TimeStamp ticks) const {
-		return TimeStamp(beats_unit(), ticks.ticks() * 1/(double)_tick_rate * _beat_rate);
+		return {beats_unit(), ticks.ticks() * 1/_tick_rate * _beat_rate};
 	}
 
 	/** Start of current sub-cycle in ticks */
@@ -130,7 +130,7 @@ public:
 
 	inline TimeUnit beats_unit() const { return _start_beats.unit(); }
 	inline TimeUnit ticks_unit() const { return _start_ticks.unit(); }
-	inline TimeUnit real_unit()  const { return TimeUnit(TimeUnit::SECONDS, 0); }
+	inline TimeUnit real_unit()  const { return {TimeUnit::SECONDS, 0}; }
 
 private:
 	inline void update_beat_time() {

@@ -35,7 +35,7 @@ namespace Raul {
 template<typename T>
 class DoubleBuffer {
 public:
-	inline DoubleBuffer(T val)
+	explicit DoubleBuffer(T val)
 		: _state(State::READ_WRITE)
 	{
 		_vals[0] = std::move(val);
@@ -49,9 +49,11 @@ public:
 		case State::READ_WRITE:
 		case State::READ_LOCK:
 			return _vals[0];
-		default:
-			return _vals[1];
+		case State::WRITE_READ:
+		case State::LOCK_READ:
+			break;
 		}
+		return _vals[1];
 	}
 
 	inline bool set(T new_val) {

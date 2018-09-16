@@ -28,8 +28,8 @@
 
 using Raul::Maid;
 
-static const size_t n_threads         = 8;
-static const size_t n_junk_per_thread = 1 << 18;
+static const size_t n_threads         = 8U;
+static const size_t n_junk_per_thread = 1U << 18U;
 
 static std::atomic<size_t> n_junk(0);
 static std::atomic<size_t> n_finished_threads(0);
@@ -37,7 +37,7 @@ static std::atomic<size_t> n_finished_threads(0);
 class Junk : public Maid::Disposable {
 public:
 	explicit Junk(size_t v) : val(v) { ++n_junk; }
-	~Junk() { --n_junk; }
+	~Junk() override { --n_junk; }
 
 	size_t val;
 };
@@ -79,7 +79,7 @@ test()
 	// Create some threads to produce garbage
 	std::vector<std::thread> litterers;
 	for (size_t i = 0; i < n_threads; ++i) {
-		litterers.push_back(std::thread(litter, &maid));
+		litterers.emplace_back(litter, &maid);
 	}
 
 	// Wait for some garbage to show up if necessary (unlikely)

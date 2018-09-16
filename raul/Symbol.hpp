@@ -73,9 +73,7 @@ public:
 	 * Note this is faster than constructing a Symbol from another Symbol's
 	 * string since validation is unnecessary.
 	 */
-	Symbol(const Symbol& symbol)
-		: std::basic_string<char>(symbol)
-	{}
+	Symbol(const Symbol& symbol) = default;
 
 	/** Return true iff `c` is a valid Symbol start character. */
 	static inline bool is_valid_start_char(char c) {
@@ -93,8 +91,8 @@ public:
 			return false;  // Must start with a letter or underscore
 		}
 
-		for (size_t i = 0; i < str.length(); ++i) {
-			if (!is_valid_char(str[i])) {
+		for (auto c : str) {
+			if (!is_valid_char(c)) {
 				return false;  // All characters must be _, a-z, A-Z, 0-9
 			}
 		}

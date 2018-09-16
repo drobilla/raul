@@ -47,7 +47,7 @@ public:
 			// (in child)
 
 			// Close all nonstandard file descriptors
-			struct rlimit max_fds;
+			struct rlimit max_fds{};
 			getrlimit(RLIMIT_NOFILE, &max_fds);
 			for (rlim_t fd = 3; fd < max_fds.rlim_cur; ++fd) {
 				close(static_cast<int>(fd));
@@ -79,7 +79,7 @@ public:
 	}
 
 private:
-	Process() {}
+	Process() = default;
 };
 
 } // namespace Raul
