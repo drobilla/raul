@@ -1,8 +1,10 @@
 #!/usr/bin/env python
+
 import os
 import subprocess
-import waflib.Options as Options
-import waflib.extras.autowaf as autowaf
+
+from waflib import Options
+from waflib.extras import autowaf
 
 # Version of this package (even if built as a child)
 RAUL_VERSION = '0.8.10'
@@ -52,12 +54,10 @@ def configure(conf):
     # TODO: Version includes and use autowaf.set_lib_env() here
     conf.env['INCLUDES_RAUL'] = [os.path.abspath(top) + '/raul']
 
-    autowaf.define(conf, 'RAUL_VERSION', RAUL_VERSION)
     conf.write_config_header('raul_config.h', remove=False)
 
-    autowaf.display_summary(conf)
-    autowaf.display_msg(conf, "Unit tests", bool(conf.env.BUILD_TESTS))
-    print('')
+    autowaf.display_summary(conf,
+                            {'Unit tests': bool(conf.env.BUILD_TESTS)})
 
 tests = '''
         test/array_test
