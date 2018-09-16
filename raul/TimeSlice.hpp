@@ -14,8 +14,8 @@
   along with Raul.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef RAUL_TIME_SLICE_HPP
-#define RAUL_TIME_SLICE_HPP
+#ifndef RAUL_TIMESLICE_HPP
+#define RAUL_TIMESLICE_HPP
 
 #include "raul/Noncopyable.hpp"
 #include "raul/TimeStamp.hpp"
@@ -153,4 +153,4 @@ private:
 
 } // namespace Raul
 
-#endif // RAUL_TIME_SLICE_HPP
+#endif // RAUL_TIMESLICE_HPP

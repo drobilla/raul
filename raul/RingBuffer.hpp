@@ -14,8 +14,8 @@
   along with Raul.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef RAUL_RING_BUFFER_HPP
-#define RAUL_RING_BUFFER_HPP
+#ifndef RAUL_RINGBUFFER_HPP
+#define RAUL_RINGBUFFER_HPP
 
 #include "raul/Noncopyable.hpp"
 
@@ -213,4 +213,4 @@ private:
 
 } // namespace Raul
 
-#endif // RAUL_RING_BUFFER_HPP
+#endif // RAUL_RINGBUFFER_HPP

@@ -14,8 +14,8 @@
   along with Raul.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef RAUL_TIME_STAMP_HPP
-#define RAUL_TIME_STAMP_HPP
+#ifndef RAUL_TIMESTAMP_HPP
+#define RAUL_TIMESTAMP_HPP
 
 #include <cassert>
 #include <cmath>
@@ -227,4 +227,4 @@ typedef TimeStamp TimeDuration;
 
 } // namespace Raul
 
-#endif // RAUL_TIME_STAMP_HPP
+#endif // RAUL_TIMESTAMP_HPP

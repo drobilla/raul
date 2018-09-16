@@ -14,8 +14,8 @@
   along with Raul.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef RAUL_DOUBLE_BUFFER_HPP
-#define RAUL_DOUBLE_BUFFER_HPP
+#ifndef RAUL_DOUBLEBUFFER_HPP
+#define RAUL_DOUBLEBUFFER_HPP
 
 #include <atomic>
 #include <utility>
@@ -89,4 +89,4 @@ private:
 
 } // namespace Raul
 
-#endif // RAUL_DOUBLE_BUFFER_HPP
+#endif // RAUL_DOUBLEBUFFER_HPP
