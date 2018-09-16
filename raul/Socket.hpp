@@ -225,8 +225,9 @@ Socket::accept()
 	struct sockaddr* client_addr     = (struct sockaddr*)calloc(
 		1, client_addr_len);
 
-	int conn = ::accept(_sock, client_addr, &client_addr_len);
+	const int conn = ::accept(_sock, client_addr, &client_addr_len);
 	if (conn == -1) {
+		free(client_addr);
 		return std::shared_ptr<Socket>();
 	}
 
