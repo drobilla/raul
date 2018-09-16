@@ -16,13 +16,10 @@
 
 #include "raul/DoubleBuffer.hpp"
 
-using namespace std;
-using namespace Raul;
-
 int
 main(int argc, char** argv)
 {
-	DoubleBuffer<int> db(0);
+	Raul::DoubleBuffer<int> db(0);
 
 	if (db.get() != 0) {
 		return 1;

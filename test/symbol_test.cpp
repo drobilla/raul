@@ -20,19 +20,18 @@
 #include <list>
 #include <string>
 
-using namespace std;
-using namespace Raul;
-
 int
 main()
 {
+	using Symbol = Raul::Symbol;
+
 #define CHECK(cond) \
 	do { if (!(cond)) { \
-		cerr << "Test failed: " << (cond) << endl; \
+		std::cerr << "Test failed: " << (cond) << std::endl; \
 		return 1; \
 	} } while (0)
 
-	list<string> names;
+	std::list<std::string> names;
 	names.push_back("Dry/Wet Balance");
 	names.push_back("foo+1bar(baz)");
 	names.push_back("ThisCRAR");
@@ -47,8 +46,8 @@ main()
 	names.push_back("1");
 	names.push_back("");
 
-	for (list<string>::iterator i = names.begin(); i != names.end(); ++i) {
-		CHECK(!Symbol::symbolify(*i).empty());
+	for (const auto& name : names) {
+		CHECK(!Symbol::symbolify(name).empty());
 	}
 
 	Symbol original("sym");

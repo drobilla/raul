@@ -24,9 +24,6 @@
 #include <string>
 #include <thread>
 
-using namespace std;
-using namespace Raul;
-
 #define MSG_SIZE 20
 
 namespace {

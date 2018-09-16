@@ -20,10 +20,9 @@
 #include <iostream>
 #include <thread>
 
-using namespace std;
-using namespace Raul;
-
 namespace {
+
+using Semaphore = Raul::Semaphore;
 
 thread_local int var(0);
 std::atomic<int> n_errors(0);
@@ -32,12 +31,12 @@ void
 wait_for_sem(Semaphore* sem)
 {
 	var = 41;
-	cout << "[Waiter] Waiting for signal..." << endl;
+	std::cout << "[Waiter] Waiting for signal..." << std::endl;
 	sem->wait();
-	cout << "[Waiter] Received signal, exiting" << endl;
+	std::cout << "[Waiter] Received signal, exiting" << std::endl;
 	var = 42;
 	if (var != 42) {
-		cerr << "[Waiter] var != 42" << endl;
+		std::cerr << "[Waiter] var != 42" << std::endl;
 		++n_errors;
 	}
 }
@@ -52,16 +51,16 @@ main()
 
 	var = 24;
 
-	cout << "[Main] Signalling..." << endl;
+	std::cout << "[Main] Signalling..." << std::endl;
 	sem.post();
 
-	cout << "[Main] Waiting for waiter..." << endl;
+	std::cout << "[Main] Waiting for waiter..." << std::endl;
 	waiter.join();
 
-	cout << "[Main] Exiting" << endl;
+	std::cout << "[Main] Exiting" << std::endl;
 
 	if (var != 24) {
-		cerr << "[Main] var != 24" << endl;
+		std::cerr << "[Main] var != 24" << std::endl;
 		++n_errors;
 	}
 

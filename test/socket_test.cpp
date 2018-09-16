@@ -35,8 +35,8 @@ main(int argc, char** argv)
 	std::string unix_uri("unix:///tmp/raul_test_sock");
 	std::string tcp_uri("tcp://127.0.0.1:12345");
 
-	Raul::Socket unix_server_sock(Socket::Type::UNIX);
-	Raul::Socket tcp_server_sock(Socket::Type::TCP);
+	Socket unix_server_sock(Socket::Type::UNIX);
+	Socket tcp_server_sock(Socket::Type::TCP);
 	if (!unix_server_sock.bind(unix_uri)) {
 		fprintf(stderr, "Failed to bind UNIX server socket (%s)\n",
 		        strerror(errno));

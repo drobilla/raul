@@ -21,15 +21,15 @@
 #include <iostream>
 #include <string>
 
-using namespace std;
-using namespace Raul;
-
 int
 main()
 {
+	using Path   = Raul::Path;
+	using Symbol = Raul::Symbol;
+
 #define CHECK(cond) \
 	do { if (!(cond)) { \
-		cerr << "Test failed: " << (cond) << endl; \
+		std::cerr << "Test failed: " << (cond) << std::endl; \
 		return 1; \
 	} } while (0)
 
