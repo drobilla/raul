@@ -36,39 +36,51 @@ class Array : public Maid::Disposable
 public:
 	explicit Array(size_t size = 0)
 		: _size(size)
-		, _elems(NULL)
+		, _elems(size ? new T[size] : nullptr)
 	{
-		if (size > 0) {
-			_elems = new T[size];
-		}
 	}
 
 	Array(size_t size, T initial_value)
 		: _size(size)
-		, _elems(NULL)
+		, _elems(size ? new T[size] : nullptr)
 	{
 		if (size > 0) {
-			_elems = new T[size];
 			for (size_t i = 0; i < size; ++i) {
 				_elems[i] = initial_value;
 			}
 		}
 	}
 
-	explicit Array(const Array<T>& copy)
-		: _size(copy._size)
+	Array(const Array<T>& array)
+		: _size(array._size)
+		, _elems(_size ? new T[_size] : nullptr)
 	{
-		_elems = new T[_size];
 		for (size_t i = 0; i < _size; ++i) {
-			_elems[i] = copy._elems[i];
+			_elems[i] = array._elems[i];
 		}
 	}
 
+	~Array() override = default;
+
+	Array<T>& operator=(const Array<T>& array)
+	{
+		_size  = array._size;
+		_elems = _size ? new T[_size] : nullptr;
+
+		for (size_t i = 0; i < _size; ++i) {
+			_elems[i] = array._elems[i];
+		}
+	}
+
+	Array(Array<T>&& array) noexcept = default;
+
+	Array<T>& operator=(Array<T>&&) noexcept = default;
+
 	Array(size_t size, const Array<T>& contents)
 		: _size(size)
+		, _elems(size ? new T[size] : nullptr)
 	{
 		assert(contents.size() >= size);
-		_elems = new T[size];
 		for (size_t i = 0; i < std::min(size, contents.size()); ++i) {
 			_elems[i] = contents[i];
 		}
@@ -76,8 +88,8 @@ public:
 
 	Array(size_t size, const Array<T>& contents, T initial_value = T())
 		: _size(size)
+		, _elems(size ? new T[size] : nullptr)
 	{
-		_elems = new T[size];
 		const size_t end = std::min(size, contents.size());
 		for (size_t i = 0; i < end; ++i) {
 			_elems[i] = contents[i];
@@ -87,32 +99,26 @@ public:
 		}
 	}
 
-	~Array() {
-		delete[] _elems;
-	}
-
 	virtual void alloc(size_t num_elems) {
-		delete[] _elems;
 		_size = num_elems;
 
 		if (num_elems > 0) {
-			_elems = new T[num_elems];
+			_elems = std::unique_ptr<T[]>(new T[num_elems]);
 		} else {
-			_elems = NULL;
+			_elems.reset();
 		}
 	}
 
 	virtual void alloc(size_t num_elems, T initial_value) {
-		delete[] _elems;
 		_size = num_elems;
 
 		if (num_elems > 0) {
-			_elems = new T[num_elems];
+			_elems = std::unique_ptr<T[]>(new T[num_elems]);
 			for (size_t i = 0; i < _size; ++i) {
 				_elems[i] = initial_value;
 			}
 		} else {
-			_elems = NULL;
+			_elems.reset();
 		}
 	}
 
@@ -130,7 +136,7 @@ public:
 
 private:
 	size_t _size;
-	T*     _elems;
+	std::unique_ptr<T[]> _elems;
 };
 
 } // namespace Raul
