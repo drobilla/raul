@@ -20,6 +20,7 @@
 #include <cstring>
 #include <iostream>
 #include <string>
+#include <thread>
 
 #include "raul/RingBuffer.hpp"
 
@@ -57,8 +58,8 @@ cmp_msg(int* msg1, int* msg2)
 	return 1;
 }
 
-void*
-reader(void* arg)
+void
+reader()
 {
 	printf("Reader starting\n");
 
@@ -72,12 +73,12 @@ reader(void* arg)
 			if (n_read != MSG_SIZE * sizeof(int)) {
 				fprintf(stderr, "FAIL: Read size incorrect\n");
 				ring_error = true;
-				return NULL;
+				return;
 			}
 			if (!cmp_msg(ref_msg, read_msg)) {
 				fprintf(stderr, "FAIL: Message %zu is corrupt\n", count);
 				ring_error = true;
-				return NULL;
+				return;
 			}
 			start = gen_msg(ref_msg, start);
 			++count;
@@ -85,11 +86,10 @@ reader(void* arg)
 	}
 
 	printf("Reader finished\n");
-	return NULL;
 }
 
-void*
-writer(void* arg)
+void
+writer()
 {
 	printf("Writer starting\n");
 
@@ -101,14 +101,13 @@ writer(void* arg)
 			if (n_write != MSG_SIZE * sizeof(int)) {
 				fprintf(stderr, "FAIL: Write size incorrect\n");
 				ring_error = true;
-				return NULL;
+				return;
 			}
 			start = gen_msg(write_msg, start);
 		}
 	}
 
 	printf("Writer finished\n");
-	return NULL;
 }
 
 } // namespace
@@ -191,20 +190,11 @@ main(int argc, char** argv)
 
 	ring->reset();
 
-	pthread_t reader_thread;
-	if (pthread_create(&reader_thread, NULL, reader, NULL)) {
-		fprintf(stderr, "Failed to create reader thread\n");
-		return 1;
-	}
+	std::thread reader_thread(reader);
+	std::thread writer_thread(writer);
 
-	pthread_t writer_thread;
-	if (pthread_create(&writer_thread, NULL, writer, NULL)) {
-		fprintf(stderr, "Failed to create writer thread\n");
-		return 1;
-	}
-
-	pthread_join(reader_thread, NULL);
-	pthread_join(writer_thread, NULL);
+	reader_thread.join();
+	writer_thread.join();
 
 	if (ring_error) {
 		fprintf(stderr, "FAIL: Error occurred\n");
