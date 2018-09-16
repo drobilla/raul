@@ -59,7 +59,7 @@ public:
 			case 0:
 				// (in grandchild)
 				setsid();
-				execvp(argv[0], (char*const*)argv);
+				execvp(argv[0], const_cast<char*const*>(argv));
 				_exit(-1);
 
 			case -1:

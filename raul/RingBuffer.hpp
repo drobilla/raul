@@ -146,7 +146,9 @@ public:
 			assert(this_size < size);
 			assert(w + this_size <= _size);
 			memcpy(&_buf[w], src, this_size);
-			memcpy(&_buf[0], (const char*)src + this_size, size - this_size);
+			memcpy(&_buf[0],
+			       static_cast<const char*>(src) + this_size,
+			       size - this_size);
 			std::atomic_thread_fence(std::memory_order_release);
 			_write_head = size - this_size;
 		}
@@ -196,7 +198,9 @@ private:
 		} else {
 			const uint32_t first_size = _size - r;
 			memcpy(dst, &_buf[r], first_size);
-			memcpy((char*)dst + first_size, &_buf[0], size - first_size);
+			memcpy(static_cast<char*>(dst) + first_size,
+			       &_buf[0],
+			       size - first_size);
 		}
 
 		return size;

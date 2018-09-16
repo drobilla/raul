@@ -151,12 +151,12 @@ Socket::set_addr(const std::string& uri)
 	free(_addr);
 	if (_type == Type::UNIX && uri.substr(0, strlen("unix://")) == "unix://") {
 		const std::string   path  = uri.substr(strlen("unix://"));
-		struct sockaddr_un* uaddr = (struct sockaddr_un*)calloc(
-			1, sizeof(struct sockaddr_un));
+		struct sockaddr_un* uaddr = static_cast<struct sockaddr_un*>(
+			calloc(1, sizeof(struct sockaddr_un)));
 		uaddr->sun_family = AF_UNIX;
 		strncpy(uaddr->sun_path, path.c_str(), sizeof(uaddr->sun_path) - 1);
 		_uri      = uri;
-		_addr     = (sockaddr*)uaddr;
+		_addr     = reinterpret_cast<sockaddr*>(uaddr);
 		_addr_len = sizeof(struct sockaddr_un);
 		return true;
 	} else if (_type == Type::TCP && uri.find("://") != std::string::npos) {
@@ -179,7 +179,7 @@ Socket::set_addr(const std::string& uri)
 		}
 
 		_uri      = uri;
-		_addr     = (struct sockaddr*)malloc(ainfo->ai_addrlen);
+		_addr     = static_cast<struct sockaddr*>(malloc(ainfo->ai_addrlen));
 		_addr_len = ainfo->ai_addrlen;
 		memcpy(_addr, ainfo->ai_addr, ainfo->ai_addrlen);
 		freeaddrinfo(ainfo);
@@ -222,8 +222,8 @@ inline std::shared_ptr<Socket>
 Socket::accept()
 {
 	socklen_t        client_addr_len = _addr_len;
-	struct sockaddr* client_addr     = (struct sockaddr*)calloc(
-		1, client_addr_len);
+	struct sockaddr* client_addr     = static_cast<struct sockaddr*>(
+		calloc(1, client_addr_len));
 
 	const int conn = ::accept(_sock, client_addr, &client_addr_len);
 	if (conn == -1) {
