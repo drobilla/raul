@@ -2,6 +2,7 @@
 
 import os
 import subprocess
+import sys
 
 from waflib import Options
 from waflib.extras import autowaf
@@ -60,19 +61,19 @@ def configure(conf):
     autowaf.display_summary(conf,
                             {'Unit tests': bool(conf.env.BUILD_TESTS)})
 
-tests = '''
-        test/array_test
-        test/build_test
-        test/double_buffer_test
-        test/maid_test
-        test/path_test
-        test/ringbuffer_test
-        test/sem_test
-        test/socket_test
-        test/symbol_test
-        test/thread_test
-        test/time_test
-'''
+tests = ['array_test',
+         'build_test',
+         'double_buffer_test',
+         'maid_test',
+         'path_test',
+         'ringbuffer_test',
+         'sem_test',
+         'symbol_test',
+         'thread_test',
+         'time_test']
+
+if sys.platform != 'win32':
+    tests += ['socket_test']
 
 def build(bld):
     # Headers
@@ -104,15 +105,15 @@ def build(bld):
             test_linkflags += ['--coverage']
 
         # Unit tests
-        for i in tests.split():
+        for i in tests:
             obj = bld(features     = 'cxx cxxprogram',
-                      source       = i + '.cpp',
+                      source       = os.path.join('test', i + '.cpp'),
                       includes     = ['.', './src'],
                       lib          = test_libs,
                       use          = 'libraul_static',
                       uselib       = 'GLIB GTHREAD',
                       framework    = framework,
-                      target       = i,
+                      target       = os.path.join('test', i),
                       install_path = '',
                       cxxflags     = test_cxxflags,
                       linkflags    = test_linkflags,
@@ -122,9 +123,13 @@ def build(bld):
     autowaf.build_dox(bld, 'RAUL', RAUL_VERSION, top, out)
 
 def test(ctx):
-    autowaf.pre_test(ctx, APPNAME, dirs=['.', 'src', 'test'])
-    autowaf.run_tests(ctx, APPNAME, tests.split(), dirs=['.', 'src', 'test'])
-    autowaf.post_test(ctx, APPNAME, dirs=['.', 'src', 'test'])
+    dirs = ['.', 'src', 'test']
+    autowaf.pre_test(ctx, APPNAME, dirs=dirs)
+    autowaf.run_tests(
+        ctx, APPNAME,
+        map(lambda x: os.path.join('test', x), tests),
+        dirs=dirs)
+    autowaf.post_test(ctx, APPNAME, dirs=dirs)
 
 def lint(ctx):
     "checks code for style issues"

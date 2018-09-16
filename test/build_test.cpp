@@ -21,13 +21,16 @@
 #include "raul/Maid.hpp"
 #include "raul/Noncopyable.hpp"
 #include "raul/Path.hpp"
-#include "raul/Process.hpp"
 #include "raul/RingBuffer.hpp"
 #include "raul/Semaphore.hpp"
-#include "raul/Socket.hpp"
 #include "raul/Symbol.hpp"
 #include "raul/TimeSlice.hpp"
 #include "raul/TimeStamp.hpp"
+
+#ifndef _WIN32
+#include "raul/Process.hpp"
+#include "raul/Socket.hpp"
+#endif
 
 int
 main()

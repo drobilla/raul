@@ -20,6 +20,7 @@
 #ifdef __APPLE__
 #    include <mach/mach.h>
 #elif defined(_WIN32)
+#    define NOMINMAX
 #    include <windows.h>
 #else
 #    include <cerrno>
