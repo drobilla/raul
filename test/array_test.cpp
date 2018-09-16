@@ -14,9 +14,9 @@
   along with Raul.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include <stdio.h>
-
 #include "raul/Array.hpp"
+
+#include <cstdio>
 
 int
 main(int argc, char** argv)

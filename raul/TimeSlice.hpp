@@ -17,11 +17,11 @@
 #ifndef RAUL_TIME_SLICE_HPP
 #define RAUL_TIME_SLICE_HPP
 
-#include <cassert>
-#include <cmath>
-
 #include "raul/Noncopyable.hpp"
 #include "raul/TimeStamp.hpp"
+
+#include <cassert>
+#include <cmath>
 
 namespace Raul {
 

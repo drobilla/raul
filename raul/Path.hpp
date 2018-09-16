@@ -17,11 +17,11 @@
 #ifndef RAUL_PATH_HPP
 #define RAUL_PATH_HPP
 
-#include <algorithm>
-#include <string>
-
 #include "raul/Exception.hpp"
 #include "raul/Symbol.hpp"
+
+#include <algorithm>
+#include <string>
 
 namespace Raul {
 

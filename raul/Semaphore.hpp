@@ -17,18 +17,18 @@
 #ifndef RAUL_SEMAPHORE_HPP
 #define RAUL_SEMAPHORE_HPP
 
-#include <chrono>
-#include <stdexcept>
-
 #ifdef __APPLE__
 #    include <mach/mach.h>
 #elif defined(_WIN32)
 #    include <windows.h>
 #else
-#    include <errno.h>
+#    include <cerrno>
+#    include <ctime>
 #    include <semaphore.h>
-#    include <time.h>
 #endif
+
+#include <chrono>
+#include <stdexcept>
 
 namespace Raul {
 

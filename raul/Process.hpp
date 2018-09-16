@@ -17,13 +17,13 @@
 #ifndef RAUL_PROCESS_HPP
 #define RAUL_PROCESS_HPP
 
+#include "raul/Noncopyable.hpp"
+
 #include <sys/resource.h>
 #include <sys/time.h>
 #include <unistd.h>
 
 #include <string>
-
-#include "raul/Noncopyable.hpp"
 
 namespace Raul {
 

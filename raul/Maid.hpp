@@ -17,11 +17,11 @@
 #ifndef RAUL_MAID_HPP
 #define RAUL_MAID_HPP
 
-#include <atomic>
-#include <memory>
-
 #include "raul/Deletable.hpp"
 #include "raul/Noncopyable.hpp"
+
+#include <atomic>
+#include <memory>
 
 namespace Raul {
 

@@ -16,6 +16,7 @@
 
 #include <exception>
 #include <string>
+#include <utility>
 
 #ifndef RAUL_EXCEPTION_HPP
 #define RAUL_EXCEPTION_HPP

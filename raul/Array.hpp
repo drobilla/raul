@@ -17,11 +17,12 @@
 #ifndef RAUL_ARRAY_HPP
 #define RAUL_ARRAY_HPP
 
+#include "raul/Maid.hpp"
+
 #include <algorithm>
 #include <cassert>
 #include <cstddef>
-
-#include "raul/Maid.hpp"
+#include <memory>
 
 namespace Raul {
 

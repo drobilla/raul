@@ -17,13 +17,14 @@
 #ifndef RAUL_RING_BUFFER_HPP
 #define RAUL_RING_BUFFER_HPP
 
-#include <assert.h>
-#include <atomic>
-#include <stdint.h>
-#include <stdlib.h>
-#include <string.h>
-
 #include "raul/Noncopyable.hpp"
+
+#include <atomic>
+#include <cassert>
+#include <cstdint>
+#include <cstdlib>
+#include <cstring>
+#include <memory>
 
 namespace Raul {
 

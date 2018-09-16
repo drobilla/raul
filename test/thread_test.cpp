@@ -14,11 +14,11 @@
   along with Raul.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+#include "raul/Semaphore.hpp"
+
 #include <atomic>
 #include <iostream>
 #include <thread>
-
-#include "raul/Semaphore.hpp"
 
 using namespace std;
 using namespace Raul;

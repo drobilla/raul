@@ -14,11 +14,11 @@
   along with Raul.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include <cstring>
+#include "raul/Symbol.hpp"
+
 #include <iostream>
 #include <list>
-
-#include "raul/Path.hpp"
+#include <string>
 
 using namespace std;
 using namespace Raul;

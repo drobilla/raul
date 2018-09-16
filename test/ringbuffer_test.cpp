@@ -14,15 +14,15 @@
   along with Raul.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+#include "raul/RingBuffer.hpp"
+
 #include <climits>
+#include <cstdint>
 #include <cstdio>
-#include <cstdlib>
 #include <cstring>
-#include <iostream>
+#include <memory>
 #include <string>
 #include <thread>
-
-#include "raul/RingBuffer.hpp"
 
 using namespace std;
 using namespace Raul;

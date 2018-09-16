@@ -14,19 +14,24 @@
   along with Raul.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include <stdio.h>
-#include <sys/types.h>
+#include "raul/Socket.hpp"
+
+#include <poll.h>
 #include <sys/wait.h>
 #include <unistd.h>
 
-#include "raul/Socket.hpp"
-
-using namespace std;
-using namespace Raul;
+#include <cerrno>
+#include <cstdio>
+#include <cstring>
+#include <memory>
+#include <string>
+#include <utility>
 
 int
 main(int argc, char** argv)
 {
+	using Socket = Raul::Socket;
+
 	std::string unix_uri("unix:///tmp/raul_test_sock");
 	std::string tcp_uri("tcp://127.0.0.1:12345");
 

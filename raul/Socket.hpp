@@ -17,21 +17,21 @@
 #ifndef RAUL_SOCKET_HPP
 #define RAUL_SOCKET_HPP
 
-#include <memory>
-#include <string>
+#include "raul/Noncopyable.hpp"
 
-#include <errno.h>
 #include <netdb.h>
 #include <netinet/in.h>
 #include <poll.h>
-#include <stdint.h>
-#include <stdlib.h>
-#include <string.h>
 #include <sys/socket.h>
 #include <sys/un.h>
 #include <unistd.h>
 
-#include "raul/Noncopyable.hpp"
+#include <cerrno>
+#include <cstdint>
+#include <cstdlib>
+#include <cstring>
+#include <memory>
+#include <string>
 
 namespace Raul {
 

@@ -17,10 +17,9 @@
 #ifndef RAUL_TIME_STAMP_HPP
 #define RAUL_TIME_STAMP_HPP
 
-#include <math.h>
-#include <stdint.h>
-
 #include <cassert>
+#include <cmath>
+#include <cstdint>
 #include <iostream>
 #include <limits>
 

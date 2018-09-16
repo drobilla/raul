@@ -16,12 +16,15 @@
 
 #undef NDEBUG
 
+#include "raul/Maid.hpp"
+
+#include <atomic>
 #include <cassert>
+#include <chrono>
 #include <cstdio>
+#include <memory>
 #include <thread>
 #include <vector>
-
-#include "raul/Maid.hpp"
 
 using Raul::Maid;
 

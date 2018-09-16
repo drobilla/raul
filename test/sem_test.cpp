@@ -16,13 +16,11 @@
 
 #undef NDEBUG
 
+#include "raul/Semaphore.hpp"
+
 #include <cassert>
 #include <chrono>
-#include <iostream>
-#include <limits>
 #include <thread>
-
-#include "raul/Semaphore.hpp"
 
 static void
 wait_for_sem(Raul::Semaphore* sem)

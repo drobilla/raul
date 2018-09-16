@@ -17,9 +17,9 @@
 #ifndef RAUL_SYMBOL_HPP
 #define RAUL_SYMBOL_HPP
 
-#include <string>
-
 #include "raul/Exception.hpp"
+
+#include <string>
 
 namespace Raul {
 
