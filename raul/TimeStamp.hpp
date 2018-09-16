@@ -17,6 +17,7 @@
 #ifndef RAUL_TIMESTAMP_HPP
 #define RAUL_TIMESTAMP_HPP
 
+#include <algorithm>
 #include <cassert>
 #include <cmath>
 #include <cstdint>
