@@ -29,7 +29,7 @@
 using Raul::Maid;
 
 static const size_t n_threads         = 8U;
-static const size_t n_junk_per_thread = 1U << 18U;
+static const size_t n_junk_per_thread = 1U << 16U;
 
 static std::atomic<size_t> n_junk(0);
 static std::atomic<size_t> n_finished_threads(0);

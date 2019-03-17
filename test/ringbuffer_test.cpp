@@ -123,7 +123,7 @@ main(int argc, char** argv)
 
 	Context ctx;
 
-	size_t size = 1024;
+	size_t size = 512;
 	if (argc > 1) {
 		size = std::stoul(argv[1]);
 	}
