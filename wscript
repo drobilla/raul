@@ -37,10 +37,8 @@ out     = 'build'       # Build directory
 
 def options(opt):
     opt.load('compiler_cxx')
-    autowaf.set_options(opt, test=True)
 
 def configure(conf):
-    autowaf.display_header('Raul Configuration')
     conf.load('compiler_cxx', cache=True)
     conf.load('autowaf', cache=True)
     autowaf.set_c_lang(conf, 'c99')
@@ -122,14 +120,9 @@ def build(bld):
     # Documentation
     autowaf.build_dox(bld, 'RAUL', RAUL_VERSION, top, out)
 
-def test(ctx):
-    dirs = ['.', 'src', 'test']
-    autowaf.pre_test(ctx, APPNAME, dirs=dirs)
-    autowaf.run_tests(
-        ctx, APPNAME,
-        map(lambda x: os.path.join('test', x), tests),
-        dirs=dirs)
-    autowaf.post_test(ctx, APPNAME, dirs=dirs)
+def test(tst):
+    for t in tests:
+        tst([os.path.join('./test', t)])
 
 def lint(ctx):
     "checks code for style issues"
