@@ -90,7 +90,7 @@ def build(bld):
         for i in tests:
             obj = bld(features     = 'cxx cxxprogram',
                       source       = os.path.join('test', i + '.cpp'),
-                      includes     = ['.', './src'],
+                      includes     = ['.'],
                       lib          = test_libs,
                       use          = 'libraul_static',
                       uselib       = 'GLIB GTHREAD',
