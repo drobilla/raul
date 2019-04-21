@@ -57,7 +57,7 @@ main()
 	sem.timed_wait(std::chrono::milliseconds(100));
 	const auto end = std::chrono::steady_clock::now();
 	assert(end - start > std::chrono::milliseconds(80));
-	assert(end - start < std::chrono::milliseconds(200));
+	assert(end - start < std::chrono::milliseconds(400));
 
 	// Check that we can't successfully wait on a zero semaphore
 	assert(!sem.timed_wait(std::chrono::milliseconds(100)));
