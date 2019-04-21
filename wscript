@@ -12,7 +12,7 @@ from waflib.extras import autowaf
 # minor increment <=> compatible changes (additions)
 # micro increment <=> no interface changes
 RAUL_VERSION       = '1.0.0'
-RAUL_MAJOR_VERSION = '0'
+RAUL_MAJOR_VERSION = '1'
 
 # Mandatory waf variables
 APPNAME = 'raul'        # Package name for waf dist
@@ -63,11 +63,11 @@ def build(bld):
     bld.install_files(includedir, bld.path.ant_glob('raul/*.h'))
 
     # Pkgconfig file
-    dict = {'RAUL_PC_LIBS': ' '}
-    if bld.env.DEST_OS == 'darwin':
-        dict = {'RAUL_PC_LIBS': '-framework CoreServices'}
-    autowaf.build_pc(bld, 'RAUL', RAUL_VERSION, '',
-                     'GLIB GTHREAD', subst_dict=dict)
+    pc_libs = '-framework CoreServices' if bld.env.DEST_OS == 'darwin' else ''
+    pc_dict = {'RAUL_MAJOR_VERSION': RAUL_MAJOR_VERSION,
+               'RAUL_PC_LIBS': pc_libs}
+    autowaf.build_pc(bld, 'RAUL', RAUL_VERSION, RAUL_MAJOR_VERSION, [],
+                     subst_dict=pc_dict)
 
     framework = ''
     if bld.env.DEST_OS == 'darwin':

@@ -7,4 +7,4 @@ Name: raul
 Version: @RAUL_VERSION@
 Description: A C++ convenience library for realtime audio applications
 Libs: @RAUL_PC_LIBS@
-Cflags: -I${includedir}
+Cflags: -I${includedir}/raul-@RAUL_MAJOR_VERSION@
