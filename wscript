@@ -7,27 +7,12 @@ import sys
 from waflib import Options
 from waflib.extras import autowaf
 
-# Version of this package (even if built as a child)
-RAUL_VERSION = '0.8.10'
-
-# Library version (UNIX style major, minor, micro)
+# Library and package version (UNIX style major, minor, micro)
 # major increment <=> incompatible changes
 # minor increment <=> compatible changes (additions)
 # micro increment <=> no interface changes
-# Version history:
-#   0.4.0 = 0,0,0
-#   0.5.0 = 1,0,0 (SVN r1283)
-#   0.5.1 = 2,0,0
-#   0.6.0 = 3,0,0
-#   0.6.1 = 4,0,0 (unreleased)
-#   0.6.2 = 5,0,0 (unreleased)
-#   0.6.3 = 6,0,0 (unreleased)
-#   0.6.4 = 7,0,0 (unreleased)
-#   0.6.5 = 8,0,0 (unreleased)
-#   0.6.6 = 9,0,0 (unreleased)
-#   0.7.0 = 9,0,0
-#   0.8.0 = 10,0,0
-RAUL_LIB_VERSION = '10.0.0'
+RAUL_VERSION       = '1.0.0'
+RAUL_MAJOR_VERSION = '0'
 
 # Mandatory waf variables
 APPNAME = 'raul'        # Package name for waf dist
@@ -51,9 +36,7 @@ def configure(conf):
     conf.check_cxx(header_name='memory')
     conf.check_cxx(header_name='atomic')
 
-    # TODO: Version includes and use autowaf.set_lib_env() here
-    conf.env['INCLUDES_RAUL'] = [os.path.abspath(top) + '/raul']
-
+    autowaf.set_lib_env(conf, 'raul', RAUL_VERSION, has_objects=False)
     conf.write_config_header('raul_config.h', remove=False)
 
     autowaf.display_summary(conf,
@@ -75,8 +58,9 @@ if sys.platform != 'win32':
 
 def build(bld):
     # Headers
-    bld.install_files('${INCLUDEDIR}/raul', bld.path.ant_glob('raul/*.hpp'))
-    bld.install_files('${INCLUDEDIR}/raul', bld.path.ant_glob('raul/*.h'))
+    includedir = '${INCLUDEDIR}/raul-%s/raul' % RAUL_MAJOR_VERSION
+    bld.install_files(includedir, bld.path.ant_glob('raul/*.hpp'))
+    bld.install_files(includedir, bld.path.ant_glob('raul/*.h'))
 
     # Pkgconfig file
     dict = {'RAUL_PC_LIBS': ' '}
