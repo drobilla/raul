@@ -1,6 +1,6 @@
 /*
   This file is part of Raul.
-  Copyright 2007-2017 David Robillard <http://drobilla.net>
+  Copyright 2007-2019 David Robillard <http://drobilla.net>
 
   Raul is free software: you can redistribute it and/or modify it under the
   terms of the GNU General Public License as published by the Free Software
@@ -14,9 +14,12 @@
   along with Raul.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+#undef NDEBUG
+
 #include "raul/Semaphore.hpp"
 
 #include <atomic>
+#include <cassert>
 #include <iostream>
 #include <thread>
 
@@ -35,10 +38,7 @@ wait_for_sem(Semaphore* sem)
 	sem->wait();
 	std::cout << "[Waiter] Received signal, exiting" << std::endl;
 	var = 42;
-	if (var != 42) {
-		std::cerr << "[Waiter] var != 42" << std::endl;
-		++n_errors;
-	}
+	assert(var == 42);
 }
 
 } // namespace
@@ -59,10 +59,7 @@ main()
 
 	std::cout << "[Main] Exiting" << std::endl;
 
-	if (var != 24) {
-		std::cerr << "[Main] var != 24" << std::endl;
-		++n_errors;
-	}
+	assert(var == 24);
 
 	return n_errors.load();
 }

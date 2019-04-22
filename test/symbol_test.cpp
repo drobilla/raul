@@ -1,6 +1,6 @@
 /*
   This file is part of Raul.
-  Copyright 2007-2012 David Robillard <http://drobilla.net>
+  Copyright 2007-2019 David Robillard <http://drobilla.net>
 
   Raul is free software: you can redistribute it and/or modify it under the
   terms of the GNU General Public License as published by the Free Software
@@ -14,8 +14,11 @@
   along with Raul.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+#undef NDEBUG
+
 #include "raul/Symbol.hpp"
 
+#include <cassert>
 #include <iostream>
 #include <list>
 #include <string>
@@ -24,12 +27,6 @@ int
 main()
 {
 	using Symbol = Raul::Symbol;
-
-#define CHECK(cond) \
-	do { if (!(cond)) { \
-		std::cerr << "Test failed: " << (cond) << std::endl; \
-		return 1; \
-	} } while (0)
 
 	std::list<std::string> names;
 	names.emplace_back("Dry/Wet Balance");
@@ -47,11 +44,11 @@ main()
 	names.emplace_back("");
 
 	for (const auto& name : names) {
-		CHECK(!Symbol::symbolify(name).empty());
+		assert(!Symbol::symbolify(name).empty());
 	}
 
 	Symbol original("sym");
-	CHECK(original == Symbol(original));
+	assert(original == Symbol(original));
 
 	bool valid = true;
 	try {
@@ -60,7 +57,7 @@ main()
 		std::cerr << "Caught exception: " << e.what() << std::endl;
 		valid = false;
 	}
-	CHECK(!valid);
+	assert(!valid);
 
 	valid = true;
 	try {
@@ -69,7 +66,7 @@ main()
 		std::cerr << "Caught exception: " << e.what() << std::endl;
 		valid = false;
 	}
-	CHECK(!valid);
+	assert(!valid);
 
 	return 0;
 }

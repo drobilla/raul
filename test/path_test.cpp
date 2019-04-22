@@ -1,6 +1,6 @@
 /*
   This file is part of Raul.
-  Copyright 2007-2012 David Robillard <http://drobilla.net>
+  Copyright 2007-2019 David Robillard <http://drobilla.net>
 
   Raul is free software: you can redistribute it and/or modify it under the
   terms of the GNU General Public License as published by the Free Software
@@ -14,9 +14,12 @@
   along with Raul.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+#undef NDEBUG
+
 #include "raul/Path.hpp"
 #include "raul/Symbol.hpp"
 
+#include <cassert>
 #include <cstring>
 #include <iostream>
 #include <string>
@@ -27,58 +30,52 @@ main()
 	using Path   = Raul::Path;
 	using Symbol = Raul::Symbol;
 
-#define CHECK(cond) \
-	do { if (!(cond)) { \
-		std::cerr << "Test failed: " << (cond) << std::endl; \
-		return 1; \
-	} } while (0)
+	assert(Path("/foo/bar").parent() == Path("/foo"));
+	assert(Path("/foo").parent() == Path("/"));
+	assert(Path("/").parent() == Path("/"));
 
-	CHECK(Path("/foo/bar").parent() == Path("/foo"));
-	CHECK(Path("/foo").parent() == Path("/"));
-	CHECK(Path("/").parent() == Path("/"));
+	assert(Path("/").is_parent_of(Path("/foo")));
+	assert(Path("/foo").is_parent_of(Path("/foo/bar")));
+	assert(!(Path("/foo").is_parent_of(Path("/foo2"))));
+	assert(!(Path("/foo").is_parent_of(Path("/foo"))));
 
-	CHECK(Path("/").is_parent_of(Path("/foo")));
-	CHECK(Path("/foo").is_parent_of(Path("/foo/bar")));
-	CHECK(!(Path("/foo").is_parent_of(Path("/foo2"))));
-	CHECK(!(Path("/foo").is_parent_of(Path("/foo"))));
+	assert(Path::lca(Path("/foo"), Path("/foo/bar/baz")) == Path("/"));
+	assert(Path::lca(Path("/foo/bar"), Path("/foo/bar/baz")) == Path("/foo"));
+	assert(Path::lca(Path("/foo/bar/quux"), Path("/foo/bar/baz")) == Path("/foo/bar"));
 
-	CHECK(Path::lca(Path("/foo"), Path("/foo/bar/baz")) == Path("/"));
-	CHECK(Path::lca(Path("/foo/bar"), Path("/foo/bar/baz")) == Path("/foo"));
-	CHECK(Path::lca(Path("/foo/bar/quux"), Path("/foo/bar/baz")) == Path("/foo/bar"));
+	assert(!Path::is_valid(""));
+	assert(!Path::is_valid("hello"));
+	assert(!Path::is_valid("/foo/bar/"));
+	assert(!Path::is_valid("/foo//bar"));
+	assert(!Path::is_valid("/foo/bar/d*s"));
+	assert(Path::is_valid("/"));
+	assert(!Path::is_valid("/foo/3foo/bar"));
 
-	CHECK(!Path::is_valid(""));
-	CHECK(!Path::is_valid("hello"));
-	CHECK(!Path::is_valid("/foo/bar/"));
-	CHECK(!Path::is_valid("/foo//bar"));
-	CHECK(!Path::is_valid("/foo/bar/d*s"));
-	CHECK(Path::is_valid("/"));
-	CHECK(!Path::is_valid("/foo/3foo/bar"));
+	assert(Path::descendant_comparator(Path("/"), Path("/")));
+	assert(Path::descendant_comparator(Path("/"), Path("/foo")));
+	assert(Path::descendant_comparator(Path("/foo"), Path("/foo/bar")));
+	assert(Path::descendant_comparator(Path("/foo"), Path("/foo")));
+	assert(Path::descendant_comparator(Path("/"), Path("/")));
+	assert(!Path::descendant_comparator(Path("/baz"), Path("/")));
+	assert(!Path::descendant_comparator(Path("/foo"), Path("/bar")));
+	assert(!Path::descendant_comparator(Path("/foo/bar"), Path("/foo")));
 
-	CHECK(Path::descendant_comparator(Path("/"), Path("/")));
-	CHECK(Path::descendant_comparator(Path("/"), Path("/foo")));
-	CHECK(Path::descendant_comparator(Path("/foo"), Path("/foo/bar")));
-	CHECK(Path::descendant_comparator(Path("/foo"), Path("/foo")));
-	CHECK(Path::descendant_comparator(Path("/"), Path("/")));
-	CHECK(!Path::descendant_comparator(Path("/baz"), Path("/")));
-	CHECK(!Path::descendant_comparator(Path("/foo"), Path("/bar")));
-	CHECK(!Path::descendant_comparator(Path("/foo/bar"), Path("/foo")));
+	assert(!Symbol::is_valid(""));
+	assert(!Symbol::is_valid("/I/have/slashes"));
+	assert(!Symbol::is_valid("!illegalchar"));
+	assert(!Symbol::is_valid("0illegalleadingdigit"));
+	assert(strcmp(Symbol::symbolify("").c_str(), ""));
 
-	CHECK(!Symbol::is_valid(""));
-	CHECK(!Symbol::is_valid("/I/have/slashes"));
-	CHECK(!Symbol::is_valid("!illegalchar"));
-	CHECK(!Symbol::is_valid("0illegalleadingdigit"));
-	CHECK(strcmp(Symbol::symbolify("").c_str(), ""));
+	assert(Path("/foo").child(Symbol("bar")) == "/foo/bar");
+	assert(Path("/foo").child(Path("/bar/baz")) == "/foo/bar/baz");
+	assert(Path("/foo").child(Path("/")) == "/foo");
 
-	CHECK(Path("/foo").child(Symbol("bar")) == "/foo/bar");
-	CHECK(Path("/foo").child(Path("/bar/baz")) == "/foo/bar/baz");
-	CHECK(Path("/foo").child(Path("/")) == "/foo");
-
-	CHECK(!strcmp(Path("/foo").symbol(), "foo"));
-	CHECK(!strcmp(Path("/foo/bar").symbol(), "bar"));
-	CHECK(!strcmp(Path("/").symbol(), ""));
+	assert(!strcmp(Path("/foo").symbol(), "foo"));
+	assert(!strcmp(Path("/foo/bar").symbol(), "bar"));
+	assert(!strcmp(Path("/").symbol(), ""));
 
 	Path original(std::string("/foo/bar"));
-	CHECK(original == Path(original));
+	assert(original == Path(original));
 
 	bool valid = true;
 	try {
@@ -87,7 +84,7 @@ main()
 		std::cerr << "Caught exception: " << e.what() << std::endl;
 		valid = false;
 	}
-	CHECK(!valid);
+	assert(!valid);
 
 	valid = true;
 	try {
@@ -96,7 +93,7 @@ main()
 		std::cerr << "Caught exception: " << e.what() << std::endl;
 		valid = false;
 	}
-	CHECK(!valid);
+	assert(!valid);
 
 	return 0;
 }

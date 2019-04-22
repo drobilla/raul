@@ -1,6 +1,6 @@
 /*
   This file is part of Raul.
-  Copyright 2007-2014 David Robillard <http://drobilla.net>
+  Copyright 2007-2019 David Robillard <http://drobilla.net>
 
   Raul is free software: you can redistribute it and/or modify it under the
   terms of the GNU General Public License as published by the Free Software
@@ -14,12 +14,15 @@
   along with Raul.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+#undef NDEBUG
+
 #include "raul/Socket.hpp"
 
 #include <poll.h>
 #include <sys/wait.h>
 #include <unistd.h>
 
+#include <cassert>
 #include <cerrno>
 #include <cstdio>
 #include <cstring>
@@ -37,23 +40,10 @@ main()
 
 	Socket unix_server_sock(Socket::Type::UNIX);
 	Socket tcp_server_sock(Socket::Type::TCP);
-	if (!unix_server_sock.bind(unix_uri)) {
-		fprintf(stderr, "Failed to bind UNIX server socket (%s)\n",
-		        strerror(errno));
-		return 1;
-	} else if (!unix_server_sock.listen()) {
-		fprintf(stderr, "Failed to listen on UNIX server socket (%s)\n",
-		        strerror(errno));
-		return 1;
-	} else if (!tcp_server_sock.bind(tcp_uri)) {
-		fprintf(stderr, "Failed to bind TCP server socket (%s)\n",
-		        strerror(errno));
-		return 1;
-	} else if (!tcp_server_sock.listen()) {
-		fprintf(stderr, "Failed to listen on TCP server socket (%s)\n",
-		        strerror(errno));
-		return 1;
-	}
+	assert(unix_server_sock.bind(unix_uri));
+	assert(unix_server_sock.listen());
+	assert(tcp_server_sock.bind(tcp_uri));
+	assert(tcp_server_sock.listen());
 
 	const pid_t child_pid = fork();
 	if (child_pid) {
@@ -72,10 +62,9 @@ main()
 		unsigned n_received = 0;
 		while (n_received < 2) {
 			const int ret = poll(pfds, 2, -1);
-			if (ret == -1) {
-				fprintf(stderr, "poll error (%s)\n", strerror(errno));
-				break;
-			} else if ((pfds[0].revents & POLLHUP) || pfds[1].revents & POLLHUP) {
+			assert(ret != -1);
+
+			if ((pfds[0].revents & POLLHUP) || pfds[1].revents & POLLHUP) {
 				break;
 			} else if (ret == 0) {
 				fprintf(stderr, "poll returned with no data\n");
@@ -104,13 +93,8 @@ main()
 	Raul::Socket unix_sock(Socket::Type::UNIX);
 	Raul::Socket tcp_sock(Socket::Type::TCP);
 
-	if (!unix_sock.connect(unix_uri)) {
-		fprintf(stderr, "Failed to connect to UNIX socket\n");
-		return 1;
-	} else if (!tcp_sock.connect(tcp_uri)) {
-		fprintf(stderr, "Failed to connect to TCP socket\n");
-		return 1;
-	}
+	assert(unix_sock.connect(unix_uri));
+	assert(tcp_sock.connect(tcp_uri));
 
 	return 0;
 }

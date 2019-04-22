@@ -1,6 +1,6 @@
 /*
   This file is part of Raul.
-  Copyright 2013 David Robillard <http://drobilla.net>
+  Copyright 2013-2019 David Robillard <http://drobilla.net>
 
   Raul is free software: you can redistribute it and/or modify it under the
   terms of the GNU General Public License as published by the Free Software
@@ -14,26 +14,24 @@
   along with Raul.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+#undef NDEBUG
+
 #include "raul/DoubleBuffer.hpp"
+
+#include <cassert>
 
 int
 main()
 {
 	Raul::DoubleBuffer<int> db(0);
 
-	if (db.get() != 0) {
-		return 1;
-	}
+	assert(db.get() == 0);
 
 	db.set(42);
-	if (db.get() != 42) {
-		return 1;
-	}
+	assert(db.get() == 42);
 
 	db.set(43);
-	if (db.get() != 43) {
-		return 1;
-	}
+	assert(db.get() == 43);
 
 	return 0;
 }

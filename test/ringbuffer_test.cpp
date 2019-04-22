@@ -1,6 +1,6 @@
 /*
   This file is part of Raul.
-  Copyright 2007-2012 David Robillard <http://drobilla.net>
+  Copyright 2007-2019 David Robillard <http://drobilla.net>
 
   Raul is free software: you can redistribute it and/or modify it under the
   terms of the GNU General Public License as published by the Free Software
@@ -14,8 +14,11 @@
   along with Raul.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+#undef NDEBUG
+
 #include "raul/RingBuffer.hpp"
 
+#include <cassert>
 #include <climits>
 #include <cstdint>
 #include <cstdio>
@@ -33,7 +36,6 @@ using RingBuffer = Raul::RingBuffer;
 struct Context {
 	std::unique_ptr<RingBuffer> ring;
 	size_t n_writes{0};
-	size_t ring_errors{0};
 };
 
 int
@@ -46,17 +48,12 @@ gen_msg(int* msg, int start)
 	return start;
 }
 
-int
-cmp_msg(int* msg1, int* msg2)
+void
+check_msg(int* msg1, int* msg2)
 {
 	for (int i = 0; i < MSG_SIZE; ++i) {
-		if (msg1[i] != msg2[i]) {
-			fprintf(stderr, "ERROR: %d != %d @ %d\n", msg1[i], msg2[i], i);
-			return 0;
-		}
+		assert(msg1[i] == msg2[i]);
 	}
-
-	return 1;
 }
 
 void
@@ -71,16 +68,8 @@ reader(Context& ctx)
 	for (size_t i = 0; i < ctx.n_writes; ++i) {
 		if (ctx.ring->read_space() >= MSG_SIZE * sizeof(int)) {
 			const uint32_t n_read = ctx.ring->read(MSG_SIZE * sizeof(int), read_msg);
-			if (n_read != MSG_SIZE * sizeof(int)) {
-				fprintf(stderr, "FAIL: Read size incorrect\n");
-				++ctx.ring_errors;
-				return;
-			}
-			if (!cmp_msg(ref_msg, read_msg)) {
-				fprintf(stderr, "FAIL: Message %zu is corrupt\n", count);
-				++ctx.ring_errors;
-				return;
-			}
+			assert(n_read == MSG_SIZE * sizeof(int));
+			check_msg(ref_msg, read_msg);
 			start = gen_msg(ref_msg, start);
 			++count;
 		}
@@ -99,11 +88,7 @@ writer(Context& ctx)
 	for (size_t i = 0; i < ctx.n_writes; ++i) {
 		if (ctx.ring->write_space() >= MSG_SIZE * sizeof(int)) {
 			const uint32_t n_write = ctx.ring->write(MSG_SIZE * sizeof(int), write_msg);
-			if (n_write != MSG_SIZE * sizeof(int)) {
-				fprintf(stderr, "FAIL: Write size incorrect\n");
-				++ctx.ring_errors;
-				return;
-			}
+			assert(n_write == MSG_SIZE * sizeof(int));
 			start = gen_msg(write_msg, start);
 		}
 	}
@@ -139,59 +124,31 @@ main(int argc, char** argv)
 	ctx.ring = std::unique_ptr<RingBuffer>(new RingBuffer(uint32_t(size)));
 
 	auto& ring = ctx.ring;
-	if (ring->capacity() < size - 1) {
-		fprintf(stderr, "Ring capacity is smaller than expected\n");
-		return 1;
-	}
+	assert(ring->capacity() >= size - 1);
 
-	if (ring->skip(1)) {
-		fprintf(stderr, "Successfully skipped in empty RingBuffer\n");
-		return 1;
-	}
+	assert(!ring->skip(1));
 
 	char buf[6] = { 'h', 'e', 'l', 'l', '0', '\0' };
-	if (ring->read(1, buf)) {
-		fprintf(stderr, "Successfully read from empty RingBuffer\n");
-		return 1;
-	}
+	assert(!ring->read(1, buf));
 
 	ring->write(sizeof(buf), buf);
 	ring->skip(1);
 	char buf2[sizeof(buf) - 1];
 	ring->read(sizeof(buf2), buf2);
-	if (strcmp(buf2, buf + 1)) {
-		fprintf(stderr, "Skip failed\n");
-		return 1;
-	}
+	assert(!strcmp(buf2, buf + 1));
 
 	ring->reset();
-	if (ring->read_space() != 0) {
-		fprintf(stderr, "Reset RingBuffer is not empty\n");
-		return 1;
-	}
+	assert(ring->read_space() == 0);
 
 	for (uint32_t i = 0; i < ring->capacity(); ++i) {
 		const char c = 'X';
-		if (ring->write(1, &c) != 1) {
-			fprintf(stderr, "Write failed\n");
-			return 1;
-		}
+		assert(ring->write(1, &c) == 1);
 	}
 
-	if (ring->write_space() != 0) {
-		fprintf(stderr, "Ring is not full as expected\n");
-		return 1;
-	}
-
-	if (ring->write(1, buf) != 0) {
-		fprintf(stderr, "Successfully wrote to full RingBuffer\n");
-		return 1;
-	}
-
-	if (ring->peek(1, buf2) != 1 || buf2[0] != 'X') {
-		fprintf(stderr, "Failed to read from full RingBuffer\n");
-		return 1;
-	}
+	assert(ring->write_space() == 0);
+	assert(ring->write(1, buf) == 0);
+	assert(ring->peek(1, buf2) == 1);
+	assert(buf2[0] == 'X');
 
 	ring->reset();
 
@@ -200,11 +157,6 @@ main(int argc, char** argv)
 
 	reader_thread.join();
 	writer_thread.join();
-
-	if (ctx.ring_errors) {
-		fprintf(stderr, "FAIL: Error occurred\n");
-		return 1;
-	}
 
 	return 0;
 }
