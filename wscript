@@ -105,8 +105,9 @@ def build(bld):
     autowaf.build_dox(bld, 'RAUL', RAUL_VERSION, top, out)
 
 def test(tst):
-    for t in tests:
-        tst([os.path.join('./test', t)])
+    with tst.group('Unit') as check:
+        for t in tests:
+            check([os.path.join('./test', t)])
 
 def lint(ctx):
     "checks code for style issues"
