@@ -47,8 +47,8 @@ main()
 		assert(!Symbol::symbolify(name).empty());
 	}
 
-	Symbol original("sym");
-	assert(original == Symbol(original));
+	const Symbol original("sym");
+	assert(original == original);
 
 	bool valid = true;
 	try {

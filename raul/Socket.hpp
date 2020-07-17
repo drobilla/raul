@@ -230,7 +230,7 @@ Socket::accept()
 		if (!getnameinfo(client_addr, client_addr_len,
 		                 host, sizeof(host), serv, sizeof(serv), 0)) {
 			const std::string scheme = _uri.substr(0, _uri.find(':'));
-			client_uri = std::string(scheme + "://" + host + ":" + serv);
+			client_uri = scheme + "://" + host + ":" + serv;
 		}
 	}
 

@@ -74,8 +74,8 @@ main()
 	assert(!strcmp(Path("/foo/bar").symbol(), "bar"));
 	assert(!strcmp(Path("/").symbol(), ""));
 
-	Path original(std::string("/foo/bar"));
-	assert(original == Path(original));
+	const Path original(std::string("/foo/bar"));
+	assert(original == original);
 
 	bool valid = true;
 	try {
