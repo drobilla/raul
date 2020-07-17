@@ -53,6 +53,9 @@ public:
 	       socklen_t        addr_len,
 	       int              fd);
 
+	Socket(const Socket&) = delete;
+	Socket& operator=(const Socket&) = delete;
+
 	~Socket();
 
 	/** Bind a server socket to an address.

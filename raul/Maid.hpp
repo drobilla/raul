@@ -42,6 +42,8 @@ public:
 	class Disposable : public Deletable {
 	public:
 		Disposable() = default;
+		Disposable(const Disposable&) = delete;
+		Disposable& operator=(const Disposable&) = delete;
 
 	private:
 		friend class Maid;
