@@ -1,7 +1,4 @@
-stages:
-  - build
-  - test
-  - deploy
+stages: [build, test, deploy]
 
 variables:
   GIT_SUBMODULE_STRATEGY: normal
@@ -9,15 +6,12 @@ variables:
 .build_template: &build_definition
   stage: build
   artifacts:
-    paths:
-      - build/
-      - .lock-waf*
+    paths: ["build/", ".lock-waf*"]
 
 .test_template: &test_definition
   stage: test
   artifacts:
-    paths:
-      - build/coverage
+    paths: [build/coverage]
 
 
 arm32_dbg:
@@ -32,8 +26,7 @@ test:arm32_dbg:
   <<: *test_definition
   image: lv2plugin/debian-arm32
   script: python ./waf test -v -v --wrapper=qemu-arm
-  dependencies:
-    - arm32_dbg
+  needs: ["arm32_dbg"]
 
 
 arm32_rel:
@@ -48,8 +41,7 @@ test:arm32_rel:
   <<: *test_definition
   image: lv2plugin/debian-arm32
   script: python ./waf test -v -v --wrapper=qemu-arm
-  dependencies:
-    - arm32_rel
+  needs: ["arm32_rel"]
 
 
 arm64_dbg:
@@ -64,8 +56,7 @@ test:arm64_dbg:
   <<: *test_definition
   image: lv2plugin/debian-arm64
   script: python ./waf test -v -v --wrapper=qemu-aarch64
-  dependencies:
-    - arm64_dbg
+  needs: ["arm64_dbg"]
 
 
 arm64_rel:
@@ -80,8 +71,7 @@ test:arm64_rel:
   <<: *test_definition
   image: lv2plugin/debian-arm64
   script: python ./waf test -v -v --wrapper=qemu-aarch64
-  dependencies:
-    - arm64_rel
+  needs: ["arm64_rel"]
 
 
 x64_dbg:
@@ -93,8 +83,7 @@ test:x64_dbg:
   <<: *test_definition
   image: lv2plugin/debian-x64
   script: python ./waf test -v -v
-  dependencies:
-    - x64_dbg
+  needs: ["x64_dbg"]
 
 
 x64_rel:
@@ -106,69 +95,55 @@ test:x64_rel:
   <<: *test_definition
   image: lv2plugin/debian-x64
   script: python ./waf test -v -v
-  dependencies:
-    - x64_rel
+  needs: ["x64_rel"]
 
 
 mac_dbg:
   <<: *build_definition
   script: python ./waf configure build -dST --werror --no-coverage
-  tags:
-    - macos
+  tags: [macos]
 
 test:mac_dbg:
   <<: *test_definition
   script: python ./waf test -v -v
-  dependencies:
-    - mac_dbg
-  tags:
-    - macos
+  needs: ["mac_dbg"]
+  tags: [macos]
 
 
 mac_rel:
   <<: *build_definition
   script: python ./waf configure build -ST --werror --no-coverage
-  tags:
-    - macos
+  tags: [macos]
 
 test:mac_rel:
   <<: *test_definition
   script: python ./waf test -v -v
-  dependencies:
-    - mac_rel
-  tags:
-    - macos
+  needs: ["mac_rel"]
+  tags: [macos]
 
 
 win_dbg:
   <<: *build_definition
-  script:
-    - python ./waf configure build -ST --werror --no-coverage
-  tags:
-    - windows
+  script: python ./waf configure build -ST --werror --no-coverage
+  tags: [windows,msvc,python]
 
 test:win_dbg:
   <<: *test_definition
   script: python ./waf test -v -v
-  dependencies:
-    - win_dbg
-  tags:
-    - windows
+  needs: ["win_dbg"]
+  tags: [windows,msvc,python]
 
 
 win_rel:
   <<: *build_definition
   script: python ./waf configure build -ST --werror --no-coverage
-  tags:
-    - windows
+  tags: [windows,msvc,python]
 
 test:win_rel:
   <<: *test_definition
   script: python ./waf test -v -v
-  dependencies:
-    - win_rel
-  tags:
-    - windows
+  needs: ["win_rel"]
+  tags: [windows,msvc,python]
 
 
 pages:
@@ -177,7 +152,6 @@ pages:
   dependencies:
     - test:x64_dbg
   artifacts:
-    expire_in: 30 days
     paths:
       - public
   only:
