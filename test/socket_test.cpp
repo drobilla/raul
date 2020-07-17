@@ -85,7 +85,7 @@ main()
 		unix_server_sock.shutdown();
 		tcp_server_sock.shutdown();
 		unlink("/tmp/raul_test_sock");
-		fprintf(stderr, "n received: %d\n", n_received);
+		fprintf(stderr, "n received: %u\n", n_received);
 		return n_received != 2;
 	}
 
