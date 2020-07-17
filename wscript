@@ -26,8 +26,28 @@ def options(opt):
 def configure(conf):
     conf.load('compiler_cxx', cache=True)
     conf.load('autowaf', cache=True)
-    autowaf.set_c_lang(conf, 'c99')
     autowaf.set_cxx_lang(conf, 'c++11')
+
+    if Options.options.ultra_strict:
+        autowaf.add_compiler_flags(conf.env, 'cxx', {
+            'clang': [
+                '-Wno-padded',
+                '-Wno-weak-vtables',
+            ],
+            'gcc': [
+                '-Wno-multiple-inheritance',
+                '-Wno-padded',
+                '-Wno-useless-cast',
+            ],
+            'msvc': [
+                '/wd4514',  # unreferenced inline function removed
+                '/wd4625',  # copy constructor implicitly deleted
+                '/wd4626',  # assignment operator implicitly deleted
+                '/wd4706',  # assignment within conditional expression
+                '/wd5026',  # move constructor implicitly deleted
+                '/wd5027',  # move assignment operator implicitly deleted
+            ]
+        })
 
     if conf.env.DEST_OS == 'darwin':
         conf.check(framework_name='CoreServices')
