@@ -75,9 +75,9 @@ public:
 		}
 	}
 
-	Array(Array<T>&& array) noexcept = default;
+	Array(Array<T>&& array) = default;
 
-	Array<T>& operator=(Array<T>&&) noexcept = default;
+	Array<T>& operator=(Array<T>&&) = default;
 
 	Array(size_t size, const Array<T>& contents)
 		: _size(size)
