@@ -27,7 +27,7 @@
 #include <string>
 #include <thread>
 
-#define MSG_SIZE 20
+#define MSG_SIZE 20u
 
 namespace {
 
@@ -41,7 +41,7 @@ struct Context {
 int
 gen_msg(int* msg, int start)
 {
-	for (int i = 0; i < MSG_SIZE; ++i) {
+	for (unsigned i = 0u; i < MSG_SIZE; ++i) {
 		msg[i] = start;
 		start  = (start + 1) % INT_MAX;
 	}
@@ -51,7 +51,7 @@ gen_msg(int* msg, int start)
 void
 check_msg(int* msg1, int* msg2)
 {
-	for (int i = 0; i < MSG_SIZE; ++i) {
+	for (unsigned i = 0u; i < MSG_SIZE; ++i) {
 		assert(msg1[i] == msg2[i]);
 	}
 }
@@ -108,20 +108,20 @@ main(int argc, char** argv)
 
 	Context ctx;
 
-	size_t size = 512;
+	uint32_t size = 512u;
 	if (argc > 1) {
-		size = std::stoul(argv[1]);
+		size = static_cast<uint32_t>(std::stoi(argv[1]));
 	}
 
-	ctx.n_writes = size * 1024;
+	ctx.n_writes = size * 1024u;
 	if (argc > 2) {
 		ctx.n_writes = std::stoul(argv[2]);
 	}
 
-	printf("Testing %zu writes of %u ints to a %zu int ring...\n",
+	printf("Testing %zu writes of %u ints to a %u int ring...\n",
 	       ctx.n_writes, MSG_SIZE, size);
 
-	ctx.ring = std::unique_ptr<RingBuffer>(new RingBuffer(uint32_t(size)));
+	ctx.ring = std::unique_ptr<RingBuffer>(new RingBuffer(size));
 
 	auto& ring = ctx.ring;
 	assert(ring->capacity() >= size - 1);

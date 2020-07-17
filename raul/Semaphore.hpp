@@ -158,7 +158,7 @@ Semaphore::timed_wait(const std::chrono::duration<Rep, Period>& wait)
 inline bool
 Semaphore::init(unsigned initial)
 {
-	if (!(_sem = CreateSemaphore(NULL, initial, LONG_MAX, NULL))) {
+	if (!(_sem = CreateSemaphore(NULL, (LONG)initial, LONG_MAX, NULL))) {
 		return false;
 	}
 	return true;
@@ -198,7 +198,8 @@ Semaphore::timed_wait(const std::chrono::duration<Rep, Period>& wait)
 	namespace chr = std::chrono;
 
 	const chr::milliseconds ms(chr::duration_cast<chr::milliseconds>(wait));
-	return WaitForSingleObject(_sem, ms.count()) == WAIT_OBJECT_0;
+	return WaitForSingleObject(
+		_sem, static_cast<DWORD>(ms.count())) == WAIT_OBJECT_0;
 }
 
 #else  /* !defined(__APPLE__) && !defined(_WIN32) */
