@@ -23,7 +23,7 @@ variables:
 arm32_dbg:
   <<: *build_definition
   image: lv2plugin/debian-arm32
-  script: python ./waf configure build -dST
+  script: python ./waf configure build -dST --werror
   variables:
     CC: "arm-linux-gnueabihf-gcc"
     CXX: "arm-linux-gnueabihf-g++"
@@ -39,7 +39,7 @@ test:arm32_dbg:
 arm32_rel:
   <<: *build_definition
   image: lv2plugin/debian-arm32
-  script: python ./waf configure build -ST
+  script: python ./waf configure build -ST --werror
   variables:
     CC: "arm-linux-gnueabihf-gcc"
     CXX: "arm-linux-gnueabihf-g++"
@@ -55,7 +55,7 @@ test:arm32_rel:
 arm64_dbg:
   <<: *build_definition
   image: lv2plugin/debian-arm64
-  script: python ./waf configure build -dST
+  script: python ./waf configure build -dST --werror
   variables:
     CC: "aarch64-linux-gnu-gcc"
     CXX: "aarch64-linux-gnu-g++"
@@ -71,7 +71,7 @@ test:arm64_dbg:
 arm64_rel:
   <<: *build_definition
   image: lv2plugin/debian-arm64
-  script: python ./waf configure build -ST
+  script: python ./waf configure build -ST --werror
   variables:
     CC: "aarch64-linux-gnu-gcc"
     CXX: "aarch64-linux-gnu-g++"
@@ -87,7 +87,7 @@ test:arm64_rel:
 x64_dbg:
   <<: *build_definition
   image: lv2plugin/debian-x64
-  script: python ./waf configure build -dST
+  script: python ./waf configure build -dST --werror
 
 test:x64_dbg:
   <<: *test_definition
@@ -100,7 +100,7 @@ test:x64_dbg:
 x64_rel:
   <<: *build_definition
   image: lv2plugin/debian-x64
-  script: python ./waf configure build -ST
+  script: python ./waf configure build -ST --werror
 
 test:x64_rel:
   <<: *test_definition
@@ -112,7 +112,7 @@ test:x64_rel:
 
 mac_dbg:
   <<: *build_definition
-  script: python ./waf configure build -dST --no-coverage
+  script: python ./waf configure build -dST --werror --no-coverage
   tags:
     - macos
 
@@ -127,7 +127,7 @@ test:mac_dbg:
 
 mac_rel:
   <<: *build_definition
-  script: python ./waf configure build -ST --no-coverage
+  script: python ./waf configure build -ST --werror --no-coverage
   tags:
     - macos
 
@@ -143,7 +143,7 @@ test:mac_rel:
 win_dbg:
   <<: *build_definition
   script:
-    - python ./waf configure build -ST --no-coverage
+    - python ./waf configure build -ST --werror --no-coverage
   tags:
     - windows
 
@@ -158,7 +158,7 @@ test:win_dbg:
 
 win_rel:
   <<: *build_definition
-  script: python ./waf configure build -ST --no-coverage
+  script: python ./waf configure build -ST --werror --no-coverage
   tags:
     - windows
 
