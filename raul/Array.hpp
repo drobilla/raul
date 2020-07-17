@@ -35,13 +35,15 @@ class Array : public Maid::Disposable
 {
 public:
 	explicit Array(size_t size = 0)
-		: _size(size)
+		: Maid::Disposable()
+		, _size(size)
 		, _elems(size ? new T[size] : nullptr)
 	{
 	}
 
 	Array(size_t size, T initial_value)
-		: _size(size)
+		: Maid::Disposable()
+		, _size(size)
 		, _elems(size ? new T[size] : nullptr)
 	{
 		if (size > 0) {
@@ -52,7 +54,8 @@ public:
 	}
 
 	Array(const Array<T>& array)
-		: _size(array._size)
+		: Maid::Disposable()
+		, _size(array._size)
 		, _elems(_size ? new T[_size] : nullptr)
 	{
 		for (size_t i = 0; i < _size; ++i) {

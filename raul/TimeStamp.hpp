@@ -40,7 +40,10 @@ public:
 	/** `ppt` (parts per tick) is the sample rate for FRAMES, PPQN for BEATS,
 	 *  and ignored for SECONDS.
 	 */
-	inline TimeUnit(Type type, uint32_t ppt) {
+	inline TimeUnit(Type type, uint32_t ppt)
+		: _type(type)
+		, _ppt(ppt)
+	{
 		assert(type == SECONDS || ppt != 0);
 		_type = type;
 		_ppt = ppt;
@@ -84,7 +87,9 @@ public:
 	{}
 
 	inline TimeStamp(TimeUnit unit, double dec)
-		: _unit(unit)
+		: _ticks(0u)
+		, _subticks(0u)
+		, _unit(unit)
 	{
 		dec = std::max(0.0, dec);
 		dec = std::min(double(std::numeric_limits<uint32_t>::max()), dec);

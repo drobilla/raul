@@ -34,7 +34,7 @@ namespace {
 using RingBuffer = Raul::RingBuffer;
 
 struct Context {
-	std::unique_ptr<RingBuffer> ring;
+	std::unique_ptr<RingBuffer> ring{};
 	size_t n_writes{0};
 };
 
