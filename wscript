@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 
 import os
-import subprocess
 import sys
 
 from waflib import Options
@@ -20,8 +19,10 @@ VERSION = RAUL_VERSION  # Package version for waf dist
 top     = '.'           # Source directory
 out     = 'build'       # Build directory
 
+
 def options(opt):
     opt.load('compiler_cxx')
+
 
 def configure(conf):
     conf.load('compiler_cxx', cache=True)
@@ -62,6 +63,7 @@ def configure(conf):
     autowaf.display_summary(conf,
                             {'Unit tests': bool(conf.env.BUILD_TESTS)})
 
+
 tests = ['array_test',
          'build_test',
          'double_buffer_test',
@@ -75,6 +77,7 @@ tests = ['array_test',
 
 if sys.platform != 'win32':
     tests += ['socket_test']
+
 
 def build(bld):
     # Headers
@@ -108,21 +111,22 @@ def build(bld):
 
         # Unit tests
         for i in tests:
-            obj = bld(features     = 'cxx cxxprogram',
-                      source       = os.path.join('test', i + '.cpp'),
-                      includes     = ['.'],
-                      lib          = test_libs,
-                      use          = 'libraul_static',
-                      uselib       = 'GLIB GTHREAD',
-                      framework    = framework,
-                      target       = os.path.join('test', i),
-                      install_path = '',
-                      cxxflags     = test_cxxflags,
-                      linkflags    = test_linkflags,
-                      libs         = test_libs)
+            bld(features     = 'cxx cxxprogram',
+                source       = os.path.join('test', i + '.cpp'),
+                includes     = ['.'],
+                lib          = test_libs,
+                use          = 'libraul_static',
+                uselib       = 'GLIB GTHREAD',
+                framework    = framework,
+                target       = os.path.join('test', i),
+                install_path = '',
+                cxxflags     = test_cxxflags,
+                linkflags    = test_linkflags,
+                libs         = test_libs)
 
     # Documentation
     autowaf.build_dox(bld, 'RAUL', RAUL_VERSION, top, out)
+
 
 def test(tst):
     with tst.group('Unit') as check:
@@ -164,9 +168,9 @@ def posts(ctx):
     path = str(ctx.path.abspath())
     autowaf.news_to_posts(
         os.path.join(path, 'NEWS'),
-        {'title'        : 'Raul',
-         'description'  : autowaf.get_blurb(os.path.join(path, 'README')),
-         'dist_pattern' : 'http://download.drobilla.net/raul-%s.tar.bz2'},
-        { 'Author' : 'drobilla',
-          'Tags'   : 'Hacking, LAD, LV2, RAUL' },
+        {'title': 'Raul',
+         'description': autowaf.get_blurb(os.path.join(path, 'README')),
+         'dist_pattern': 'http://download.drobilla.net/raul-%s.tar.bz2'},
+        {'Author': 'drobilla',
+         'Tags': 'Hacking, LAD, LV2, RAUL'},
         os.path.join(out, 'posts'))
