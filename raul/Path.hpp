@@ -167,7 +167,7 @@ public:
 	 * The returned string is such that appending a valid Symbol to it is
 	 * guaranteed to form a valid path.
 	 */
-	inline const std::string base() const {
+	inline std::string base() const {
 		if (is_root()) {
 			return *this;
 		} else {
