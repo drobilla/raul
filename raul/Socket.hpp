@@ -82,7 +82,7 @@ public:
 	std::shared_ptr<Socket> accept();
 
 	/** Return the file descriptor for the socket. */
-	int fd() { return _sock; }
+	int fd() const { return _sock; }
 
 	const std::string& uri() const { return _uri; }
 

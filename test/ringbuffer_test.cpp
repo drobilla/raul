@@ -50,7 +50,7 @@ gen_msg(int* msg, int start)
 }
 
 void
-check_msg(int* msg1, int* msg2)
+check_msg(const int* msg1, const int* msg2)
 {
 	for (unsigned i = 0u; i < MSG_SIZE; ++i) {
 		assert(msg1[i] == msg2[i]);
