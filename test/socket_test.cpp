@@ -23,12 +23,9 @@
 #include <unistd.h>
 
 #include <cassert>
-#include <cerrno>
 #include <cstdio>
-#include <cstring>
 #include <memory>
 #include <string>
-#include <utility>
 
 int
 main()
