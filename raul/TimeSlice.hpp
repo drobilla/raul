@@ -130,7 +130,8 @@ public:
 
 	inline TimeUnit beats_unit() const { return _start_beats.unit(); }
 	inline TimeUnit ticks_unit() const { return _start_ticks.unit(); }
-	inline TimeUnit real_unit()  const { return {TimeUnit::SECONDS, 0}; }
+
+	static inline TimeUnit real_unit() { return {TimeUnit::SECONDS, 0}; }
 
 private:
 	inline void update_beat_time() {

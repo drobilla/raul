@@ -66,12 +66,14 @@ public:
 	class Disposer {
 	public:
 		explicit Disposer(Maid* maid) : _maid(maid) {}
-		Disposer()                    : _maid(nullptr) {}
+
+		Disposer() = default;
 
 		void operator()(T* obj) {
 			if (_maid) { _maid->dispose(obj); }
 		}
 
+	private:
 		Maid* _maid{nullptr};
 	};
 

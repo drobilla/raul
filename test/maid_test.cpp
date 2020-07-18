@@ -36,10 +36,13 @@ static std::atomic<size_t> n_finished_threads(0);
 
 class Junk : public Maid::Disposable {
 public:
-	explicit Junk(size_t v) : val(v) { ++n_junk; }
+	explicit Junk(size_t v) : _val(v) { ++n_junk; }
 	~Junk() override { --n_junk; }
 
-	size_t val;
+	size_t value() const { return _val; }
+
+private:
+	size_t _val;
 };
 
 static void
@@ -47,6 +50,7 @@ litter(Maid* maid)
 {
 	for (size_t i = 0; i < n_junk_per_thread; ++i) {
 		Maid::managed_ptr<Junk> a = maid->make_managed<Junk>(i);
+		assert(a->value() == i);
 	}
 
 	++n_finished_threads;

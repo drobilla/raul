@@ -175,9 +175,8 @@ Socket::set_addr(const std::string& uri)
 			host = "0.0.0.0";  // INADDR_ANY
 		}
 
-		struct addrinfo* ainfo;
-		int              st = 0;
-		if ((st = getaddrinfo(host.c_str(), port.c_str(), nullptr, &ainfo))) {
+		struct addrinfo* ainfo = nullptr;
+		if (getaddrinfo(host.c_str(), port.c_str(), nullptr, &ainfo)) {
 			return false;
 		}
 

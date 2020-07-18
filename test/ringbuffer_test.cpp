@@ -28,7 +28,7 @@
 #include <string>
 #include <thread>
 
-#define MSG_SIZE 20u
+constexpr const auto MSG_SIZE = 20u;
 
 namespace {
 

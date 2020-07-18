@@ -93,7 +93,7 @@ public:
 	{
 		dec = std::max(0.0, dec);
 		dec = std::min(double(std::numeric_limits<uint32_t>::max()), dec);
-		double       integral;
+		double       integral   = 0.0;
 		const double fractional = modf(dec, &integral);
 		_ticks    = static_cast<uint32_t>(integral);
 		_subticks = static_cast<uint32_t>(fractional * unit.ppt());
