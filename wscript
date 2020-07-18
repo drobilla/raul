@@ -3,7 +3,7 @@
 import os
 import sys
 
-from waflib import Options
+from waflib import Build, Logs, Options
 from waflib.extras import autowaf
 
 # Library and package version (UNIX style major, minor, micro)
@@ -28,6 +28,12 @@ def configure(conf):
     conf.load('compiler_cxx', cache=True)
     conf.load('autowaf', cache=True)
     autowaf.set_cxx_lang(conf, 'c++11')
+
+    if Options.options.strict:
+        # Check for programs used by lint target
+        conf.find_program("flake8", var="FLAKE8", mandatory=False)
+        conf.find_program("clang-tidy", var="CLANG_TIDY", mandatory=False)
+        conf.find_program("iwyu_tool", var="IWYU_TOOL", mandatory=False)
 
     if Options.options.ultra_strict:
         autowaf.add_compiler_flags(conf.env, 'cxx', {
@@ -133,36 +139,55 @@ def test(tst):
         for t in tests:
             check([os.path.join('./test', t)])
 
+
+class LintContext(Build.BuildContext):
+    fun = cmd = 'lint'
+
+
 def lint(ctx):
     "checks code for style issues"
+    import glob
     import subprocess
-    cmd = ("clang-tidy -p=. -header-filter=.* -checks=\"*," +
-           "-android*," +
-           "-clang-analyzer-alpha.*," +
-           "-cppcoreguidelines-no-malloc," +
-           "-cppcoreguidelines-owning-memory," +
-           "-cppcoreguidelines-pro-bounds-array-to-pointer-decay," +
-           "-cppcoreguidelines-pro-bounds-pointer-arithmetic," +
-           "-cppcoreguidelines-pro-type-const-cast," +
-           "-cppcoreguidelines-pro-type-reinterpret-cast," +
-           "-cppcoreguidelines-pro-type-vararg," +
-           "-cppcoreguidelines-special-member-functions," +
-           "-fuchsia-default-arguments," +
-           "-fuchsia-overloaded-operator," +
-           "-google-runtime-references," +
-           "-hicpp-no-array-decay," +
-           "-hicpp-no-malloc," +
-           "-hicpp-signed-bitwise," +
-           "-hicpp-special-member-functions," +
-           "-hicpp-vararg," +
-           "-llvm-header-guard," +
-           "-misc-suspicious-string-compare," +
-           "-misc-unused-parameters," +
-           "-modernize-make-unique," +
-           "-readability-else-after-return," +
-           "-readability-implicit-bool-conversion\" " +
-           "../raul/*.hpp ../test/*.cpp")
-    subprocess.call(cmd, cwd='build', shell=True)
+
+    st = 0
+
+    if "FLAKE8" in ctx.env:
+        Logs.info("Running flake8")
+        st = subprocess.call([ctx.env.FLAKE8[0],
+                              "wscript",
+                              "--ignore",
+                              "E101,E129,W191,E221,W504,E251,E241,E741"])
+    else:
+        Logs.warn("Not running flake8")
+
+    if "IWYU_TOOL" in ctx.env:
+        Logs.info("Running include-what-you-use")
+        cmd = [ctx.env.IWYU_TOOL[0], "-o", "clang", "-p", "build"]
+        output = subprocess.check_output(cmd).decode('utf-8')
+        if 'error: ' in output:
+            sys.stdout.write(output)
+            st += 1
+    else:
+        Logs.warn("Not running include-what-you-use")
+
+    if "CLANG_TIDY" in ctx.env and "clang" in ctx.env.CXX[0]:
+        Logs.info("Running clang-tidy")
+        sources = glob.glob('test/*.cpp')
+        sources = list(map(os.path.abspath, sources))
+        procs = []
+        for source in sources:
+            cmd = [ctx.env.CLANG_TIDY[0], "--quiet", "-p=.", source]
+            procs += [subprocess.Popen(cmd, cwd="build")]
+
+        for proc in procs:
+            stdout, stderr = proc.communicate()
+            st += proc.returncode
+    else:
+        Logs.warn("Not running clang-tidy")
+
+    if st != 0:
+        sys.exit(st)
+
 
 def posts(ctx):
     path = str(ctx.path.abspath())
