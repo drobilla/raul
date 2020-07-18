@@ -79,9 +79,18 @@ public:
 		}
 	}
 
-	Array(Array<T>&& array) = default;
+	Array(Array<T>&& array) noexcept
+	    : _size(array._size)
+	    , _elems(std::move(array._elems))
+	{
+	}
 
-	Array<T>& operator=(Array<T>&&) = default;
+	Array<T>& operator=(Array<T>&& array) noexcept
+	{
+		_size  = array._size;
+		_elems = std::move(array._elems);
+		return *this;
+	}
 
 	Array(size_t size, const Array<T>& contents)
 		: _size(size)
