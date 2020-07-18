@@ -67,6 +67,10 @@ public:
 
 	Array<T>& operator=(const Array<T>& array)
 	{
+		if (&array == this) {
+			return *this;
+		}
+
 		_size  = array._size;
 		_elems = _size ? new T[_size] : nullptr;
 
