@@ -195,7 +195,7 @@ private:
 	TimeUnit _unit;
 };
 
-static inline std::ostream&
+inline std::ostream&
 operator<<(std::ostream& os, const TimeStamp& t)
 {
 	os << t.ticks() << ":" << t.subticks();
