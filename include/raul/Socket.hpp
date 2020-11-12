@@ -203,7 +203,7 @@ Socket::connect(const std::string& uri)
 }
 
 inline bool
-Socket::listen()
+Socket::listen() // NOLINT(readability-make-member-function-const)
 {
 	return ::listen(_sock, 64) != -1;
 }
@@ -246,7 +246,7 @@ Socket::close()
 }
 
 inline void
-Socket::shutdown()
+Socket::shutdown() // NOLINT(readability-make-member-function-const)
 {
 	if (_sock != -1) {
 		::shutdown(_sock, SHUT_RDWR);
