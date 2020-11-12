@@ -53,8 +53,11 @@ def configure(conf):
                 '/wd4625',  # copy constructor implicitly deleted
                 '/wd4626',  # assignment operator implicitly deleted
                 '/wd4706',  # assignment within conditional expression
+                '/wd4710',  # function not inlined
+                '/wd4711',  # function selected for automatic inline expansion
                 '/wd5026',  # move constructor implicitly deleted
                 '/wd5027',  # move assignment operator implicitly deleted
+                '/wd5045',  # compiler will insert Spectre mitigation
             ]
         })
 
