@@ -60,9 +60,6 @@ def configure(conf):
         conf.check(framework_name='CoreServices')
         conf.env.FRAMEWORK_RAUL = ['CoreServices']
 
-    conf.check_cxx(header_name='memory')
-    conf.check_cxx(header_name='atomic')
-
     autowaf.set_lib_env(conf, 'raul', RAUL_VERSION,
                         has_objects=False,
                         include_path=str(conf.path.find_node('include')))
