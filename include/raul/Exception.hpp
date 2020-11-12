@@ -14,12 +14,12 @@
   along with Raul.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+#ifndef RAUL_EXCEPTION_HPP
+#define RAUL_EXCEPTION_HPP
+
 #include <exception>
 #include <string>
 #include <utility>
-
-#ifndef RAUL_EXCEPTION_HPP
-#define RAUL_EXCEPTION_HPP
 
 namespace Raul {
 
