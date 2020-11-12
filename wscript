@@ -63,7 +63,10 @@ def configure(conf):
     conf.check_cxx(header_name='memory')
     conf.check_cxx(header_name='atomic')
 
-    autowaf.set_lib_env(conf, 'raul', RAUL_VERSION, has_objects=False)
+    autowaf.set_lib_env(conf, 'raul', RAUL_VERSION,
+                        has_objects=False,
+                        include_path=str(conf.path.find_node('include')))
+
     conf.write_config_header('raul_config.h', remove=False)
 
     autowaf.display_summary(conf,
@@ -119,7 +122,7 @@ def build(bld):
         for i in tests:
             bld(features     = 'cxx cxxprogram',
                 source       = os.path.join('test', i + '.cpp'),
-                includes     = ['.'],
+                includes     = ['include'],
                 lib          = test_libs,
                 use          = 'libraul_static',
                 uselib       = 'GLIB GTHREAD',
