@@ -42,8 +42,10 @@ def configure(conf):
                 '-Wno-weak-vtables',
             ],
             'gcc': [
+                '-Wno-inline',
                 '-Wno-multiple-inheritance',
                 '-Wno-padded',
+                '-Wno-suggest-attribute=pure',
                 '-Wno-useless-cast',
             ],
             'msvc': [
