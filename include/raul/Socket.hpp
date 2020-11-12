@@ -205,11 +205,7 @@ Socket::connect(const std::string& uri)
 inline bool
 Socket::listen()
 {
-	if (::listen(_sock, 64) == -1) {
-		return false;
-	} else {
-		return true;
-	}
+	return ::listen(_sock, 64) != -1;
 }
 
 inline std::shared_ptr<Socket>
