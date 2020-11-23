@@ -93,8 +93,7 @@ if sys.platform != 'win32':
 def build(bld):
     # Headers
     includedir = '${INCLUDEDIR}/raul-%s/raul' % RAUL_MAJOR_VERSION
-    bld.install_files(includedir, bld.path.ant_glob('raul/*.hpp'))
-    bld.install_files(includedir, bld.path.ant_glob('raul/*.h'))
+    bld.install_files(includedir, bld.path.ant_glob('include/raul/*.hpp'))
 
     # Pkgconfig file
     pc_libs = '-framework CoreServices' if bld.env.DEST_OS == 'darwin' else ''
