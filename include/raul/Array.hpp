@@ -19,7 +19,7 @@
 
 #include "raul/Maid.hpp"
 
-#include <algorithm>
+#include <algorithm> // IWYU pragma: keep
 #include <cassert>
 #include <cstddef>
 #include <memory>

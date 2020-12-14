@@ -21,6 +21,7 @@
 #include "raul/Symbol.hpp"
 
 #include <algorithm>
+#include <cstddef>
 #include <string>
 
 namespace Raul {

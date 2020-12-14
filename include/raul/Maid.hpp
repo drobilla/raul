@@ -22,6 +22,7 @@
 
 #include <atomic>
 #include <memory>
+#include <utility>
 
 namespace Raul {
 

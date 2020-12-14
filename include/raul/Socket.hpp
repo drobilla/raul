@@ -20,18 +20,15 @@
 #include "raul/Noncopyable.hpp"
 
 #include <netdb.h>
-#include <netinet/in.h>
-#include <poll.h>
 #include <sys/socket.h>
 #include <sys/un.h>
 #include <unistd.h>
 
-#include <cerrno>
-#include <cstdint>
 #include <cstdlib>
 #include <cstring>
 #include <memory>
 #include <string>
+#include <utility>
 
 namespace Raul {
 

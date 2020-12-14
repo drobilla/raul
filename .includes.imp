@@ -1,0 +1,5 @@
+[
+  { "symbol": [ "std::exception", "private", "<exception>", "public" ] },
+  { "symbol": [ "std::max",       "private", "<algorithm>", "public" ] },
+  { "symbol": [ "std::min",       "private", "<algorithm>", "public" ] }
+]

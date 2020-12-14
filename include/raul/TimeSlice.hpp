@@ -21,7 +21,7 @@
 #include "raul/TimeStamp.hpp"
 
 #include <cassert>
-#include <cmath>
+#include <cstdint>
 
 namespace Raul {
 

@@ -19,6 +19,7 @@
 
 #include "raul/Exception.hpp"
 
+#include <cstddef>
 #include <string>
 
 namespace Raul {
