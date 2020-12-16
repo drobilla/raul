@@ -29,7 +29,9 @@ Checks: >
   -readability-else-after-return,
   -readability-implicit-bool-conversion,
   -readability-use-anyofallof,
-WarningsAsErrors: '*'
+CheckOptions:
+  - key:   modernize-use-override.AllowOverrideAndFinal
+    value: true
 HeaderFilterRegex: '.*'
 FormatStyle: file
 

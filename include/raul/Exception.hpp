@@ -26,7 +26,7 @@ namespace Raul {
 /** An exception (unexpected error). */
 class Exception : public std::exception {
 public:
-	const char* what() const noexcept final { return _what.c_str(); }
+	const char* what() const noexcept final override { return _what.c_str(); }
 
 protected:
 	explicit Exception(std::string what) : _what(std::move(what)) {}
