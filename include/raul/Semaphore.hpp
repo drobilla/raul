@@ -26,7 +26,6 @@
 #    include <cerrno>
 #    include <ctime>
 #    include <semaphore.h>
-#    include <sys/types.h>
 #endif
 
 #include <chrono>
