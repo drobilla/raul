@@ -52,10 +52,13 @@ public:
 		assert(write_space() == _size - 1);
 	}
 
-	/**
-	   Destroy a RingBuffer.
-	*/
-	inline ~RingBuffer() = default;
+	RingBuffer(const RingBuffer&) = delete;
+	RingBuffer& operator=(const RingBuffer&) = delete;
+
+	RingBuffer(RingBuffer&&) = delete;
+	RingBuffer& operator=(RingBuffer&&) = delete;
+
+	~RingBuffer() = default;
 
 	/**
 	   Reset (empty) the RingBuffer.

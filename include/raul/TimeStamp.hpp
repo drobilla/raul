@@ -99,8 +99,13 @@ public:
 		_subticks = static_cast<uint32_t>(fractional * unit.ppt());
 	}
 
-	inline TimeStamp(const TimeStamp&) = default;
+	TimeStamp(const TimeStamp&) = default;
 	TimeStamp& operator=(const TimeStamp&) = default;
+
+	TimeStamp(TimeStamp&&) = default;
+	TimeStamp& operator=(TimeStamp&&) = default;
+
+	~TimeStamp() = default;
 
 	inline TimeUnit unit()     const { return _unit; }
 	inline uint32_t ticks()    const { return _ticks; }

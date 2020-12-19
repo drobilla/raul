@@ -53,6 +53,9 @@ public:
 	Socket(const Socket&) = delete;
 	Socket& operator=(const Socket&) = delete;
 
+	Socket(Socket&&) = delete;
+	Socket& operator=(Socket&&) = delete;
+
 	~Socket();
 
 	/** Bind a server socket to an address.

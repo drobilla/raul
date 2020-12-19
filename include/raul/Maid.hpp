@@ -43,8 +43,14 @@ public:
 	class Disposable : public Deletable {
 	public:
 		Disposable() = default;
+
 		Disposable(const Disposable&) = delete;
 		Disposable& operator=(const Disposable&) = delete;
+
+		Disposable(Disposable&&) = delete;
+		Disposable& operator=(Disposable&&) = delete;
+
+		~Disposable() override = default;
 
 	private:
 		friend class Maid;
@@ -86,6 +92,12 @@ public:
 	template<typename T> using managed_ptr = std::unique_ptr<T, Disposer<T>>;
 
 	Maid() : _disposed(nullptr) {}
+
+	Maid(const Maid&) = delete;
+	Maid& operator=(const Maid&) = delete;
+
+	Maid(Maid&&) = delete;
+	Maid& operator=(Maid&&) = delete;
 
 	inline ~Maid() { cleanup(); }
 

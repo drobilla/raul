@@ -44,6 +44,11 @@ public:
 	DoubleBuffer(const DoubleBuffer&) = delete;
 	DoubleBuffer& operator=(const DoubleBuffer&) = delete;
 
+	DoubleBuffer(DoubleBuffer&&) = delete;
+	DoubleBuffer& operator=(DoubleBuffer&&) = delete;
+
+	~DoubleBuffer() = default;
+
 	inline const T& get() const {
 		switch (_state.load(std::memory_order_acquire)) {
 		case State::READ_WRITE:

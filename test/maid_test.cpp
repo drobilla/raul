@@ -37,6 +37,13 @@ static std::atomic<size_t> n_finished_threads(0);
 class Junk : public Maid::Disposable {
 public:
 	explicit Junk(size_t v) : _val(v) { ++n_junk; }
+
+	Junk(const Junk&) = delete;
+	Junk& operator=(const Junk&) = delete;
+
+	Junk(Junk&&) = delete;
+	Junk& operator=(Junk&&) = delete;
+
 	~Junk() override { --n_junk; }
 
 	size_t value() const { return _val; }

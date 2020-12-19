@@ -1,4 +1,3 @@
-
 /*
   This file is part of Raul.
   Copyright 2007-2013 David Robillard <http://drobilla.net>
@@ -28,6 +27,12 @@ class Deletable
 {
 public:
 	Deletable() = default;
+
+	Deletable(const Deletable&) = default;
+	Deletable& operator=(const Deletable&) = default;
+
+	Deletable(Deletable&&) = default;
+	Deletable& operator=(Deletable&&) = default;
 
 	virtual ~Deletable() = default;
 };

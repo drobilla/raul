@@ -64,6 +64,9 @@ public:
 	inline Semaphore(const Semaphore&) = delete;
 	inline Semaphore& operator=(const Semaphore&) = delete;
 
+	inline Semaphore(Semaphore&&) = delete;
+	inline Semaphore& operator=(Semaphore&&) = delete;
+
 	inline ~Semaphore() {
 		destroy();
 	}

@@ -3,7 +3,6 @@ Checks: >
   -*-avoid-c-arrays,
   -*-magic-numbers,
   -*-no-malloc,
-  -*-special-member-functions,
   -*-uppercase-literal-suffix,
   -android-cloexec-accept,
   -bugprone-branch-clone,
