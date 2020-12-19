@@ -6,7 +6,6 @@ Checks: >
   -*-uppercase-literal-suffix,
   -abseil-string-find-str-contains,
   -android-cloexec-accept,
-  -bugprone-branch-clone,
   -clang-diagnostic-unused-macros,
   -cppcoreguidelines-owning-memory,
   -cppcoreguidelines-pro-bounds-array-to-pointer-decay,
@@ -29,5 +28,3 @@ CheckOptions:
 WarningsAsErrors: '*'
 HeaderFilterRegex: '.*'
 FormatStyle: file
-
-

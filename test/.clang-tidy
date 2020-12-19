@@ -5,8 +5,7 @@ Checks: >
   -*-uppercase-literal-suffix,
   -*-vararg,
   -abseil-string-find-str-contains,
-  -android-cloexec-accept,  
-  -bugprone-branch-clone,
+  -android-cloexec-accept,
   -cppcoreguidelines-avoid-non-const-global-variables,
   -cppcoreguidelines-no-malloc,
   -cppcoreguidelines-owning-memory,
@@ -33,5 +32,3 @@ CheckOptions:
     value: 'true'
 HeaderFilterRegex: '.*'
 FormatStyle: file
-
-
