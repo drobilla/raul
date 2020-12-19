@@ -15,7 +15,7 @@ Checks: >
   -cppcoreguidelines-pro-bounds-pointer-arithmetic,
   -cppcoreguidelines-pro-type-const-cast,
   -cppcoreguidelines-pro-type-reinterpret-cast,
-  -fuchsia-default-arguments-*,
+  -fuchsia-default-arguments*,
   -fuchsia-overloaded-operator,
   -google-runtime-int,
   -google-runtime-references,
@@ -27,9 +27,6 @@ Checks: >
   -modernize-use-trailing-return-type,
   -readability-implicit-bool-conversion,
   -readability-use-anyofallof,
-CheckOptions:
-  - key:   modernize-use-override.AllowOverrideAndFinal
-    value: true
 HeaderFilterRegex: '.*'
 FormatStyle: file
 
