@@ -95,11 +95,11 @@ public:
 	}
 
 	inline TimeStamp beats_to_seconds(TimeStamp beats) const {
-		return TimeStamp(real_unit(), beats.to_double() * 1/_beat_rate);
+		return {real_unit(), beats.to_double() * 1/_beat_rate};
 	}
 
 	inline TimeStamp beats_to_ticks(TimeStamp beats) const {
-		return TimeStamp(ticks_unit(), beats.to_double() * _beat_rate * _tick_rate);
+		return {ticks_unit(), beats.to_double() * _beat_rate * _tick_rate};
 	}
 
 	inline TimeStamp ticks_to_seconds(TimeStamp ticks) const {
