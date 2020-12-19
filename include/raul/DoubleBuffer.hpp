@@ -62,7 +62,9 @@ public:
 			_vals[1]  = std::move(new_val);
 			_state.store(State::WRITE_READ, std::memory_order_release);
 			return true;
-		} else if (transition(State::WRITE_READ, State::LOCK_READ)) {
+		}
+
+		if (transition(State::WRITE_READ, State::LOCK_READ)) {
 			// Locked _vals[0] for writing
 			_vals[0]  = std::move(new_val);
 			_state.store(State::READ_WRITE, std::memory_order_release);

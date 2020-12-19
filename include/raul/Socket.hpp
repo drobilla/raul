@@ -159,7 +159,9 @@ Socket::set_addr(const std::string& uri)
 		_addr     = reinterpret_cast<sockaddr*>(uaddr);
 		_addr_len = sizeof(struct sockaddr_un);
 		return true;
-	} else if (_type == Type::TCP && uri.find("://") != std::string::npos) {
+	}
+
+	if (_type == Type::TCP && uri.find("://") != std::string::npos) {
 		const std::string authority = uri.substr(uri.find("://") + 3);
 		const size_t      port_sep  = authority.find(':');
 		if (port_sep == std::string::npos) {
@@ -184,6 +186,7 @@ Socket::set_addr(const std::string& uri)
 		freeaddrinfo(ainfo);
 		return true;
 	}
+
 	return false;
 }
 

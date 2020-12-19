@@ -22,11 +22,9 @@ Checks: >
   -hicpp-no-array-decay,
   -hicpp-no-malloc,
   -hicpp-signed-bitwise,
-  -llvm-else-after-return,
   -llvmlibc-*,
   -modernize-make-unique,
   -modernize-use-trailing-return-type,
-  -readability-else-after-return,
   -readability-implicit-bool-conversion,
   -readability-use-anyofallof,
 CheckOptions:

@@ -63,7 +63,9 @@ main()
 
 			if ((pfds[0].revents & POLLHUP) || pfds[1].revents & POLLHUP) {
 				break;
-			} else if (ret == 0) {
+			}
+
+			if (ret == 0) {
 				fprintf(stderr, "poll returned with no data\n");
 				continue;
 			}

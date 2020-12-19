@@ -105,9 +105,9 @@ public:
 			std::atomic_thread_fence(std::memory_order_acquire);
 			_read_head = (r + size) & _size_mask;
 			return size;
-		} else {
-			return 0;
 		}
+
+		return 0;
 	}
 
 	/**
@@ -170,19 +170,21 @@ private:
 	inline uint32_t write_space_internal(uint32_t r, uint32_t w) const {
 		if (r == w) {
 			return _size - 1;
-		} else if (r < w) {
-			return ((r - w + _size) & _size_mask) - 1;
-		} else {
-			return (r - w) - 1;
 		}
+
+		if (r < w) {
+			return ((r - w + _size) & _size_mask) - 1;
+		}
+
+		return (r - w) - 1;
 	}
 
 	inline uint32_t read_space_internal(uint32_t r, uint32_t w) const {
 		if (r < w) {
 			return w - r;
-		} else {
-			return (w - r + _size) & _size_mask;
 		}
+
+		return (w - r + _size) & _size_mask;
 	}
 
 	inline uint32_t peek_internal(uint32_t r, uint32_t w,

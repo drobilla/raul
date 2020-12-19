@@ -19,7 +19,6 @@ Checks: >
   -google-runtime-int,
   -hicpp-no-array-decay,
   -modernize-use-trailing-return-type,
-  -readability-else-after-return,
   -readability-implicit-bool-conversion,
 WarningsAsErrors: '*'
 HeaderFilterRegex: '.*'

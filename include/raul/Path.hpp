@@ -95,10 +95,14 @@ public:
 		for (size_t i = 1; i < str.length(); ++i) {
 			if (!is_valid_char(str[i])) {
 				return false;  // All characters must be /, _, a-z, A-Z, 0-9
-			} else if (str[i - 1] == '/') {
+			}
+
+			if (str[i - 1] == '/') {
 				if (str[i] == '/') {
 					return false;  // Must not contain "//"
-				} else if (!Symbol::is_valid_start_char(str[i])) {
+				}
+
+				if (!Symbol::is_valid_start_char(str[i])) {
 					return false;  // Invalid symbol start character (digit)
 				}
 			}
@@ -145,12 +149,11 @@ public:
 	inline Path parent() const {
 		if (is_root()) {
 			return *this;
-		} else {
-			const size_t first_sep = find('/');
-			const size_t last_sep  = find_last_of('/');
-			return (first_sep == last_sep)
-				? Path("/") : Path(substr(0, last_sep));
 		}
+
+		const size_t first_sep = find('/');
+		const size_t last_sep  = find_last_of('/');
+		return (first_sep == last_sep) ? Path("/") : Path(substr(0, last_sep));
 	}
 
 	/** Return a child Path of this path. */
@@ -171,9 +174,9 @@ public:
 	inline std::string base() const {
 		if (is_root()) {
 			return *this;
-		} else {
-			return *this + '/';
 		}
+
+		return *this + '/';
 	}
 
 	/** Return the lowest common ancestor of a and b. */

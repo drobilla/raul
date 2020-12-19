@@ -120,9 +120,9 @@ public:
 
 		if (is_valid_start_char(out[0])) {
 			return Symbol(out);
-		} else {
-			return Symbol(std::string("_") + out);
 		}
+
+		return Symbol(std::string("_") + out);
 	}
 };
 
