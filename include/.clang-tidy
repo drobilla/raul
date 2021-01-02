@@ -21,6 +21,12 @@ Checks: >
   -modernize-use-trailing-return-type,
   -readability-implicit-bool-conversion,
   -readability-use-anyofallof,
+CheckOptions:
+  - key:   modernize-use-override.AllowOverrideAndFinal
+    value: 'true'
+CheckOptions:
+  - key:   cppcoreguidelines-explicit-virtual-functions.AllowOverrideAndFinal
+    value: 'true'
 WarningsAsErrors: '*'
 HeaderFilterRegex: '.*'
 FormatStyle: file
