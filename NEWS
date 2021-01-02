@@ -1,90 +1,82 @@
 raul (0.8.10) unstable;
 
-  * Remove glib dpendency
-  * Remove boost dependency
-  * Remove OSC and RDF library dependent code
-  * Remove remaining library code, now header only
-  * Remove features now provided by C++11
-  * Remove URI class
-  * Improve RingBuffer
+  * Add INSTALL file
   * Add ThreadVar, a thread-specific variable class
   * Add managed_ptr for automatic real-time safe garbage collection
-  * Implement Semaphore for Windows
   * Fix semaphore with initial count on Darwin
+  * Implement Semaphore for Windows
+  * Improve RingBuffer
   * Improve test suite
+  * Remove OSC and RDF library dependent code
+  * Remove URI class
+  * Remove boost dependency
+  * Remove features now provided by C++11
+  * Remove glib dpendency
+  * Remove remaining library code, now header only
   * Remove several questionable classes
-  * Add INSTALL file
   * Update license to GPL3+
 
- -- David Robillard <d@drobilla.net>  Sun, 23 Jul 2017 12:40:39 +0200
+ -- David Robillard <d@drobilla.net>  Sun, 23 Jul 2017 10:40:39 +0000
 
 raul (0.8.0) stable;
 
-  * Implement Semaphore for Darwin
-  * Remove unused/trivial/inappropriate Command and Stateful
-  * Remove pointless templateification of RingBuffer
-  * Use uint32_t consistently for sizes in RingBuffer
-  * Fix off-by-one allocation of Atom strings
   * Add all classes to 'raul' doxygen group
-  * Make single-argument constructors explicit
-  * Fix incorrect TimeSlice::beats_to_ticks
-  * Fix crash bug in List::chop_front
-  * Fix TimeStamp comparison operators
-  * Rename LOG_* defines RAUL_LOG_*
-  * Remove "using namespace" declarations
   * Add missing #includes
   * Add missing COPYING file to distribution
-  * Upgrade to waf 1.6.2
-  * Fix accidental build system dependency on glibmm (now glib only)
   * Better documentation generation via waf tool
+  * Fix TimeStamp comparison operators
+  * Fix accidental build system dependency on glibmm (now glib only)
+  * Fix crash bug in List::chop_front
+  * Fix incorrect TimeSlice::beats_to_ticks
+  * Fix off-by-one allocation of Atom strings
+  * Implement Semaphore for Darwin
+  * Make single-argument constructors explicit
+  * Remove "using namespace" declarations
+  * Remove pointless templateification of RingBuffer
+  * Remove unused/trivial/inappropriate Command and Stateful
+  * Rename LOG_* defines RAUL_LOG_*
+  * Upgrade to waf 1.6.2
+  * Use uint32_t consistently for sizes in RingBuffer
 
- -- David Robillard <d@drobilla.net>  Tue, 11 Jan 2011 17:42:07 -0500
+ -- David Robillard <d@drobilla.net>  Tue, 11 Jan 2011 22:42:07 +0000
 
 raul (0.7.0) stable;
 
-  * Add several unit tests
-  * Use malloc'd memory for RingBuffer/SRSWQueue (instead of a new'd array)
-  * Fancy coloured console/logging I/O (raul/log.hpp)
-  * More flexible Path and better URI support
-  * Atom updates, including new "Blank" Atom for storing dictionaries
-    with URI keys (ala JavaScript "objects", but RDF compatible)
-  * Remove stack stuff from Array and create new ArrayStack
-  * Make Symbol and URI more opaque and use Glib string interning
   * Add Configuration class for app command line option handling
-  * Use < operator in TableImpl instead of > so it needn't be defined
   * Add IntrusivePtr, a trivial #define of boost::intrusive_ptr which is
     useful for hard realtime things (since adding and dropping refs is
     realtime safe, which is not true of shared_ptr)
+  * Add several unit tests
+  * Atom updates, including new "Blank" Atom for storing dictionaries with URI
+    keys (ala JavaScript "objects", but RDF compatible)
+  * Fancy coloured console/logging I/O (raul/log.hpp)
+  * Make Symbol and URI more opaque and use Glib string interning
+  * More flexible Path and better URI support
   * Remove TimeSlice
+  * Remove stack stuff from Array and create new ArrayStack
+  * Use < operator in TableImpl instead of > so it needn't be defined
+  * Use malloc'd memory for RingBuffer/SRSWQueue (instead of a new'd array)
 
- -- David Robillard <d@drobilla.net>  Fri, 03 Sep 2010 20:24:36 -0400
+ -- David Robillard <d@drobilla.net>  Sat, 04 Sep 2010 00:24:36 +0000
 
 raul (0.6.0) stable;
 
-  * Switch to waf build system
-  * Fix compilation with GCC 4.4
-  * Add URI class and make Path a special URI (with scheme "path:")
-  * Remove JackDriver
+  * Add C++ style printing for Atom
   * Add NullDeleter convenience for SharedPtr
   * Add URI Atom type
-  * Add C++ style printing for Atom
-  * Fix type wackiness for glib atomic functions on PPC
-  * Remove misguided LASH stuff
+  * Add URI class and make Path a special URI (with scheme "path:")
   * Depend on glib (instead of glibmm)
+  * Fix compilation with GCC 4.4
+  * Fix type wackiness for glib atomic functions on PPC
+  * Remove JackDriver
+  * Remove misguided LASH stuff
+  * Switch to waf build system
 
- -- David Robillard <d@drobilla.net>  Tue, 08 Dec 2009 19:20:37 -0500
+ -- David Robillard <d@drobilla.net>  Wed, 09 Dec 2009 00:20:37 +0000
 
 raul (0.5.1) stable;
 
   * OSC blob fixes
   * Use true atomic integers for Queue indexes
 
- -- David Robillard <d@drobilla.net>  Sun, 07 Sep 2008 14:10:32 -0400
-
-
-raul (0.5.0) stable;
-
-  * Initial Debian release
-
- -- David Robillard <d@drobilla.net>  Sun, 06 Jul 2008 15:56:20 -0400
-
+ -- David Robillard <d@drobilla.net>  Sun, 07 Sep 2008 18:10:32 +0000
