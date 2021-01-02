@@ -25,7 +25,6 @@ Checks: >
   -modernize-make-unique,
   -modernize-use-trailing-return-type,
   -readability-implicit-bool-conversion,
-  -readability-use-anyofallof,
 CheckOptions:
   - key:   modernize-use-override.AllowOverrideAndFinal
     value: 'true'

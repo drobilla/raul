@@ -18,6 +18,7 @@
 
 #include "raul/Exception.hpp"
 
+#include <algorithm>
 #include <cstddef>
 #include <string>
 
@@ -99,13 +100,7 @@ public:
       return false; // Must start with a letter or underscore
     }
 
-    for (auto c : str) {
-      if (!is_valid_char(c)) {
-        return false; // All characters must be _, a-z, A-Z, 0-9
-      }
-    }
-
-    return true;
+    return std::all_of(str.begin(), str.end(), is_valid_char);
   }
 
   /** Convert a string to a valid symbol.
