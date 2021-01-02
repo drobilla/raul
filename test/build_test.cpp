@@ -23,8 +23,6 @@
 #include "raul/RingBuffer.hpp"
 #include "raul/Semaphore.hpp"
 #include "raul/Symbol.hpp"
-#include "raul/TimeSlice.hpp"
-#include "raul/TimeStamp.hpp"
 
 #ifndef _WIN32
 #  include "raul/Process.hpp"
@@ -49,9 +47,6 @@ main()
   Raul::RingBuffer        ring_buffer(64u);
   Raul::Semaphore         semaphore(0u);
   Raul::Symbol            symbol("foo");
-  Raul::TimeSlice         time_slice(48000u, 960u, 120.0);
-
-  Raul::TimeStamp time_stamp(Raul::TimeUnit(Raul::TimeUnit::BEATS, 960u));
 
   try {
     Raul::Symbol bad_symbol("not a valid symbol!");
@@ -76,8 +71,6 @@ main()
   (void)path;
   (void)ring_buffer;
   (void)symbol;
-  (void)time_slice;
-  (void)time_stamp;
 
   return 0;
 }

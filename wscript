@@ -83,8 +83,7 @@ tests = ['array_test',
          'ringbuffer_test',
          'sem_test',
          'symbol_test',
-         'thread_test',
-         'time_test']
+         'thread_test']
 
 if sys.platform != 'win32':
     tests += ['socket_test']

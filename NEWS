@@ -8,6 +8,7 @@ raul (0.8.10) unstable;
   * Improve RingBuffer
   * Improve test suite
   * Remove OSC and RDF library dependent code
+  * Remove TimeSlice and TimeStamp
   * Remove URI class
   * Remove boost dependency
   * Remove features now provided by C++11
@@ -16,7 +17,7 @@ raul (0.8.10) unstable;
   * Remove several questionable classes
   * Update license to GPL3+
 
- -- David Robillard <d@drobilla.net>  Sun, 23 Jul 2017 10:40:39 +0000
+ -- David Robillard <d@drobilla.net>  Sat, 02 Jan 2021 14:42:30 +0000
 
 raul (0.8.0) stable;
 
