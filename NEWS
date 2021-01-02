@@ -13,7 +13,7 @@ raul (1.1.0) unstable;
   * Remove URI class
   * Remove boost dependency
   * Remove features now provided by C++11
-  * Remove glib dpendency
+  * Remove glib dependency
   * Remove remaining library code, now header only
   * Remove several questionable classes
   * Update license to GPL3+
