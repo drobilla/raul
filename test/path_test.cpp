@@ -26,8 +26,8 @@
 int
 main()
 {
-  using Path   = Raul::Path;
-  using Symbol = Raul::Symbol;
+  using Path   = raul::Path;
+  using Symbol = raul::Symbol;
 
   assert(Path("/foo/bar").parent() == Path("/foo"));
   assert(Path("/foo").parent() == Path("/"));

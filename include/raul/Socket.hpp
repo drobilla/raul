@@ -29,10 +29,10 @@
 #include <string>
 #include <utility>
 
-namespace Raul {
+namespace raul {
 
 /** A safe and simple interface for UNIX or TCP sockets. */
-class Socket : public Raul::Noncopyable
+class Socket : public raul::Noncopyable
 {
 public:
   enum class Type { UNIX, TCP };
@@ -254,6 +254,6 @@ Socket::shutdown() // NOLINT(readability-make-member-function-const)
   }
 }
 
-} // namespace Raul
+} // namespace raul
 
 #endif // RAUL_SOCKET_HPP

@@ -19,7 +19,7 @@
 #include <atomic>
 #include <utility>
 
-namespace Raul {
+namespace raul {
 
 /** Double buffer.
  *
@@ -99,6 +99,6 @@ private:
   T                  _vals[2];
 };
 
-} // namespace Raul
+} // namespace raul
 
 #endif // RAUL_DOUBLEBUFFER_HPP

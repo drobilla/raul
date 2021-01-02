@@ -10,7 +10,7 @@ from waflib.extras import autowaf
 # major increment <=> incompatible changes
 # minor increment <=> compatible changes (additions)
 # micro increment <=> no interface changes
-RAUL_VERSION       = '1.0.0'
+RAUL_VERSION       = '1.1.0'
 RAUL_MAJOR_VERSION = '1'
 
 # Mandatory waf variables

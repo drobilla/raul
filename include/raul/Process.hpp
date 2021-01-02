@@ -21,7 +21,7 @@
 #include <sys/resource.h>
 #include <unistd.h>
 
-namespace Raul {
+namespace raul {
 
 /** A child process.
  *
@@ -79,6 +79,6 @@ private:
   Process() = default;
 };
 
-} // namespace Raul
+} // namespace raul
 
 #endif // RAUL_PROCESS_HPP

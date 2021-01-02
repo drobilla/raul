@@ -1,4 +1,4 @@
-raul (0.8.10) unstable;
+raul (1.1.0) unstable;
 
   * Add INSTALL file
   * Add ThreadVar, a thread-specific variable class
@@ -7,6 +7,7 @@ raul (0.8.10) unstable;
   * Implement Semaphore for Windows
   * Improve RingBuffer
   * Improve test suite
+  * Make namespace name lowercase
   * Remove OSC and RDF library dependent code
   * Remove TimeSlice and TimeStamp
   * Remove URI class
@@ -17,7 +18,7 @@ raul (0.8.10) unstable;
   * Remove several questionable classes
   * Update license to GPL3+
 
- -- David Robillard <d@drobilla.net>  Sat, 02 Jan 2021 14:42:30 +0000
+ -- David Robillard <d@drobilla.net>  Sat, 02 Jan 2021 16:58:02 +0000
 
 raul (0.8.0) stable;
 

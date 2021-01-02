@@ -23,7 +23,7 @@
 #include <cstddef>
 #include <memory>
 
-namespace Raul {
+namespace raul {
 
 /** A disposable array with size.
  *
@@ -156,6 +156,6 @@ private:
   std::unique_ptr<T[]> _elems;
 };
 
-} // namespace Raul
+} // namespace raul
 
 #endif // RAUL_ARRAY_HPP

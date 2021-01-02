@@ -29,7 +29,7 @@
 int
 main()
 {
-  using Socket = Raul::Socket;
+  using Socket = raul::Socket;
 
   std::string unix_uri("unix:///tmp/raul_test_sock");
   std::string tcp_uri("tcp://127.0.0.1:12345");
@@ -88,8 +88,8 @@ main()
   }
 
   // This is the child (client) process
-  Raul::Socket unix_sock(Socket::Type::UNIX);
-  Raul::Socket tcp_sock(Socket::Type::TCP);
+  raul::Socket unix_sock(Socket::Type::UNIX);
+  raul::Socket tcp_sock(Socket::Type::TCP);
 
   assert(unix_sock.connect(unix_uri));
   assert(tcp_sock.connect(tcp_uri));

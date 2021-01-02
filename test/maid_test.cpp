@@ -25,7 +25,7 @@
 #include <thread>
 #include <vector>
 
-using Raul::Maid;
+using raul::Maid;
 
 static const size_t n_threads         = 8U;
 static const size_t n_junk_per_thread = 1U << 16U;

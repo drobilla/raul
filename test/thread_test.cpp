@@ -24,7 +24,7 @@
 
 namespace {
 
-using Semaphore = Raul::Semaphore;
+using Semaphore = raul::Semaphore;
 
 thread_local int var(0);
 std::atomic<int> n_errors(0);

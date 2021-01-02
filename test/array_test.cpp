@@ -23,7 +23,7 @@
 int
 main()
 {
-  Raul::Array<int> array1(32, 2);
+  raul::Array<int> array1(32, 2);
 
   array1[0] = 42;
   assert(array1[0] == 42);
@@ -38,12 +38,12 @@ main()
   array1.alloc(8, 0);
   assert(array1.size() == 8);
 
-  Raul::Array<int> array2(array1);
+  raul::Array<int> array2(array1);
   for (size_t i = 0; i < array1.size(); ++i) {
     assert(array2[i] == array1[i]);
   }
 
-  Raul::Array<int> array3(8, 47);
+  raul::Array<int> array3(8, 47);
   assert(array3[0] == 47);
   assert(array3.size() == 8);
 

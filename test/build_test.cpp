@@ -29,36 +29,36 @@
 #  include "raul/Socket.hpp"
 #endif
 
-class DeletableThing : public Raul::Deletable
+class DeletableThing : public raul::Deletable
 {};
 
-class NonCopyableThing : public Raul::Noncopyable
+class NonCopyableThing : public raul::Noncopyable
 {};
 
 int
 main()
 {
-  Raul::Array<int>        array;
+  raul::Array<int>        array;
   DeletableThing          deletable;
-  Raul::DoubleBuffer<int> double_buffer(0);
-  Raul::Maid              maid;
+  raul::DoubleBuffer<int> double_buffer(0);
+  raul::Maid              maid;
   NonCopyableThing        non_copyable;
-  Raul::Path              path;
-  Raul::RingBuffer        ring_buffer(64u);
-  Raul::Semaphore         semaphore(0u);
-  Raul::Symbol            symbol("foo");
+  raul::Path              path;
+  raul::RingBuffer        ring_buffer(64u);
+  raul::Semaphore         semaphore(0u);
+  raul::Symbol            symbol("foo");
 
   try {
-    Raul::Symbol bad_symbol("not a valid symbol!");
+    raul::Symbol bad_symbol("not a valid symbol!");
     (void)bad_symbol;
-  } catch (const Raul::Exception&) {
+  } catch (const raul::Exception&) {
   }
 
 #ifndef _WIN32
   const char* cmd[] = {"echo"};
-  Raul::Process::launch(cmd);
+  raul::Process::launch(cmd);
 
-  Raul::Socket socket(Raul::Socket::Type::UNIX);
+  raul::Socket socket(raul::Socket::Type::UNIX);
 
   (void)socket;
 #endif

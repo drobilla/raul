@@ -25,7 +25,7 @@
 int
 main()
 {
-  using Symbol = Raul::Symbol;
+  using Symbol = raul::Symbol;
 
   std::list<std::string> names;
   names.emplace_back("Dry/Wet Balance");

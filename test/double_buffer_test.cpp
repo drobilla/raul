@@ -22,7 +22,7 @@
 int
 main()
 {
-  Raul::DoubleBuffer<int> db(0);
+  raul::DoubleBuffer<int> db(0);
 
   assert(db.get() == 0);
 

@@ -24,7 +24,7 @@
 #include <cstring>
 #include <memory>
 
-namespace Raul {
+namespace raul {
 
 /**
    A lock-free RingBuffer.
@@ -228,6 +228,6 @@ private:
   const std::unique_ptr<char[]> _buf; ///< Contents
 };
 
-} // namespace Raul
+} // namespace raul
 
 #endif // RAUL_RINGBUFFER_HPP

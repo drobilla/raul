@@ -31,7 +31,7 @@ constexpr const auto MSG_SIZE = 20u;
 
 namespace {
 
-using RingBuffer = Raul::RingBuffer;
+using RingBuffer = raul::RingBuffer;
 
 struct Context {
   std::unique_ptr<RingBuffer> ring{};

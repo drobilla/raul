@@ -22,13 +22,13 @@
 #include <thread>
 
 static void
-wait_for_sem(Raul::Semaphore* sem)
+wait_for_sem(raul::Semaphore* sem)
 {
   sem->wait();
 }
 
 static void
-timed_wait_for_sem(Raul::Semaphore* sem)
+timed_wait_for_sem(raul::Semaphore* sem)
 {
   while (!sem->timed_wait(std::chrono::milliseconds(100))) {
   }
@@ -37,7 +37,7 @@ timed_wait_for_sem(Raul::Semaphore* sem)
 int
 main()
 {
-  Raul::Semaphore sem(0);
+  raul::Semaphore sem(0);
   assert(!sem.try_wait());
 
   // Check that semaphore wakes up strict waiter
@@ -63,7 +63,7 @@ main()
   assert(!sem.timed_wait(std::chrono::milliseconds(100)));
 
   // Check that initial value works correctly
-  Raul::Semaphore sem2(2);
+  raul::Semaphore sem2(2);
   assert(sem2.wait());
   assert(sem2.wait());
   assert(!sem2.try_wait());

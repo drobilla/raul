@@ -30,7 +30,7 @@
 #include <chrono>
 #include <stdexcept>
 
-namespace Raul {
+namespace raul {
 
 /**
    Unnamed (process local) counting semaphore.
@@ -271,6 +271,6 @@ Semaphore::timed_wait(const std::chrono::duration<Rep, Period>& wait)
 
 #endif
 
-} // namespace Raul
+} // namespace raul
 
 #endif // RAUL_SEMAPHORE_HPP

@@ -16,7 +16,7 @@
 #ifndef RAUL_NONCOPYABLE_HPP
 #define RAUL_NONCOPYABLE_HPP
 
-namespace Raul {
+namespace raul {
 
 class Noncopyable
 {
@@ -32,6 +32,6 @@ protected:
   ~Noncopyable() = default;
 };
 
-} // namespace Raul
+} // namespace raul
 
 #endif // RAUL_NONCOPYABLE_HPP

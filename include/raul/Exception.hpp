@@ -20,7 +20,7 @@
 #include <string>
 #include <utility>
 
-namespace Raul {
+namespace raul {
 
 /** An exception (unexpected error). */
 class Exception : public std::exception
@@ -38,6 +38,6 @@ private:
   const std::string _what;
 };
 
-} // namespace Raul
+} // namespace raul
 
 #endif // RAUL_EXCEPTION_HPP

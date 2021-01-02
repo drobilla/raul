@@ -16,7 +16,7 @@
 #ifndef RAUL_DELETABLE_HPP
 #define RAUL_DELETABLE_HPP
 
-namespace Raul {
+namespace raul {
 
 /** Something with a virtual destructor.
  *
@@ -36,6 +36,6 @@ public:
   virtual ~Deletable() = default;
 };
 
-} // namespace Raul
+} // namespace raul
 
 #endif // RAUL_DELETABLE_HPP

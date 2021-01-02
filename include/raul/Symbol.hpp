@@ -22,7 +22,7 @@
 #include <cstddef>
 #include <string>
 
-namespace Raul {
+namespace raul {
 
 /** A restricted string which is a valid C identifier and Path component.
  *
@@ -129,6 +129,6 @@ public:
   }
 };
 
-} // namespace Raul
+} // namespace raul
 
 #endif // RAUL_SYMBOL_HPP

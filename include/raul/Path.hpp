@@ -23,7 +23,7 @@
 #include <cstddef>
 #include <string>
 
-namespace Raul {
+namespace raul {
 
 /** A restricted path of Symbols separated by, and beginning with, "/".
  *
@@ -139,7 +139,7 @@ public:
    *
    * This is what is called the "basename" for file paths, the "method name"
    * for OSC paths, and so on.  Since the root path does not have a symbol,
-   * this does not return a Raul::Symbol but may return the empty string.
+   * this does not return a raul::Symbol but may return the empty string.
    */
   inline const char* symbol() const
   {
@@ -175,7 +175,7 @@ public:
   }
 
   /** Return a direct child Path of this Path with the given Symbol. */
-  inline Path child(const Raul::Symbol& symbol) const
+  inline Path child(const raul::Symbol& symbol) const
   {
     return Path(base() + symbol.c_str());
   }
@@ -223,6 +223,6 @@ public:
   }
 };
 
-} // namespace Raul
+} // namespace raul
 
 #endif // RAUL_PATH_HPP

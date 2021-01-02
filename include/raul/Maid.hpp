@@ -23,7 +23,7 @@
 #include <memory>
 #include <utility>
 
-namespace Raul {
+namespace raul {
 
 /** Explicit garbage-collector.
  *
@@ -60,7 +60,7 @@ public:
   /** Disposable wrapper for any type. */
   template<typename T>
   class Managed
-    : public Raul::Maid::Disposable
+    : public raul::Maid::Disposable
     , public T
   {
   public:
@@ -170,6 +170,6 @@ private:
 template<typename T>
 using managed_ptr = Maid::managed_ptr<T>;
 
-} // namespace Raul
+} // namespace raul
 
 #endif // RAUL_MAID_HPP
