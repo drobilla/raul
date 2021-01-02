@@ -69,8 +69,6 @@ def configure(conf):
                         has_objects=False,
                         include_path=str(conf.path.find_node('include')))
 
-    conf.write_config_header('raul_config.h', remove=False)
-
     autowaf.display_summary(conf,
                             {'Unit tests': bool(conf.env.BUILD_TESTS)})
 
