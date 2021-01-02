@@ -4,6 +4,7 @@ Checks: >
   -*-magic-numbers,
   -*-no-malloc,
   -*-uppercase-literal-suffix,
+  -abseil-string-find-str-contains,
   -android-cloexec-accept,
   -bugprone-branch-clone,
   -clang-diagnostic-unused-macros,
@@ -16,8 +17,10 @@ Checks: >
   -fuchsia-overloaded-operator,
   -google-runtime-int,
   -hicpp-no-array-decay,
+  -llvmlibc-*,
   -modernize-use-trailing-return-type,
   -readability-implicit-bool-conversion,
+  -readability-use-anyofallof,
 WarningsAsErrors: '*'
 HeaderFilterRegex: '.*'
 FormatStyle: file
