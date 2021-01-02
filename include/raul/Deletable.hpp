@@ -25,15 +25,15 @@ namespace Raul {
 class Deletable
 {
 public:
-	Deletable() = default;
+  Deletable() = default;
 
-	Deletable(const Deletable&) = default;
-	Deletable& operator=(const Deletable&) = default;
+  Deletable(const Deletable&) = default;
+  Deletable& operator=(const Deletable&) = default;
 
-	Deletable(Deletable&&) = default;
-	Deletable& operator=(Deletable&&) = default;
+  Deletable(Deletable&&) = default;
+  Deletable& operator=(Deletable&&) = default;
 
-	virtual ~Deletable() = default;
+  virtual ~Deletable() = default;
 };
 
 } // namespace Raul

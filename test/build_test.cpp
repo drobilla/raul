@@ -27,59 +27,57 @@
 #include "raul/TimeStamp.hpp"
 
 #ifndef _WIN32
-#	include "raul/Process.hpp"
-#	include "raul/Socket.hpp"
+#  include "raul/Process.hpp"
+#  include "raul/Socket.hpp"
 #endif
 
 class DeletableThing : public Raul::Deletable
-{
-};
+{};
 
 class NonCopyableThing : public Raul::Noncopyable
-{
-};
+{};
 
 int
 main()
 {
-	Raul::Array<int>        array;
-	DeletableThing          deletable;
-	Raul::DoubleBuffer<int> double_buffer(0);
-	Raul::Maid              maid;
-	NonCopyableThing        non_copyable;
-	Raul::Path              path;
-	Raul::RingBuffer        ring_buffer(64u);
-	Raul::Semaphore         semaphore(0u);
-	Raul::Symbol            symbol("foo");
-	Raul::TimeSlice         time_slice(48000u, 960u, 120.0);
+  Raul::Array<int>        array;
+  DeletableThing          deletable;
+  Raul::DoubleBuffer<int> double_buffer(0);
+  Raul::Maid              maid;
+  NonCopyableThing        non_copyable;
+  Raul::Path              path;
+  Raul::RingBuffer        ring_buffer(64u);
+  Raul::Semaphore         semaphore(0u);
+  Raul::Symbol            symbol("foo");
+  Raul::TimeSlice         time_slice(48000u, 960u, 120.0);
 
-	Raul::TimeStamp time_stamp(Raul::TimeUnit(Raul::TimeUnit::BEATS, 960u));
+  Raul::TimeStamp time_stamp(Raul::TimeUnit(Raul::TimeUnit::BEATS, 960u));
 
-	try {
-		Raul::Symbol bad_symbol("not a valid symbol!");
-		(void)bad_symbol;
-	} catch (const Raul::Exception&) {
-	}
+  try {
+    Raul::Symbol bad_symbol("not a valid symbol!");
+    (void)bad_symbol;
+  } catch (const Raul::Exception&) {
+  }
 
 #ifndef _WIN32
-	const char* cmd[] = {"echo"};
-	Raul::Process::launch(cmd);
+  const char* cmd[] = {"echo"};
+  Raul::Process::launch(cmd);
 
-	Raul::Socket socket(Raul::Socket::Type::UNIX);
+  Raul::Socket socket(Raul::Socket::Type::UNIX);
 
-	(void)socket;
+  (void)socket;
 #endif
 
-	(void)array;
-	(void)deletable;
-	(void)double_buffer;
-	(void)maid;
-	(void)non_copyable;
-	(void)path;
-	(void)ring_buffer;
-	(void)symbol;
-	(void)time_slice;
-	(void)time_stamp;
+  (void)array;
+  (void)deletable;
+  (void)double_buffer;
+  (void)maid;
+  (void)non_copyable;
+  (void)path;
+  (void)ring_buffer;
+  (void)symbol;
+  (void)time_slice;
+  (void)time_stamp;
 
-	return 0;
+  return 0;
 }

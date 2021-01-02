@@ -13,8 +13,8 @@
   along with Raul.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "raul/TimeStamp.hpp"
 #include "raul/TimeSlice.hpp"
+#include "raul/TimeStamp.hpp"
 
 #include <cstdint>
 #include <iostream>
@@ -22,24 +22,24 @@
 int
 main()
 {
-	Raul::TimeUnit  unit(Raul::TimeUnit::BEATS, 19200);
-	Raul::TimeSlice ts(48000, 19200, 120.0);
+  Raul::TimeUnit  unit(Raul::TimeUnit::BEATS, 19200);
+  Raul::TimeSlice ts(48000, 19200, 120.0);
 
-	double in_double = 2.5;
+  double in_double = 2.5;
 
-	Raul::TimeStamp t(unit,
-	                  static_cast<uint32_t>(in_double),
-	                  static_cast<uint32_t>(
-	                          (in_double - static_cast<uint32_t>(in_double)) *
-	                          unit.ppt()));
+  Raul::TimeStamp t(
+    unit,
+    static_cast<uint32_t>(in_double),
+    static_cast<uint32_t>((in_double - static_cast<uint32_t>(in_double)) *
+                          unit.ppt()));
 
-	std::cout << "\tSeconds: ";
-	std::cout << ts.beats_to_seconds(t);
-	std::cout << std::endl;
+  std::cout << "\tSeconds: ";
+  std::cout << ts.beats_to_seconds(t);
+  std::cout << std::endl;
 
-	std::cout << "\tTicks:   ";
-	std::cout << ts.beats_to_ticks(t);
-	std::cout << std::endl;
+  std::cout << "\tTicks:   ";
+  std::cout << ts.beats_to_ticks(t);
+  std::cout << std::endl;
 
-	return 0;
+  return 0;
 }

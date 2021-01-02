@@ -23,16 +23,19 @@
 namespace Raul {
 
 /** An exception (unexpected error). */
-class Exception : public std::exception {
+class Exception : public std::exception
+{
 public:
-	// NOLINTNEXTLINE(modernize-use-override, hicpp-use-override)
-	const char* what() const noexcept final override { return _what.c_str(); }
+  // NOLINTNEXTLINE(modernize-use-override, hicpp-use-override)
+  const char* what() const noexcept final override { return _what.c_str(); }
 
 protected:
-	explicit Exception(std::string what) : _what(std::move(what)) {}
+  explicit Exception(std::string what)
+    : _what(std::move(what))
+  {}
 
 private:
-	const std::string _what;
+  const std::string _what;
 };
 
 } // namespace Raul

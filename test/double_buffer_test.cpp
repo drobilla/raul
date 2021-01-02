@@ -22,15 +22,15 @@
 int
 main()
 {
-	Raul::DoubleBuffer<int> db(0);
+  Raul::DoubleBuffer<int> db(0);
 
-	assert(db.get() == 0);
+  assert(db.get() == 0);
 
-	db.set(42);
-	assert(db.get() == 42);
+  db.set(42);
+  assert(db.get() == 42);
 
-	db.set(43);
-	assert(db.get() == 43);
+  db.set(43);
+  assert(db.get() == 43);
 
-	return 0;
+  return 0;
 }
