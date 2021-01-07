@@ -1,10 +1,15 @@
 [
+  { "symbol": [ "CLOCK_REALTIME",    "private", "<ctime>",     "public" ] },
+  { "symbol": [ "CLOCK_REALTIME",    "private", "<time.h>",    "public" ] },
+  { "symbol": [ "__syscall_slong_t", "private", "<ctime>",     "public" ] },
+  { "symbol": [ "__time_t",          "private", "<ctime>",     "public" ] },
+  { "symbol": [ "__time_t",          "private", "<time.h>",    "public" ] },
   { "symbol": [ "std::exception",    "private", "<exception>", "public" ] },
   { "symbol": [ "std::max",          "private", "<algorithm>", "public" ] },
   { "symbol": [ "std::min",          "private", "<algorithm>", "public" ] },
-  { "symbol": [ "uint32_t",          "private", "<cstdint>",   "public" ] },
-  { "symbol": [ "timespec",          "private", "<ctime>",     "public" ] },
   { "symbol": [ "time_t",            "private", "<ctime>",     "public" ] },
-  { "symbol": [ "CLOCK_REALTIME",    "private", "<ctime>",     "public" ] },
-  { "symbol": [ "__syscall_slong_t", "private", "<ctime>",     "public" ] }
+  { "symbol": [ "time_t",            "private", "<time.h>",    "public" ] },
+  { "symbol": [ "timespec",          "private", "<ctime>",     "public" ] },
+  { "symbol": [ "timespec",          "private", "<time.h>",    "public" ] },
+  { "symbol": [ "uint32_t",          "private", "<cstdint>",   "public" ] }
 ]
