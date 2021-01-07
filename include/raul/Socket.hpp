@@ -31,16 +31,20 @@
 
 namespace raul {
 
-/** A safe and simple interface for UNIX or TCP sockets. */
+/**
+   A safe and simple interface for UNIX or TCP sockets.
+
+   @ingroup raul
+*/
 class Socket : public raul::Noncopyable
 {
 public:
   enum class Type { UNIX, TCP };
 
-  /** Create a new unbound/unconnected socket of a given type. */
+  /// Create a new unbound/unconnected socket of a given type
   explicit Socket(Type t);
 
-  /** Wrap an existing open socket. */
+  /// Wrap an existing open socket
   Socket(Type             t,
          std::string      uri,
          struct sockaddr* addr,
@@ -55,41 +59,52 @@ public:
 
   ~Socket();
 
-  /** Bind a server socket to an address.
-   * @param uri Address URI, e.g. unix:///tmp/foo, or tcp://hostname:1234.
-   *            Use "*" as hostname to listen on all interfaces.
-   * @return True on success.
-   */
+  /**
+     Bind a server socket to an address.
+
+     @param uri Address URI, e.g. unix:///tmp/foo, or tcp://hostname:1234.
+     Use "*" as hostname to listen on all interfaces.
+
+     @return True on success.
+  */
   bool bind(const std::string& uri);
 
-  /** Connect a client socket to a server address.
-   * @param uri Address URI, e.g. unix:///tmp/foo or tcp://somehost:1234
-   * @return True on success.
-   */
+  /**
+     Connect a client socket to a server address.
+
+     @param uri Address URI, e.g. unix:///tmp/foo or tcp://somehost:1234
+     @return True on success.
+  */
   bool connect(const std::string& uri);
 
-  /** Mark server socket as passive to listen for incoming connections.
-   * @return True on success.
-   */
+  /**
+     Mark server socket as passive to listen for incoming connections.
+
+     @return True on success.
+  */
   bool listen();
 
-  /** Accept a connection.
-   * @return An new open socket for the connection.
-   */
+  /**
+     Accept a connection.
+
+     @return An new open socket for the connection.
+  */
   std::shared_ptr<Socket> accept();
 
-  /** Return the file descriptor for the socket. */
+  /// Return the file descriptor for the socket
   int fd() const { return _sock; }
 
   const std::string& uri() const { return _uri; }
 
-  /** Close the socket. */
+  /// Close the socket
   void close();
 
-  /** Shut down the socket.
-   * This terminates any connections associated with the sockets, and will
-   * (unlike close()) cause a poll on the socket to return.
-   */
+  /**
+     Shut down the socket.
+
+     This terminates any connections associated with the socket, and will
+     (unlike close()) cause a poll on the socket to return.
+  */
   void shutdown();
 
 private:

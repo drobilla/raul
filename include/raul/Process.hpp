@@ -23,18 +23,20 @@
 
 namespace raul {
 
-/** A child process.
- *
- * \ingroup raul
- */
+/**
+   A child process.
+
+   @ingroup raul
+*/
 class Process : Noncopyable
 {
 public:
-  /** Launch a sub process.
-   *
-   * @param argv List of arguments, where argv[0] is the command name.
-   * @return True on success.
-   */
+  /**
+     Launch a sub process.
+
+     @param argv List of arguments, where argv[0] is the command name.
+     @return True on success.
+  */
   static bool launch(const char* const argv[])
   {
     // Use the same double fork() trick as JACK to prevent zombie children

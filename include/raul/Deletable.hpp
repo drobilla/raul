@@ -18,10 +18,11 @@
 
 namespace raul {
 
-/** Something with a virtual destructor.
- *
- * \ingroup raul
- */
+/**
+   Something with a virtual destructor.
+
+   @ingroup raul
+*/
 class Deletable
 {
 public:

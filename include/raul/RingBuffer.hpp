@@ -39,8 +39,9 @@ class RingBuffer : public Noncopyable
 public:
   /**
      Create a new RingBuffer.
+
      @param size Size in bytes (note this may be rounded up).
-   */
+  */
   explicit RingBuffer(uint32_t size)
     : _write_head(0)
     , _read_head(0)
@@ -72,38 +73,28 @@ public:
     _read_head  = 0;
   }
 
-  /**
-     Return the number of bytes of space available for reading.
-  */
+  /// Return the number of bytes of space available for reading
   inline uint32_t read_space() const
   {
     return read_space_internal(_read_head, _write_head);
   }
 
-  /**
-     Return the number of bytes of space available for writing.
-  */
+  /// Return the number of bytes of space available for writing
   inline uint32_t write_space() const
   {
     return write_space_internal(_read_head, _write_head);
   }
 
-  /**
-     Return the capacity (i.e. total write space when empty).
-  */
+  /// Return the capacity (i.e. total write space when empty)
   inline uint32_t capacity() const { return _size - 1; }
 
-  /**
-     Read from the RingBuffer without advancing the read head.
-  */
+  /// Read from the RingBuffer without advancing the read head
   inline uint32_t peek(uint32_t size, void* dst)
   {
     return peek_internal(_read_head, _write_head, size, dst);
   }
 
-  /**
-     Read from the RingBuffer and advance the read head.
-  */
+  /// Read from the RingBuffer and advance the read head
   inline uint32_t read(uint32_t size, void* dst)
   {
     const uint32_t r = _read_head;
@@ -118,9 +109,7 @@ public:
     return 0;
   }
 
-  /**
-     Skip data in the RingBuffer (advance read head without reading).
-  */
+  /// Skip data in the RingBuffer (advance read head without reading)
   inline uint32_t skip(uint32_t size)
   {
     const uint32_t r = _read_head;
@@ -134,9 +123,7 @@ public:
     return size;
   }
 
-  /**
-     Write data to the RingBuffer.
-  */
+  /// Write data to the RingBuffer
   inline uint32_t write(uint32_t size, const void* src)
   {
     const uint32_t r = _read_head;

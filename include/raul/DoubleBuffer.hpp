@@ -21,16 +21,18 @@
 
 namespace raul {
 
-/** Double buffer.
- *
- * Can be thought of as a wrapper class to make a non-atomic type atomically
- * settable (with no locking).
- *
- * Read/Write realtime safe, many writers safe - but set calls may fail.
- *
- * Space:  2*sizeof(T) + sizeof(int) + sizeof(void*)
- * \ingroup raul
- */
+/**
+   Double buffer.
+
+   Can be thought of as a wrapper class to make a non-atomic type atomically
+   settable (with no locking).
+
+   Read/Write realtime safe, many writers safe - but set calls may fail.
+
+   Space:  2*sizeof(T) + sizeof(int) + sizeof(void*)
+
+   @ingroup raul
+*/
 template<typename T>
 class DoubleBuffer
 {

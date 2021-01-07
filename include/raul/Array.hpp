@@ -25,10 +25,11 @@
 
 namespace raul {
 
-/** A disposable array with size.
- *
- * \ingroup raul
- */
+/**
+   A disposable array with a size.
+
+   @ingroup raul
+*/
 template<class T>
 class Array : public Maid::Disposable
 {

@@ -25,20 +25,21 @@
 
 namespace raul {
 
-/** Explicit garbage-collector.
- *
- * This allows objects to be disposed of in a real-time thread, but actually
- * deleted later by another thread which calls cleanup().  Disposable objects
- * may be explicitly disposed by calling dispose(), or automatically managed
- * with a managed_ptr which can safely be dropped in any thread, including
- * real-time threads.
- *
- * \ingroup raul
- */
+/**
+   Explicit garbage collector.
+
+   This allows objects to be disposed of in a real-time thread, but actually
+   deleted later by another thread which calls cleanup().  Disposable objects
+   may be explicitly disposed by calling dispose(), or automatically managed
+   with a managed_ptr which can safely be dropped in any thread, including
+   real-time threads.
+
+   @ingroup raul
+*/
 class Maid : public Noncopyable
 {
 public:
-  /** An object that can be disposed via Maid::dispose(). */
+  /// An object that can be disposed via Maid::dispose()
   class Disposable : public Deletable
   {
   public:
@@ -57,7 +58,7 @@ public:
     Disposable* _maid_next{};
   };
 
-  /** Disposable wrapper for any type. */
+  /// Disposable wrapper for any type
   template<typename T>
   class Managed
     : public raul::Maid::Disposable
@@ -70,7 +71,7 @@ public:
     {}
   };
 
-  /** Deleter for Disposable objects. */
+  /// Deleter for Disposable objects
   template<typename T>
   class Disposer
   {
@@ -92,11 +93,12 @@ public:
     Maid* _maid{nullptr};
   };
 
-  /** A managed pointer that automatically disposes of its contents.
-   *
-   * This is a unique_ptr so that it is possible to statically verify that
-   * code is real-time safe.
-   */
+  /**
+     A managed pointer that automatically disposes of its contents.
+
+     This is a unique_ptr so that it is possible to statically verify that
+     code is real-time safe.
+  */
   template<typename T>
   using managed_ptr = std::unique_ptr<T, Disposer<T>>;
 
@@ -112,17 +114,18 @@ public:
 
   inline ~Maid() { cleanup(); }
 
-  /** Return false iff there is currently no garbage. */
+  /// Return false iff there is currently no garbage
   inline bool empty() const
   {
     return !_disposed.load(std::memory_order_relaxed);
   }
 
-  /** Enqueue an object for deletion when cleanup() is called next.
-   *
-   * This is thread-safe, and real-time safe assuming reasonably low
-   * contention.
-   */
+  /**
+     Enqueue an object for deletion when cleanup() is called next.
+
+     This is thread-safe, and real-time safe assuming reasonably low
+     contention.
+  */
   inline void dispose(Disposable* obj)
   {
     if (obj) {
@@ -136,11 +139,12 @@ public:
     }
   }
 
-  /** Delete all disposed objects immediately.
-   *
-   * Obviously not real-time safe, but may be called while other threads are
-   * calling dispose().
-   */
+  /**
+     Delete all disposed objects immediately.
+
+     Obviously not real-time safe, but may be called while other threads are
+     calling dispose().
+  */
   inline void cleanup()
   {
     // Atomically get the head of the disposed list
@@ -155,7 +159,7 @@ public:
     }
   }
 
-  /** Make a unique_ptr that will dispose its object when dropped. */
+  /// Make a unique_ptr that will dispose its object when dropped
   template<class T, class... Args>
   managed_ptr<T> make_managed(Args&&... args)
   {

@@ -43,6 +43,8 @@ namespace raul {
    At least on Lignux, the main advantage of this is that it is fast and the
    only safe way to reliably signal from a real-time audio thread.  The
    counting semantics also complement ringbuffers of events nicely.
+
+   @ingroup raul
 */
 class Semaphore
 {
@@ -68,23 +70,23 @@ public:
 
   inline ~Semaphore() { destroy(); }
 
-  /** Destroy and reset to a new initial value. */
+  /// Destroy and reset to a new initial value
   inline void reset(unsigned initial)
   {
     destroy();
     init(initial);
   }
 
-  /** Post/Increment/Signal */
+  /// Post/Increment/Signal
   inline void post();
 
-  /** Wait/Decrement.  Return false on error. */
+  /// Wait/Decrement, return false on error
   inline bool wait();
 
-  /** Attempt Wait/Decrement.  Return true iff decremented. */
+  /// Attempt Wait/Decrement, return true iff decremented
   inline bool try_wait();
 
-  /** Wait for at most `ms` milliseconds.  Return true iff decremented. */
+  /// Wait for at most `ms` milliseconds, return true iff decremented
   template<class Rep, class Period>
   inline bool timed_wait(const std::chrono::duration<Rep, Period>& wait);
 

@@ -22,7 +22,11 @@
 
 namespace raul {
 
-/** An exception (unexpected error). */
+/**
+   An exception (unexpected error).
+
+   @ingroup raul
+*/
 class Exception : public std::exception
 {
 public:

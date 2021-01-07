@@ -18,10 +18,11 @@
 
 namespace raul {
 
-/** Convenience base for non-copyable and non-movable classes.
- *
- * \ingroup raul
- */
+/**
+   Convenience base for non-copyable and non-movable classes.
+
+   @ingroup raul
+*/
 class Noncopyable
 {
 public:
