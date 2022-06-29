@@ -1,32 +1,32 @@
 @prefix doap: <http://usefulinc.com/ns/doap#> .
-@prefix rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
 @prefix foaf: <http://xmlns.com/foaf/0.1/> .
 
-<http://drobilla.net/software/raul> a doap:Project ;
-    doap:name "Raul" ;
-    doap:homepage <http://drobilla.net/software/raul/> ;
-    doap:bug-database <http://dev.drobilla.net/> ;
-    doap:license <http://usefulinc.com/doap/licenses/gpl> ;
-    doap:developer [
-        a foaf:Person ;
-        foaf:name "David Robillard" ;
-        foaf:homepage <http://drobilla.net/> ;
-        rdfs:seeAlso <http://drobilla.net/drobilla.rdf>
-    ] ;
-    doap:programming-language "C", "C++" ;
-    doap:repository [
-        a doap:SVNRepository ;
-        doap:browse <http://dev.drobilla.net/browser/trunk/raul> ;
-        doap:location <http://svn.drobilla.net/lad/trunk/raul>
-    ] ;
-	doap:version [
-		doap:revision "0.6.0" ;
-		doap:created "2009-12-08" ;
-		doap:file-release <http://download.drobilla.net/raul-0.6.0.tar.bz2>
-	] ;
-    doap:description """
+<http://drobilla.net/drobilla#me>
+	a foaf:Person ;
+	rdfs:seeAlso <http://drobilla.net/drobilla> ;
+	foaf:mbox <mailto:d@drobilla.net> ;
+	foaf:name "David Robillard" ;
+	foaf:nick "drobilla" .
+
+<http://drobilla.net/software/raul>
+	a doap:Project ;
+	doap:blog <https://drobilla.net/category/raul/> ;
+	doap:bug-database <https://gitlab.com/drobilla/raul/issues> ;
+	doap:description """
 Raul (Realtime Audio Utility Library) is a lightweight C++ convenience
 library for realtime programming, with a bias towards audio applications on
 POSIX systems.
-""" .
+""" ;
+	doap:developer <http://drobilla.net/drobilla#me> ;
+	doap:homepage <http://drobilla.net/software/raul/> ;
+	doap:license <https://opensource.org/licenses/gpl-3.0> ;
+	doap:maintainer <http://drobilla.net/drobilla#me> ;
+	doap:name "Raul" ;
+	doap:programming-language "C++" ;
+	doap:repository [
+		a doap:GitBranch ;
+		doap:location <https://gitlab.com/drobilla/raul.git>
+	] ;
+	doap:shortdesc "C++ real-time audio utility library" ,
+		"C++ realtime audio utility library" .
