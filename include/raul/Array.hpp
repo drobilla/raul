@@ -126,15 +126,15 @@ public:
     }
   }
 
-  inline size_t size() const { return _size; }
+  size_t size() const { return _size; }
 
-  inline T& operator[](size_t i) const
+  T& operator[](size_t i) const
   {
     assert(i < _size);
     return _elems[i];
   }
 
-  inline T& at(size_t i) const
+  T& at(size_t i) const
   {
     assert(i < _size);
     return _elems[i];

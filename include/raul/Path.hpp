@@ -75,13 +75,13 @@ public:
   ~Path() = default;
 
   /// Return true iff `c` is a valid Path character
-  static inline bool is_valid_char(char c)
+  static bool is_valid_char(char c)
   {
     return c == '/' || Symbol::is_valid_char(c);
   }
 
   /// Return true iff `str` is a valid Path
-  static inline bool is_valid(const std::basic_string<char>& str)
+  static bool is_valid(const std::basic_string<char>& str)
   {
     if (str.empty() || (str[0] != '/')) {
       return false; // Must start with '/'
@@ -111,17 +111,17 @@ public:
   }
 
   /// Return true iff this path is the root path ("/")
-  inline bool is_root() const { return *this == "/"; }
+  bool is_root() const { return *this == "/"; }
 
   /// Return true iff this path is a child of `parent` at any depth
-  inline bool is_child_of(const Path& parent) const
+  bool is_child_of(const Path& parent) const
   {
     const std::string parent_base = parent.base();
     return substr(0, parent_base.length()) == parent_base;
   }
 
   /// Return true iff this path is a parent of `child` at any depth
-  inline bool is_parent_of(const Path& child) const
+  bool is_parent_of(const Path& child) const
   {
     return child.is_child_of(*this);
   }
@@ -133,7 +133,7 @@ public:
      for OSC paths, and so on.  Since the root path does not have a symbol,
      this does not return a raul::Symbol but may return the empty string.
   */
-  inline const char* symbol() const
+  const char* symbol() const
   {
     if (!is_root()) {
       const size_t last_sep = rfind('/');
@@ -150,7 +150,7 @@ public:
      Calling this on the path "/" will return "/".
      This is the (deepest) "container path" for OSC paths.
   */
-  inline Path parent() const
+  Path parent() const
   {
     if (is_root()) {
       return *this;
@@ -162,13 +162,13 @@ public:
   }
 
   /// Return a child Path of this path
-  inline Path child(const Path& p) const
+  Path child(const Path& p) const
   {
     return p.is_root() ? *this : Path(base() + p.substr(1));
   }
 
   /// Return a direct child Path of this Path with the given Symbol
-  inline Path child(const raul::Symbol& symbol) const
+  Path child(const raul::Symbol& symbol) const
   {
     return Path(base() + symbol.c_str());
   }
@@ -179,7 +179,7 @@ public:
      The returned string is such that appending a valid Symbol to it is
      guaranteed to form a valid path.
   */
-  inline std::string base() const
+  std::string base() const
   {
     if (is_root()) {
       return *this;
@@ -189,7 +189,7 @@ public:
   }
 
   /// Return the lowest common ancestor of a and b
-  static inline Path lca(const Path& a, const Path& b)
+  static Path lca(const Path& a, const Path& b)
   {
     const size_t len      = std::min(a.length(), b.length());
     size_t       last_sep = 0;
@@ -210,8 +210,7 @@ public:
   }
 
   /// Return true iff `child` is equal to, or a descendant of `parent`
-  static inline bool descendant_comparator(const Path& parent,
-                                           const Path& child)
+  static bool descendant_comparator(const Path& parent, const Path& child)
   {
     return (child == parent || child.is_child_of(parent));
   }

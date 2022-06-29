@@ -55,35 +55,35 @@ public:
      This method is NOT thread-safe, it may only be called when there are no
      readers or writers.
   */
-  inline void reset()
+  void reset()
   {
     _write_head = 0;
     _read_head  = 0;
   }
 
   /// Return the number of bytes of space available for reading
-  inline uint32_t read_space() const
+  uint32_t read_space() const
   {
     return read_space_internal(_read_head, _write_head);
   }
 
   /// Return the number of bytes of space available for writing
-  inline uint32_t write_space() const
+  uint32_t write_space() const
   {
     return write_space_internal(_read_head, _write_head);
   }
 
   /// Return the capacity (i.e. total write space when empty)
-  inline uint32_t capacity() const { return _size - 1; }
+  uint32_t capacity() const { return _size - 1; }
 
   /// Read from the RingBuffer without advancing the read head
-  inline uint32_t peek(uint32_t size, void* dst)
+  uint32_t peek(uint32_t size, void* dst)
   {
     return peek_internal(_read_head, _write_head, size, dst);
   }
 
   /// Read from the RingBuffer and advance the read head
-  inline uint32_t read(uint32_t size, void* dst)
+  uint32_t read(uint32_t size, void* dst)
   {
     const uint32_t r = _read_head;
     const uint32_t w = _write_head;
@@ -98,7 +98,7 @@ public:
   }
 
   /// Skip data in the RingBuffer (advance read head without reading)
-  inline uint32_t skip(uint32_t size)
+  uint32_t skip(uint32_t size)
   {
     const uint32_t r = _read_head;
     const uint32_t w = _write_head;
@@ -112,7 +112,7 @@ public:
   }
 
   /// Write data to the RingBuffer
-  inline uint32_t write(uint32_t size, const void* src)
+  uint32_t write(uint32_t size, const void* src)
   {
     const uint32_t r = _read_head;
     const uint32_t w = _write_head;
@@ -139,7 +139,7 @@ public:
   }
 
 private:
-  static inline uint32_t next_power_of_two(uint32_t size)
+  static uint32_t next_power_of_two(uint32_t size)
   {
     // http://graphics.stanford.edu/~seander/bithacks.html#RoundUpPowerOf2
     size--;
@@ -152,7 +152,7 @@ private:
     return size;
   }
 
-  inline uint32_t write_space_internal(uint32_t r, uint32_t w) const
+  uint32_t write_space_internal(uint32_t r, uint32_t w) const
   {
     if (r == w) {
       return _size - 1;
@@ -165,7 +165,7 @@ private:
     return (r - w) - 1;
   }
 
-  inline uint32_t read_space_internal(uint32_t r, uint32_t w) const
+  uint32_t read_space_internal(uint32_t r, uint32_t w) const
   {
     if (r < w) {
       return w - r;
@@ -174,10 +174,7 @@ private:
     return (w - r + _size) & _size_mask;
   }
 
-  inline uint32_t peek_internal(uint32_t r,
-                                uint32_t w,
-                                uint32_t size,
-                                void*    dst) const
+  uint32_t peek_internal(uint32_t r, uint32_t w, uint32_t size, void* dst) const
   {
     if (read_space_internal(r, w) < size) {
       return 0;

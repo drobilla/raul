@@ -73,19 +73,19 @@ public:
   ~Symbol() = default;
 
   /// Return true iff `c` is a valid Symbol start character
-  static inline bool is_valid_start_char(char c)
+  static bool is_valid_start_char(char c)
   {
     return (c == '_') || (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z');
   }
 
   /// Return true iff `c` is a valid Symbol character
-  static inline bool is_valid_char(char c)
+  static bool is_valid_char(char c)
   {
     return is_valid_start_char(c) || (c >= '0' && c <= '9');
   }
 
   /// Return true iff `str` is a valid Symbol
-  static inline bool is_valid(const std::basic_string<char>& str)
+  static bool is_valid(const std::basic_string<char>& str)
   {
     if (str.empty() || (str[0] >= '0' && str[0] <= '9')) {
       return false; // Must start with a letter or underscore
@@ -100,7 +100,7 @@ public:
      This will make a best effort at turning `str` into a complete, valid
      Symbol, and will always return one.
   */
-  static inline Symbol symbolify(const std::basic_string<char>& in)
+  static Symbol symbolify(const std::basic_string<char>& in)
   {
     if (in.empty()) {
       return Symbol("_");

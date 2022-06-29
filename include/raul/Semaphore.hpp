@@ -7,7 +7,9 @@
 #ifdef __APPLE__
 #  include <mach/mach.h>
 #elif defined(_WIN32)
-#  define NOMINMAX
+#  ifndef NOMINMAX
+#    define NOMINMAX
+#  endif
 #  include <windows.h>
 #else
 #  include <cerrno>
@@ -50,16 +52,16 @@ public:
     }
   }
 
-  inline Semaphore(const Semaphore&) = delete;
-  inline Semaphore& operator=(const Semaphore&) = delete;
+  Semaphore(const Semaphore&) = delete;
+  Semaphore& operator=(const Semaphore&) = delete;
 
-  inline Semaphore(Semaphore&&) = delete;
-  inline Semaphore& operator=(Semaphore&&) = delete;
+  Semaphore(Semaphore&&) = delete;
+  Semaphore& operator=(Semaphore&&) = delete;
 
-  inline ~Semaphore() { destroy(); }
+  ~Semaphore() { destroy(); }
 
   /// Destroy and reset to a new initial value
-  inline void reset(unsigned initial)
+  void reset(unsigned initial)
   {
     destroy();
     init(initial);

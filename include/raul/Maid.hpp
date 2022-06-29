@@ -100,13 +100,10 @@ public:
   Maid(Maid&&)  = delete;
   Maid& operator=(Maid&&) = delete;
 
-  inline ~Maid() { cleanup(); }
+  ~Maid() { cleanup(); }
 
   /// Return false iff there is currently no garbage
-  inline bool empty() const
-  {
-    return !_disposed.load(std::memory_order_relaxed);
-  }
+  bool empty() const { return !_disposed.load(std::memory_order_relaxed); }
 
   /**
      Enqueue an object for deletion when cleanup() is called next.
@@ -114,7 +111,7 @@ public:
      This is thread-safe, and real-time safe assuming reasonably low
      contention.
   */
-  inline void dispose(Disposable* obj)
+  void dispose(Disposable* obj)
   {
     if (obj) {
       // Atomically add obj to the head of the disposed list
@@ -133,7 +130,7 @@ public:
      Obviously not real-time safe, but may be called while other threads are
      calling dispose().
   */
-  inline void cleanup()
+  void cleanup()
   {
     // Atomically get the head of the disposed list
     Disposable* const disposed =

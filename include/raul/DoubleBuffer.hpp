@@ -39,7 +39,7 @@ public:
 
   ~DoubleBuffer() = default;
 
-  inline const T& get() const
+  const T& get() const
   {
     switch (_state.load(std::memory_order_acquire)) {
     case State::READ_WRITE:
@@ -52,7 +52,7 @@ public:
     return _vals[1];
   }
 
-  inline bool set(T new_val)
+  bool set(T new_val)
   {
     if (transition(State::READ_WRITE, State::READ_LOCK)) {
       // Locked _vals[1] for writing
