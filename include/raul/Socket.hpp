@@ -45,11 +45,7 @@ public:
   explicit Socket(Type t);
 
   /// Wrap an existing open socket
-  Socket(Type             t,
-         std::string      uri,
-         struct sockaddr* addr,
-         socklen_t        addr_len,
-         int              fd);
+  Socket(Type t, std::string uri, sockaddr* addr, socklen_t addr_len, int fd);
 
   Socket(const Socket&) = delete;
   Socket& operator=(const Socket&) = delete;
@@ -110,11 +106,11 @@ public:
 private:
   bool set_addr(const std::string& uri);
 
-  std::string      _uri;
-  struct sockaddr* _addr;
-  socklen_t        _addr_len;
-  Type             _type;
-  int              _sock;
+  std::string _uri;
+  sockaddr*   _addr;
+  socklen_t   _addr_len;
+  Type        _type;
+  int         _sock;
 };
 
 #ifndef NI_MAXHOST
@@ -138,11 +134,11 @@ inline Socket::Socket(Type t)
   }
 }
 
-inline Socket::Socket(Type             t,
-                      std::string      uri,
-                      struct sockaddr* addr,
-                      socklen_t        addr_len,
-                      int              fd)
+inline Socket::Socket(Type        t,
+                      std::string uri,
+                      sockaddr*   addr,
+                      socklen_t   addr_len,
+                      int         fd)
   : _uri(std::move(uri))
   , _addr(addr)
   , _addr_len(addr_len)
@@ -162,13 +158,12 @@ Socket::set_addr(const std::string& uri)
   free(_addr);
   if (_type == Type::UNIX && uri.substr(0, strlen("unix://")) == "unix://") {
     const std::string path = uri.substr(strlen("unix://"));
-    auto*             uaddr =
-      static_cast<struct sockaddr_un*>(calloc(1, sizeof(struct sockaddr_un)));
+    auto* uaddr = static_cast<sockaddr_un*>(calloc(1, sizeof(sockaddr_un)));
     uaddr->sun_family = AF_UNIX;
     strncpy(uaddr->sun_path, path.c_str(), sizeof(uaddr->sun_path) - 1);
     _uri      = uri;
     _addr     = reinterpret_cast<sockaddr*>(uaddr);
-    _addr_len = sizeof(struct sockaddr_un);
+    _addr_len = sizeof(sockaddr_un);
     return true;
   }
 
@@ -185,13 +180,13 @@ Socket::set_addr(const std::string& uri)
       host = "0.0.0.0"; // INADDR_ANY
     }
 
-    struct addrinfo* ainfo = nullptr;
+    addrinfo* ainfo = nullptr;
     if (getaddrinfo(host.c_str(), port.c_str(), nullptr, &ainfo)) {
       return false;
     }
 
     _uri      = uri;
-    _addr     = static_cast<struct sockaddr*>(malloc(ainfo->ai_addrlen));
+    _addr     = static_cast<sockaddr*>(malloc(ainfo->ai_addrlen));
     _addr_len = ainfo->ai_addrlen;
     memcpy(_addr, ainfo->ai_addr, ainfo->ai_addrlen);
     freeaddrinfo(ainfo);
@@ -223,8 +218,7 @@ inline std::shared_ptr<Socket>
 Socket::accept()
 {
   socklen_t   client_addr_len = _addr_len;
-  auto* const client_addr =
-    static_cast<struct sockaddr*>(calloc(1, client_addr_len));
+  auto* const client_addr = static_cast<sockaddr*>(calloc(1, client_addr_len));
 
   const int conn = ::accept(_sock, client_addr, &client_addr_len);
   if (conn == -1) {

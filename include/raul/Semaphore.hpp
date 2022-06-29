@@ -256,7 +256,7 @@ Semaphore::timed_wait(const std::chrono::duration<Rep, Period>& wait)
   namespace chr = std::chrono;
 
   // Use clock_gettime to ensure sem_timedwait uses the same clock
-  struct timespec time {};
+  timespec time{};
   clock_gettime(CLOCK_REALTIME, &time);
 
   const auto now(chr::seconds(time.tv_sec) + chr::nanoseconds(time.tv_nsec));
@@ -265,8 +265,8 @@ Semaphore::timed_wait(const std::chrono::duration<Rep, Period>& wait)
   const chr::seconds end_sec(chr::duration_cast<chr::seconds>(end));
   const chr::nanoseconds end_nsec(end - end_sec);
 
-  const struct timespec ts_end = {static_cast<time_t>(end_sec.count()),
-                                  static_cast<long>(end_nsec.count())};
+  const timespec ts_end = {static_cast<time_t>(end_sec.count()),
+                           static_cast<long>(end_nsec.count())};
 
   return (sem_timedwait(&_sem, &ts_end) == 0);
 }

@@ -47,7 +47,7 @@ main()
     int status = 0;
     waitpid(child_pid, &status, 0);
 
-    struct pollfd pfds[2];
+    pollfd pfds[2];
     pfds[0].fd      = unix_server_sock.fd();
     pfds[0].events  = POLLIN;
     pfds[0].revents = 0;
