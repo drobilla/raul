@@ -2,7 +2,6 @@ Checks: >
   *,
   -*-avoid-c-arrays,
   -*-magic-numbers,
-  -*-uppercase-literal-suffix,
   -*-vararg,
   -abseil-string-find-str-contains,
   -altera-*,

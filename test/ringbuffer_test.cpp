@@ -27,7 +27,7 @@
 #include <string>
 #include <thread>
 
-constexpr const auto MSG_SIZE = 20u;
+constexpr const auto MSG_SIZE = 20U;
 
 namespace {
 
@@ -41,7 +41,7 @@ struct Context {
 int
 gen_msg(int* msg, int start)
 {
-  for (unsigned i = 0u; i < MSG_SIZE; ++i) {
+  for (unsigned i = 0U; i < MSG_SIZE; ++i) {
     msg[i] = start;
     start  = (start + 1) % INT_MAX;
   }
@@ -51,7 +51,7 @@ gen_msg(int* msg, int start)
 void
 check_msg(const int* msg1, const int* msg2)
 {
-  for (unsigned i = 0u; i < MSG_SIZE; ++i) {
+  for (unsigned i = 0U; i < MSG_SIZE; ++i) {
     assert(msg1[i] == msg2[i]);
   }
 }

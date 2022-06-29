@@ -44,8 +44,8 @@ main()
   raul::Maid              maid;
   NonCopyableThing        non_copyable;
   raul::Path              path;
-  raul::RingBuffer        ring_buffer(64u);
-  raul::Semaphore         semaphore(0u);
+  raul::RingBuffer        ring_buffer(64U);
+  raul::Semaphore         semaphore(0U);
   raul::Symbol            symbol("foo");
 
   try {
