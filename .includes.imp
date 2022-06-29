@@ -1,4 +1,6 @@
 [
+  { "include": [ "<bits/chrono.h>", "private", "<chrono>", "public" ] },
+
   { "symbol": [ "CLOCK_REALTIME",    "private", "<ctime>",     "public" ] },
   { "symbol": [ "CLOCK_REALTIME",    "private", "<time.h>",    "public" ] },
   { "symbol": [ "__syscall_slong_t", "private", "<ctime>",     "public" ] },

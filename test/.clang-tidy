@@ -5,7 +5,11 @@ Checks: >
   -*-uppercase-literal-suffix,
   -*-vararg,
   -abseil-string-find-str-contains,
+  -altera-*,
   -android-cloexec-accept,
+  -bugprone-easily-swappable-parameters,
+  -bugprone-exception-escape,
+  -cert-err33-c,
   -cppcoreguidelines-avoid-non-const-global-variables,
   -cppcoreguidelines-no-malloc,
   -cppcoreguidelines-owning-memory,
@@ -22,7 +26,11 @@ Checks: >
   -hicpp-signed-bitwise,
   -llvmlibc-*,
   -modernize-make-unique,
+  -modernize-return-braced-init-list,
+  -modernize-use-nodiscard,
   -modernize-use-trailing-return-type,
+  -readability-function-cognitive-complexity,
+  -readability-identifier-length,
   -readability-implicit-bool-conversion,
 CheckOptions:
   - key:   modernize-use-override.AllowOverrideAndFinal

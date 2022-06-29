@@ -109,12 +109,12 @@ main(int argc, char** argv)
 
   Context ctx;
 
-  uint32_t size = 512u;
+  uint32_t size = 512U;
   if (argc > 1) {
     size = static_cast<uint32_t>(std::stoi(argv[1]));
   }
 
-  ctx.n_writes = size * 1024u;
+  ctx.n_writes = size * size_t{1024U};
   if (argc > 2) {
     ctx.n_writes = std::stoul(argv[2]);
   }

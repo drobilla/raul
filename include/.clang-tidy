@@ -5,7 +5,9 @@ Checks: >
   -*-no-malloc,
   -*-uppercase-literal-suffix,
   -abseil-string-find-str-contains,
+  -altera-*,
   -android-cloexec-accept,
+  -bugprone-easily-swappable-parameters,
   -clang-diagnostic-unused-macros,
   -cppcoreguidelines-owning-memory,
   -cppcoreguidelines-pro-bounds-array-to-pointer-decay,
@@ -17,7 +19,10 @@ Checks: >
   -google-runtime-int,
   -hicpp-no-array-decay,
   -llvmlibc-*,
+  -modernize-return-braced-init-list,
+  -modernize-use-nodiscard,
   -modernize-use-trailing-return-type,
+  -readability-identifier-length,
   -readability-implicit-bool-conversion,
 CheckOptions:
   - key:   modernize-use-override.AllowOverrideAndFinal
