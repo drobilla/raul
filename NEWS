@@ -1,6 +1,6 @@
 raul (1.1.0) unstable;
 
-  * Add INSTALL file
+  * Add INSTALL.md file
   * Add ThreadVar, a thread-specific variable class
   * Add managed_ptr for automatic real-time safe garbage collection
   * Fix semaphore with initial count on Darwin
@@ -16,6 +16,7 @@ raul (1.1.0) unstable;
   * Remove glib dependency
   * Remove remaining library code, now header only
   * Remove several questionable classes
+  * Switch to meson build system
   * Update license to GPL3+
 
  -- David Robillard <d@drobilla.net>  Sat, 02 Jan 2021 16:58:02 +0000
