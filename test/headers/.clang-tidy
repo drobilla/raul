@@ -21,7 +21,6 @@ Checks: >
   -hicpp-no-array-decay,
   -llvmlibc-*,
   -modernize-return-braced-init-list,
-  -modernize-use-nodiscard,
   -modernize-use-trailing-return-type,
   -readability-identifier-length,
   -readability-implicit-bool-conversion,

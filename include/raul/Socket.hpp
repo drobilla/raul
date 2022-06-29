@@ -76,9 +76,9 @@ public:
   std::shared_ptr<Socket> accept();
 
   /// Return the file descriptor for the socket
-  int fd() const { return _sock; }
+  [[nodiscard]] int fd() const { return _sock; }
 
-  const std::string& uri() const { return _uri; }
+  [[nodiscard]] const std::string& uri() const { return _uri; }
 
   /// Close the socket
   void close();

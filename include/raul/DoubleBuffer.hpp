@@ -39,7 +39,7 @@ public:
 
   ~DoubleBuffer() = default;
 
-  const T& get() const
+  [[nodiscard]] const T& get() const
   {
     switch (_state.load(std::memory_order_acquire)) {
     case State::READ_WRITE:

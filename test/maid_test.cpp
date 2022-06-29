@@ -38,7 +38,7 @@ public:
 
   ~Junk() override { --n_junk; }
 
-  size_t value() const { return _val; }
+  [[nodiscard]] size_t value() const { return _val; }
 
 private:
   size_t _val;

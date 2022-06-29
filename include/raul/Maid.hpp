@@ -103,7 +103,10 @@ public:
   ~Maid() { cleanup(); }
 
   /// Return false iff there is currently no garbage
-  bool empty() const { return !_disposed.load(std::memory_order_relaxed); }
+  [[nodiscard]] bool empty() const
+  {
+    return !_disposed.load(std::memory_order_relaxed);
+  }
 
   /**
      Enqueue an object for deletion when cleanup() is called next.

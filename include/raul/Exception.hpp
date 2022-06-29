@@ -19,7 +19,10 @@ class Exception : public std::exception
 {
 public:
   // NOLINTNEXTLINE(modernize-use-override, hicpp-use-override)
-  const char* what() const noexcept final override { return _what.c_str(); }
+  [[nodiscard]] const char* what() const noexcept final override
+  {
+    return _what.c_str();
+  }
 
 protected:
   explicit Exception(std::string what)

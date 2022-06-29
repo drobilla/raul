@@ -111,17 +111,17 @@ public:
   }
 
   /// Return true iff this path is the root path ("/")
-  bool is_root() const { return *this == "/"; }
+  [[nodiscard]] bool is_root() const { return *this == "/"; }
 
   /// Return true iff this path is a child of `parent` at any depth
-  bool is_child_of(const Path& parent) const
+  [[nodiscard]] bool is_child_of(const Path& parent) const
   {
     const std::string parent_base = parent.base();
     return substr(0, parent_base.length()) == parent_base;
   }
 
   /// Return true iff this path is a parent of `child` at any depth
-  bool is_parent_of(const Path& child) const
+  [[nodiscard]] bool is_parent_of(const Path& child) const
   {
     return child.is_child_of(*this);
   }
@@ -133,7 +133,7 @@ public:
      for OSC paths, and so on.  Since the root path does not have a symbol,
      this does not return a raul::Symbol but may return the empty string.
   */
-  const char* symbol() const
+  [[nodiscard]] const char* symbol() const
   {
     if (!is_root()) {
       const size_t last_sep = rfind('/');
@@ -150,7 +150,7 @@ public:
      Calling this on the path "/" will return "/".
      This is the (deepest) "container path" for OSC paths.
   */
-  Path parent() const
+  [[nodiscard]] Path parent() const
   {
     if (is_root()) {
       return *this;
@@ -162,13 +162,13 @@ public:
   }
 
   /// Return a child Path of this path
-  Path child(const Path& p) const
+  [[nodiscard]] Path child(const Path& p) const
   {
     return p.is_root() ? *this : Path(base() + p.substr(1));
   }
 
   /// Return a direct child Path of this Path with the given Symbol
-  Path child(const raul::Symbol& symbol) const
+  [[nodiscard]] Path child(const raul::Symbol& symbol) const
   {
     return Path(base() + symbol.c_str());
   }
@@ -179,7 +179,7 @@ public:
      The returned string is such that appending a valid Symbol to it is
      guaranteed to form a valid path.
   */
-  std::string base() const
+  [[nodiscard]] std::string base() const
   {
     if (is_root()) {
       return *this;

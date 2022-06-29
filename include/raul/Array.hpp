@@ -126,15 +126,15 @@ public:
     }
   }
 
-  size_t size() const { return _size; }
+  [[nodiscard]] size_t size() const { return _size; }
 
-  T& operator[](size_t i) const
+  [[nodiscard]] T& operator[](size_t i) const
   {
     assert(i < _size);
     return _elems[i];
   }
 
-  T& at(size_t i) const
+  [[nodiscard]] T& at(size_t i) const
   {
     assert(i < _size);
     return _elems[i];
