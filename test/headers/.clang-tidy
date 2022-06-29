@@ -20,7 +20,6 @@ Checks: >
   -google-runtime-int,
   -hicpp-no-array-decay,
   -llvmlibc-*,
-  -modernize-return-braced-init-list,
   -modernize-use-trailing-return-type,
   -readability-identifier-length,
   -readability-implicit-bool-conversion,

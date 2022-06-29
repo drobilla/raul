@@ -28,7 +28,6 @@ Checks: >
   -hicpp-signed-bitwise,
   -llvmlibc-*,
   -modernize-make-unique,
-  -modernize-return-braced-init-list,
   -modernize-use-trailing-return-type,
   -readability-function-cognitive-complexity,
   -readability-identifier-length,

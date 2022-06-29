@@ -211,7 +211,7 @@ Socket::accept()
   const int conn = ::accept(_sock, client_addr, &client_addr_len);
   if (conn == -1) {
     free(client_addr);
-    return std::shared_ptr<Socket>();
+    return {};
   }
 
   std::string client_uri = _uri;
