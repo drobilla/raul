@@ -46,7 +46,7 @@ public:
       // (in child)
 
       // Close all nonstandard file descriptors
-      rlimit max_fds {};
+      rlimit max_fds{};
       getrlimit(RLIMIT_NOFILE, &max_fds);
       for (rlim_t fd = 3; fd < max_fds.rlim_cur; ++fd) {
         close(static_cast<int>(fd));
