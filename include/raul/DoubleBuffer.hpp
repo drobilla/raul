@@ -26,10 +26,9 @@ class DoubleBuffer
 {
 public:
   explicit DoubleBuffer(T val)
-    : _state(State::READ_WRITE)
-  {
-    _vals[0] = std::move(val);
-  }
+    : _state{State::READ_WRITE}
+    , _vals{std::move(val), {}}
+  {}
 
   DoubleBuffer(const DoubleBuffer&) = delete;
   DoubleBuffer& operator=(const DoubleBuffer&) = delete;
