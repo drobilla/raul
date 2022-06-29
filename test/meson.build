@@ -13,6 +13,43 @@ if not get_option('tests').disabled() and not meson.is_subproject()
   endif
 endif
 
+###################
+# Header Warnings #
+###################
+
+header_args = []
+if cpp.get_id() == 'clang'
+  header_args += [
+    '-Wno-c++17-extensions',
+    '-Wno-padded',
+    '-Wno-weak-vtables',
+  ]
+elif cpp.get_id() == 'gcc'
+  header_args += [
+    '-Wno-abi-tag',
+    '-Wno-multiple-inheritance',
+    '-Wno-padded',
+    '-Wno-switch-default',
+    '-Wno-useless-cast',
+  ]
+elif cpp.get_id() == 'msvc'
+  header_args += [
+    '/wd4626', # assignment operator implicitly deleted
+    '/wd5027', # move assignment operator implicitly deleted
+  ]
+endif
+
+# Test that headers have (almost) no warnings (ignoring usual suppressions)
+test(
+  'test_headers',
+  executable(
+    'test_headers',
+    files('headers/test_headers.cpp'),
+    cpp_args: header_args,
+    dependencies: raul_dep,
+  ),
+)
+
 ##############
 # Unit Tests #
 ##############

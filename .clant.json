@@ -1,5 +1,4 @@
 {
   "version": "1.0.0",
-  "include_dirs": ["include"],
   "mapping_files": [".includes.imp"]
 }

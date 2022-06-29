@@ -12,6 +12,7 @@ project('raul', ['cpp'],
         ])
 
 raul_src_root = meson.current_source_dir()
+raul_build_root = meson.current_build_dir()
 versioned_name = 'raul-@0@'.format(meson.project_version().split('.')[0])
 
 #######################
