@@ -31,9 +31,7 @@ public:
      @param size Size in bytes (note this may be rounded up).
   */
   explicit RingBuffer(uint32_t size)
-    : _write_head(0)
-    , _read_head(0)
-    , _size(next_power_of_two(size))
+    : _size(next_power_of_two(size))
     , _size_mask(_size - 1)
     , _buf(new char[_size])
   {
@@ -191,8 +189,8 @@ private:
     return size;
   }
 
-  mutable uint32_t _write_head; ///< Read index into _buf
-  mutable uint32_t _read_head;  ///< Write index into _buf
+  mutable uint32_t _write_head{}; ///< Read index into _buf
+  mutable uint32_t _read_head{};  ///< Write index into _buf
 
   const uint32_t _size;      ///< Size (capacity) in bytes
   const uint32_t _size_mask; ///< Mask for fast modulo
