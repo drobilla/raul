@@ -4,8 +4,6 @@
 #ifndef RAUL_RINGBUFFER_HPP
 #define RAUL_RINGBUFFER_HPP
 
-#include "raul/Noncopyable.hpp"
-
 #include <atomic>
 #include <cassert>
 #include <cstdint>
@@ -22,7 +20,7 @@ namespace raul {
 
    @ingroup raul
 */
-class RingBuffer : public Noncopyable
+class RingBuffer
 {
 public:
   /**

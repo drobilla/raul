@@ -4,8 +4,6 @@
 #ifndef RAUL_SOCKET_HPP
 #define RAUL_SOCKET_HPP
 
-#include "raul/Noncopyable.hpp"
-
 #include <netdb.h>
 #include <sys/socket.h>
 #include <sys/un.h>
@@ -24,7 +22,7 @@ namespace raul {
 
    @ingroup raul
 */
-class Socket : public raul::Noncopyable
+class Socket
 {
 public:
   enum class Type { UNIX, TCP };

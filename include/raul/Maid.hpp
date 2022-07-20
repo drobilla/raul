@@ -5,7 +5,6 @@
 #define RAUL_MAID_HPP
 
 #include "raul/Deletable.hpp"
-#include "raul/Noncopyable.hpp"
 
 #include <atomic>
 #include <memory>
@@ -24,7 +23,7 @@ namespace raul {
 
    @ingroup raul
 */
-class Maid : public Noncopyable
+class Maid
 {
 public:
   /// An object that can be disposed via Maid::dispose()
