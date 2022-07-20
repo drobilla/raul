@@ -1,4 +1,4 @@
-raul (1.1.0) unstable;
+raul (1.1.0) unstable; urgency=medium
 
   * Add INSTALL.md file
   * Add ThreadVar, a thread-specific variable class
@@ -21,7 +21,7 @@ raul (1.1.0) unstable;
 
  -- David Robillard <d@drobilla.net>  Sat, 02 Jan 2021 16:58:02 +0000
 
-raul (0.8.0) stable;
+raul (0.8.0) stable; urgency=medium
 
   * Add all classes to 'raul' doxygen group
   * Add missing #includes
@@ -43,7 +43,7 @@ raul (0.8.0) stable;
 
  -- David Robillard <d@drobilla.net>  Tue, 11 Jan 2011 22:42:07 +0000
 
-raul (0.7.0) stable;
+raul (0.7.0) stable; urgency=medium
 
   * Add Configuration class for app command line option handling
   * Add IntrusivePtr, a trivial #define of boost::intrusive_ptr which is
@@ -62,7 +62,7 @@ raul (0.7.0) stable;
 
  -- David Robillard <d@drobilla.net>  Sat, 04 Sep 2010 00:24:36 +0000
 
-raul (0.6.0) stable;
+raul (0.6.0) stable; urgency=medium
 
   * Add C++ style printing for Atom
   * Add NullDeleter convenience for SharedPtr
@@ -77,7 +77,7 @@ raul (0.6.0) stable;
 
  -- David Robillard <d@drobilla.net>  Wed, 09 Dec 2009 00:20:37 +0000
 
-raul (0.5.1) stable;
+raul (0.5.1) stable; urgency=medium
 
   * OSC blob fixes
   * Use true atomic integers for Queue indexes
