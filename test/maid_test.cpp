@@ -30,11 +30,10 @@ public:
     ++n_junk;
   }
 
-  Junk(const Junk&) = delete;
+  Junk(const Junk&)            = delete;
   Junk& operator=(const Junk&) = delete;
-
-  Junk(Junk&&)  = delete;
-  Junk& operator=(Junk&&) = delete;
+  Junk(Junk&&)                 = delete;
+  Junk& operator=(Junk&&)      = delete;
 
   ~Junk() override { --n_junk; }
 

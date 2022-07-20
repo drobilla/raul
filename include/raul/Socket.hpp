@@ -35,11 +35,10 @@ public:
   /// Wrap an existing open socket
   Socket(Type t, std::string uri, sockaddr* addr, socklen_t addr_len, int fd);
 
-  Socket(const Socket&) = delete;
+  Socket(const Socket&)            = delete;
   Socket& operator=(const Socket&) = delete;
-
-  Socket(Socket&&) = delete;
-  Socket& operator=(Socket&&) = delete;
+  Socket(Socket&&)                 = delete;
+  Socket& operator=(Socket&&)      = delete;
 
   ~Socket();
 

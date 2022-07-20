@@ -66,11 +66,10 @@ public:
     }
   }
 
-  Path(const Path& path) = default;
+  Path(const Path& path)            = default;
   Path& operator=(const Path& path) = default;
-
-  Path(Path&& path) = default;
-  Path& operator=(Path&& path) = default;
+  Path(Path&& path)                 = default;
+  Path& operator=(Path&& path)      = default;
 
   ~Path() = default;
 

@@ -39,11 +39,10 @@ public:
     assert(write_space() == _size - 1);
   }
 
-  RingBuffer(const RingBuffer&) = delete;
+  RingBuffer(const RingBuffer&)            = delete;
   RingBuffer& operator=(const RingBuffer&) = delete;
-
-  RingBuffer(RingBuffer&&) = delete;
-  RingBuffer& operator=(RingBuffer&&) = delete;
+  RingBuffer(RingBuffer&&)                 = delete;
+  RingBuffer& operator=(RingBuffer&&)      = delete;
 
   ~RingBuffer() = default;
 

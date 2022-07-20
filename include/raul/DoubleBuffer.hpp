@@ -30,11 +30,10 @@ public:
     , _vals{std::move(val), {}}
   {}
 
-  DoubleBuffer(const DoubleBuffer&) = delete;
+  DoubleBuffer(const DoubleBuffer&)            = delete;
   DoubleBuffer& operator=(const DoubleBuffer&) = delete;
-
-  DoubleBuffer(DoubleBuffer&&) = delete;
-  DoubleBuffer& operator=(DoubleBuffer&&) = delete;
+  DoubleBuffer(DoubleBuffer&&)                 = delete;
+  DoubleBuffer& operator=(DoubleBuffer&&)      = delete;
 
   ~DoubleBuffer() = default;
 

@@ -52,11 +52,10 @@ public:
     }
   }
 
-  Semaphore(const Semaphore&) = delete;
+  Semaphore(const Semaphore&)            = delete;
   Semaphore& operator=(const Semaphore&) = delete;
-
-  Semaphore(Semaphore&&) = delete;
-  Semaphore& operator=(Semaphore&&) = delete;
+  Semaphore(Semaphore&&)                 = delete;
+  Semaphore& operator=(Semaphore&&)      = delete;
 
   ~Semaphore() { destroy(); }
 

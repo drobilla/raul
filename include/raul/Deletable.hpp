@@ -16,11 +16,10 @@ class Deletable
 public:
   Deletable() = default;
 
-  Deletable(const Deletable&) = default;
+  Deletable(const Deletable&)            = default;
   Deletable& operator=(const Deletable&) = default;
-
-  Deletable(Deletable&&) = default;
-  Deletable& operator=(Deletable&&) = default;
+  Deletable(Deletable&&)                 = default;
+  Deletable& operator=(Deletable&&)      = default;
 
   virtual ~Deletable() = default;
 };

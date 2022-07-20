@@ -33,11 +33,10 @@ public:
   public:
     Disposable() = default;
 
-    Disposable(const Disposable&) = delete;
+    Disposable(const Disposable&)            = delete;
     Disposable& operator=(const Disposable&) = delete;
-
-    Disposable(Disposable&&) = delete;
-    Disposable& operator=(Disposable&&) = delete;
+    Disposable(Disposable&&)                 = delete;
+    Disposable& operator=(Disposable&&)      = delete;
 
     ~Disposable() override = default;
 
@@ -94,11 +93,10 @@ public:
     : _disposed(nullptr)
   {}
 
-  Maid(const Maid&) = delete;
+  Maid(const Maid&)            = delete;
   Maid& operator=(const Maid&) = delete;
-
-  Maid(Maid&&)  = delete;
-  Maid& operator=(Maid&&) = delete;
+  Maid(Maid&&)                 = delete;
+  Maid& operator=(Maid&&)      = delete;
 
   ~Maid() { cleanup(); }
 

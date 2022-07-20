@@ -64,11 +64,10 @@ public:
     }
   }
 
-  Symbol(const Symbol& symbol) = default;
+  Symbol(const Symbol& symbol)            = default;
   Symbol& operator=(const Symbol& symbol) = default;
-
-  Symbol(Symbol&& symbol) = default;
-  Symbol& operator=(Symbol&& symbol) = default;
+  Symbol(Symbol&& symbol)                 = default;
+  Symbol& operator=(Symbol&& symbol)      = default;
 
   ~Symbol() = default;
 
