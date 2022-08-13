@@ -1,7 +1,6 @@
-raul (1.1.0) unstable; urgency=medium
+raul (2.0.0) stable; urgency=medium
 
   * Add INSTALL.md file
-  * Add ThreadVar, a thread-specific variable class
   * Add managed_ptr for automatic real-time safe garbage collection
   * Fix semaphore with initial count on Darwin
   * Implement Semaphore for Windows
@@ -19,7 +18,7 @@ raul (1.1.0) unstable; urgency=medium
   * Switch to meson build system
   * Update license to GPL3+
 
- -- David Robillard <d@drobilla.net>  Sat, 02 Jan 2021 16:58:02 +0000
+ -- David Robillard <d@drobilla.net>  Sat, 13 Aug 2022 22:40:26 +0000
 
 raul (0.8.0) stable; urgency=medium
 
