@@ -2,14 +2,16 @@
 # SPDX-License-Identifier: CC0-1.0 OR GPL-3.0-or-later
 
 if not get_option('tests').disabled() and not meson.is_subproject()
-  # Check release metadata
-  autoship = find_program('autoship', required: get_option('tests'))
-  if autoship.found()
-    test(
-      'autoship', autoship,
-      args: ['test', raul_src_root],
-      suite: 'data',
-    )
+  if get_option('strict')
+    # Check release metadata
+    autoship = find_program('autoship', required: get_option('tests'))
+    if autoship.found()
+      test(
+        'autoship', autoship,
+        args: ['test', raul_src_root],
+        suite: 'data',
+      )
+    endif
   endif
 
   # Check licensing metadata
