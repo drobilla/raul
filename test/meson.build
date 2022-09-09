@@ -1,8 +1,8 @@
 # Copyright 2019-2022 David Robillard <d@drobilla.net>
 # SPDX-License-Identifier: 0BSD OR GPL-3.0-or-later
 
-if not get_option('tests').disabled() and not meson.is_subproject()
-  if get_option('strict')
+if get_option('strict')
+  if not meson.is_subproject()
     # Check release metadata
     autoship = find_program('autoship', required: get_option('tests'))
     if autoship.found()
