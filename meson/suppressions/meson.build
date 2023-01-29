@@ -44,6 +44,7 @@ if is_variable('cpp')
         '/wd5026', # move constructor implicitly deleted
         '/wd5027', # move assignment operator implicitly deleted
         '/wd5045', # compiler will insert Spectre mitigation
+        '/wd5262', # implicit fall-through
       ]
     endif
   endif

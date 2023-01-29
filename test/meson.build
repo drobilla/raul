@@ -48,6 +48,7 @@ elif cpp.get_id() == 'msvc'
   header_args += [
     '/wd4626', # assignment operator implicitly deleted
     '/wd5027', # move assignment operator implicitly deleted
+    '/wd5262', # implicit fall-through
   ]
 endif
 
