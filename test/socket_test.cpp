@@ -19,8 +19,8 @@ main()
 {
   using Socket = raul::Socket;
 
-  std::string unix_uri("unix:///tmp/raul_test_sock");
-  std::string tcp_uri("tcp://127.0.0.1:12345");
+  const std::string unix_uri{"unix:///tmp/raul_test_sock"};
+  const std::string tcp_uri{"tcp://127.0.0.1:12345"};
 
   Socket unix_server_sock(Socket::Type::UNIX);
   Socket tcp_server_sock(Socket::Type::TCP);
@@ -58,12 +58,12 @@ main()
       }
 
       if (pfds[0].revents & POLLIN) {
-        std::shared_ptr<Socket> conn = unix_server_sock.accept();
+        const std::shared_ptr<Socket> conn = unix_server_sock.accept();
         ++n_received;
       }
 
       if (pfds[1].revents & POLLIN) {
-        std::shared_ptr<Socket> conn = tcp_server_sock.accept();
+        const std::shared_ptr<Socket> conn = tcp_server_sock.accept();
         ++n_received;
       }
     }

@@ -51,7 +51,6 @@ reader(Context& ctx)
 
   int    ref_msg[MSG_SIZE];  // Reference generated for comparison
   int    read_msg[MSG_SIZE]; // Read from ring
-  size_t count = 0;
   int    start = gen_msg(ref_msg, 0);
   for (size_t i = 0; i < ctx.n_writes; ++i) {
     if (ctx.ring->read_space() >= MSG_SIZE * sizeof(int)) {
@@ -59,7 +58,6 @@ reader(Context& ctx)
       assert(n_read == MSG_SIZE * sizeof(int));
       check_msg(ref_msg, read_msg);
       start = gen_msg(ref_msg, start);
-      ++count;
     }
   }
 

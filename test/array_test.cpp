@@ -26,12 +26,12 @@ main()
   array1.alloc(8, 0);
   assert(array1.size() == 8);
 
-  raul::Array<int> array2(array1);
+  const raul::Array<int> array2{array1};
   for (size_t i = 0; i < array1.size(); ++i) {
     assert(array2[i] == array1[i]);
   }
 
-  raul::Array<int> array3(8, 47);
+  const raul::Array<int> array3{8, 47};
   assert(array3[0] == 47);
   assert(array3.size() == 8);
 

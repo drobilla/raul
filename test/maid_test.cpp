@@ -62,9 +62,9 @@ test()
   // Check basic single-threaded correctness
   {
     assert(n_junk == 0);
-    Maid::managed_ptr<Junk> a = maid.make_managed<Junk>(1U);
+    const Maid::managed_ptr<Junk> a = maid.make_managed<Junk>(1U);
     assert(n_junk == 1);
-    Maid::managed_ptr<Junk> b = maid.make_managed<Junk>(2U);
+    const Maid::managed_ptr<Junk> b = maid.make_managed<Junk>(2U);
     assert(n_junk == 2);
   }
 
@@ -116,7 +116,7 @@ test()
   assert(n_junk == 0);
 
   // Allocate a new object, then let it and the Maid go out of scope
-  Maid::managed_ptr<Junk> c = maid.make_managed<Junk>(5U);
+  const Maid::managed_ptr<Junk> c = maid.make_managed<Junk>(5U);
   assert(n_junk == 1);
 }
 

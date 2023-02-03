@@ -26,18 +26,18 @@ class NonCopyableThing : public raul::Noncopyable
 int
 main()
 {
-  raul::Array<int>        array;
-  DeletableThing          deletable;
-  raul::DoubleBuffer<int> double_buffer(0);
-  raul::Maid              maid;
-  NonCopyableThing        non_copyable;
-  raul::Path              path;
-  raul::RingBuffer        ring_buffer(64U);
-  raul::Semaphore         semaphore(0U);
-  raul::Symbol            symbol("foo");
+  const raul::Array<int>        array;
+  const DeletableThing          deletable;
+  const raul::DoubleBuffer<int> double_buffer(0);
+  const raul::Maid              maid;
+  const NonCopyableThing        non_copyable;
+  const raul::Path              path;
+  const raul::RingBuffer        ring_buffer(64U);
+  const raul::Semaphore         semaphore(0U);
+  const raul::Symbol            symbol("foo");
 
   try {
-    raul::Symbol bad_symbol("not a valid symbol!");
+    const raul::Symbol bad_symbol("not a valid symbol!");
     (void)bad_symbol;
   } catch (const raul::Exception&) {
   }
@@ -46,7 +46,7 @@ main()
   const char* cmd[] = {"echo"};
   raul::Process::launch(cmd);
 
-  raul::Socket socket(raul::Socket::Type::UNIX);
+  const raul::Socket socket(raul::Socket::Type::UNIX);
 
   (void)socket;
 #endif
