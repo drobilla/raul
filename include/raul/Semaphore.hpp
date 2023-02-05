@@ -153,8 +153,8 @@ Semaphore::timed_wait(const std::chrono::duration<Rep, Period>& wait)
 inline bool
 Semaphore::init(unsigned initial)
 {
-  if (!(_sem =
-          CreateSemaphore(NULL, static_cast<LONG>(initial), LONG_MAX, NULL))) {
+  if (!(_sem = CreateSemaphore(
+          nullptr, static_cast<LONG>(initial), LONG_MAX, nullptr))) {
     return false;
   }
 
@@ -170,7 +170,7 @@ Semaphore::destroy()
 inline void
 Semaphore::post()
 {
-  ReleaseSemaphore(_sem, 1, NULL);
+  ReleaseSemaphore(_sem, 1, nullptr);
 }
 
 inline bool
