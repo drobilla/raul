@@ -16,14 +16,20 @@ if is_variable('cpp')
 
   if get_option('strict')
     if cpp.get_id() in ['clang', 'emscripten']
-      cpp_suppressions = [
+      cpp_suppressions += [
         '-Wno-c++17-extensions',
         '-Wno-padded',
         '-Wno-weak-vtables',
       ]
 
+      if host_machine.system() == 'windows'
+        cpp_suppressions += [
+          '-Wno-nonportable-system-include-path',
+        ]
+      endif
+
     elif cpp.get_id() == 'gcc'
-      cpp_suppressions = [
+      cpp_suppressions += [
         '-Wno-abi-tag',
         '-Wno-inline',
         '-Wno-multiple-inheritance',
@@ -34,7 +40,7 @@ if is_variable('cpp')
       ]
 
     elif cpp.get_id() == 'msvc'
-      cpp_suppressions = [
+      cpp_suppressions += [
         '/wd4514', # unreferenced inline function removed
         '/wd4625', # copy constructor implicitly deleted
         '/wd4626', # assignment operator implicitly deleted

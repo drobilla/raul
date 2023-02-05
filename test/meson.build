@@ -36,6 +36,13 @@ if cpp.get_id() == 'clang'
     '-Wno-padded',
     '-Wno-weak-vtables',
   ]
+
+  if host_machine.system() == 'windows'
+    header_args += [
+      '-Wno-nonportable-system-include-path',
+    ]
+  endif
+
 elif cpp.get_id() == 'gcc'
   header_args += [
     '-Wno-abi-tag',
@@ -44,6 +51,7 @@ elif cpp.get_id() == 'gcc'
     '-Wno-switch-default',
     '-Wno-useless-cast',
   ]
+
 elif cpp.get_id() == 'msvc'
   header_args += [
     '/wd4626', # assignment operator implicitly deleted
