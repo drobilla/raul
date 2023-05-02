@@ -35,6 +35,12 @@ if cpp.get_id() in ['clang', 'emscripten']
       '-Wno-weak-vtables',
     ]
 
+    if not meson.is_cross_build()
+      cpp_suppressions += [
+        '-Wno-poison-system-directories',
+      ]
+    endif
+
     if host_machine.system() == 'windows'
       cpp_suppressions += [
         '-Wno-nonportable-system-include-path',

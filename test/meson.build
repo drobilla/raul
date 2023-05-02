@@ -38,6 +38,12 @@ if cpp.get_id() == 'clang'
     '-Wno-weak-vtables',
   ]
 
+  if not meson.is_cross_build()
+    header_args += [
+      '-Wno-poison-system-directories',
+    ]
+  endif
+
   if host_machine.system() == 'windows'
     header_args += [
       '-Wno-nonportable-system-include-path',
