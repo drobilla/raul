@@ -1,41 +1,14 @@
-# Copyright 2020-2022 David Robillard <d@drobilla.net>
+# Copyright 2020-2023 David Robillard <d@drobilla.net>
 # SPDX-License-Identifier: 0BSD OR GPL-3.0-or-later
 
 Checks: >
-  *,
-  -*-avoid-c-arrays,
-  -*-magic-numbers,
   -*-vararg,
-  -abseil-string-find-str-contains,
-  -altera-*,
-  -android-cloexec-accept,
-  -bugprone-easily-swappable-parameters,
   -bugprone-exception-escape,
   -cert-err33-c,
   -cppcoreguidelines-avoid-non-const-global-variables,
-  -cppcoreguidelines-no-malloc,
-  -cppcoreguidelines-owning-memory,
-  -cppcoreguidelines-pro-bounds-array-to-pointer-decay,
-  -cppcoreguidelines-pro-bounds-pointer-arithmetic,
-  -cppcoreguidelines-pro-type-const-cast,
-  -cppcoreguidelines-pro-type-reinterpret-cast,
-  -fuchsia-default-arguments*,
-  -fuchsia-overloaded-operator,
   -google-runtime-int,
   -google-runtime-references,
-  -hicpp-no-array-decay,
-  -hicpp-no-malloc,
   -hicpp-signed-bitwise,
-  -llvmlibc-*,
   -modernize-make-unique,
-  -modernize-use-trailing-return-type,
   -readability-function-cognitive-complexity,
-  -readability-identifier-length,
-  -readability-implicit-bool-conversion,
-CheckOptions:
-  - key:   modernize-use-override.AllowOverrideAndFinal
-    value: 'true'
-  - key:   cppcoreguidelines-explicit-virtual-functions.AllowOverrideAndFinal
-    value: 'true'
-HeaderFilterRegex: '.*'
-FormatStyle: file
+InheritParentConfig: true

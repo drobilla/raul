@@ -1,0 +1,33 @@
+# Copyright 2020-2023 David Robillard <d@drobilla.net>
+# SPDX-License-Identifier: 0BSD OR ISC
+
+Checks: >
+  *,
+  -*-avoid-c-arrays,
+  -*-magic-numbers,
+  -*-no-malloc,
+  -abseil-string-find-str-contains,
+  -altera-*,
+  -android-cloexec-accept,
+  -bugprone-easily-swappable-parameters,
+  -cppcoreguidelines-owning-memory,
+  -cppcoreguidelines-pro-bounds-array-to-pointer-decay,
+  -cppcoreguidelines-pro-bounds-pointer-arithmetic,
+  -cppcoreguidelines-pro-type-const-cast,
+  -cppcoreguidelines-pro-type-reinterpret-cast,
+  -fuchsia-default-arguments*,
+  -fuchsia-overloaded-operator,
+  -google-runtime-int,
+  -hicpp-no-array-decay,
+  -llvmlibc-*,
+  -modernize-use-trailing-return-type,
+  -readability-identifier-length,
+  -readability-implicit-bool-conversion,
+WarningsAsErrors: '*'
+HeaderFilterRegex: '.*'
+FormatStyle: file
+CheckOptions:
+  - key:   modernize-use-override.AllowOverrideAndFinal
+    value: 'true'
+  - key:   cppcoreguidelines-explicit-virtual-functions.AllowOverrideAndFinal
+    value: 'true'
