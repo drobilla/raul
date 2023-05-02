@@ -1,7 +1,7 @@
 # Copyright 2019-2022 David Robillard <d@drobilla.net>
 # SPDX-License-Identifier: 0BSD OR GPL-3.0-or-later
 
-if get_option('strict')
+if get_option('lint')
   if not meson.is_subproject()
     # Check release metadata
     autoship = find_program('autoship', required: get_option('tests'))
@@ -33,6 +33,7 @@ header_args = []
 if cpp.get_id() == 'clang'
   header_args += [
     '-Wno-c++17-extensions',
+    '-Wno-c++98-compat',
     '-Wno-padded',
     '-Wno-weak-vtables',
   ]
@@ -54,6 +55,10 @@ elif cpp.get_id() == 'gcc'
 
 elif cpp.get_id() == 'msvc'
   header_args += [
+    '/experimental:external',
+    '/external:W0',
+    '/external:anglebrackets',
+
     '/wd4626', # assignment operator implicitly deleted
     '/wd5027', # move assignment operator implicitly deleted
     '/wd5262', # implicit fall-through

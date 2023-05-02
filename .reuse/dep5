@@ -3,6 +3,6 @@ Upstream-Name: raul
 Upstream-Contact: David Robillard <d@drobilla.net>
 Source: https://gitlab.com/drobilla/raul
 
-Files: *.md raul.ttl .clant.json .includes.imp NEWS meson_options.txt
+Files: *.md raul.ttl .clant.json .includes.imp NEWS
 Copyright: 2020-2021 David Robillard <d@drobilla.net>
 License: 0BSD OR GPL-3.0-or-later

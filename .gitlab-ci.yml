@@ -4,46 +4,46 @@
 arm32_dbg:
   image: lv2plugin/debian-arm32
   script:
-    - meson setup build --cross-file=/usr/share/meson/cross/arm-linux-gnueabihf.ini -Dbuildtype=debug -Dstrict=true -Dwerror=true
+    - meson setup build --cross-file=/usr/share/meson/cross/arm-linux-gnueabihf.ini -Dbuildtype=debug -Dwarning_level=3 -Dwerror=true
     - ninja -C build test
 
 arm32_rel:
   image: lv2plugin/debian-arm32
   script:
-    - meson setup build --cross-file=/usr/share/meson/cross/arm-linux-gnueabihf.ini -Dbuildtype=release -Dstrict=true -Dwerror=true
+    - meson setup build --cross-file=/usr/share/meson/cross/arm-linux-gnueabihf.ini -Dbuildtype=release -Dwarning_level=3 -Dwerror=true
     - ninja -C build test
 
 
 arm64_dbg:
   image: lv2plugin/debian-arm64
   script:
-    - meson setup build --cross-file=/usr/share/meson/cross/aarch64-linux-gnu.ini -Dbuildtype=debug -Dstrict=true -Dwerror=true
+    - meson setup build --cross-file=/usr/share/meson/cross/aarch64-linux-gnu.ini -Dbuildtype=debug -Dwarning_level=3 -Dwerror=true
     - ninja -C build test
 
 arm64_rel:
   image: lv2plugin/debian-arm64
   script:
-    - meson setup build --cross-file=/usr/share/meson/cross/aarch64-linux-gnu.ini -Dbuildtype=release -Dstrict=true -Dwerror=true
+    - meson setup build --cross-file=/usr/share/meson/cross/aarch64-linux-gnu.ini -Dbuildtype=release -Dwarning_level=3 -Dwerror=true
     - ninja -C build test
 
 
 x32_dbg:
   image: lv2plugin/debian-x32
   script:
-    - meson setup build --cross-file=/usr/share/meson/cross/i686-linux-gnu.ini -Dbuildtype=debug -Dstrict=true -Dwerror=true
+    - meson setup build --cross-file=/usr/share/meson/cross/i686-linux-gnu.ini -Dbuildtype=debug -Dwarning_level=3 -Dwerror=true
     - ninja -C build test
 
 x32_rel:
   image: lv2plugin/debian-x32
   script:
-    - meson setup build --cross-file=/usr/share/meson/cross/i686-linux-gnu.ini -Dbuildtype=release -Dstrict=true -Dwerror=true
+    - meson setup build --cross-file=/usr/share/meson/cross/i686-linux-gnu.ini -Dbuildtype=release -Dwarning_level=3 -Dwerror=true
     - ninja -C build test
 
 
 x64_dbg:
   image: lv2plugin/debian-x64
   script:
-    - meson setup build -Dbuildtype=debug -Dstrict=true -Dwerror=true -Db_coverage=true
+    - meson setup build -Dbuildtype=debug -Dwarning_level=3 -Dwerror=true -Db_coverage=true
     - ninja -C build test
     - ninja -C build coverage-html
   coverage: '/ *lines\.*: \d+\.\d+.*/'
@@ -54,21 +54,21 @@ x64_dbg:
 x64_rel:
   image: lv2plugin/debian-x64
   script:
-    - meson setup build -Dbuildtype=release -Dstrict=true -Dwerror=true
+    - meson setup build -Dbuildtype=release -Dwarning_level=3 -Dwerror=true
     - ninja -C build test
 
 
 x64_static:
   image: lv2plugin/debian-x64
   script:
-    - meson setup build -Ddefault_library=static -Dstrict=true -Dwerror=true
+    - meson setup build -Ddefault_library=static -Dwarning_level=3 -Dwerror=true
     - ninja -C build test
 
 
 x64_sanitize:
   image: lv2plugin/debian-x64-clang
   script:
-    - meson setup build -Db_lundef=false -Dbuildtype=plain -Dstrict=true -Dwerror=true
+    - meson setup build -Db_lundef=false -Dbuildtype=plain -Dwarning_level=3 -Dwerror=true
     - ninja -C build test
   variables:
     CXX: "clang++"
@@ -79,26 +79,26 @@ x64_sanitize:
 mac_dbg:
   tags: [macos]
   script:
-    - meson setup build -Dbuildtype=debug -Dstrict=true -Dwerror=true
+    - meson setup build -Dbuildtype=debug -Dwarning_level=3 -Dwerror=true
     - ninja -C build test
 
 mac_rel:
   tags: [macos]
   script:
-    - meson setup build -Dbuildtype=release -Dstrict=true -Dwerror=true
+    - meson setup build -Dbuildtype=release -Dwarning_level=3 -Dwerror=true
     - ninja -C build test
 
 
 win_dbg:
   tags: [windows,meson]
   script:
-    - meson setup build -Dbuildtype=debug -Dstrict=true -Dwerror=true
+    - meson setup build -Dbuildtype=debug -Dwarning_level=everything -Dwerror=true
     - ninja -C build test
 
 win_rel:
   tags: [windows,meson]
   script:
-    - meson setup build -Dbuildtype=release -Dstrict=true -Dwerror=true
+    - meson setup build -Dbuildtype=release -Dwarning_level=everything -Dwerror=true
     - ninja -C build test
 
 
