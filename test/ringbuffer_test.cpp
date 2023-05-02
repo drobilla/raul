@@ -49,9 +49,9 @@ reader(Context& ctx)
 {
   printf("Reader starting\n");
 
-  int    ref_msg[MSG_SIZE];  // Reference generated for comparison
-  int    read_msg[MSG_SIZE]; // Read from ring
-  int    start = gen_msg(ref_msg, 0);
+  int ref_msg[MSG_SIZE];  // Reference generated for comparison
+  int read_msg[MSG_SIZE]; // Read from ring
+  int start = gen_msg(ref_msg, 0);
   for (size_t i = 0; i < ctx.n_writes; ++i) {
     if (ctx.ring->read_space() >= MSG_SIZE * sizeof(int)) {
       const uint32_t n_read = ctx.ring->read(MSG_SIZE * sizeof(int), read_msg);
