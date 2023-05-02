@@ -38,6 +38,17 @@ sanitize:
   variables:
     CXX: "clang++"
 
+# Linux distributions
+
+fedora:
+  stage: build
+  image: lv2plugin/fedora-dev
+  script:
+    - meson setup build --wrap-mode=forcefallback -Dbuildtype=plain -Dwarning_level=3 -Dwerror=true
+    - ninja -C build test
+  variables:
+    CXXFLAGS: -O2 -D_FORTIFY_SOURCE=2
+
 # Linux Platforms
 
 arm32:

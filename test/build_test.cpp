@@ -42,13 +42,17 @@ main()
   } catch (const raul::Exception&) {
   }
 
-#ifndef _WIN32
-  const char* cmd[] = {"echo"};
+#if !defined(_WIN32) && !defined(__EMSCRIPTEN__)
+
+#  if !defined(_FORTIFY_SOURCE)
+  const char* cmd[] = {"echo", NULL};
   raul::Process::launch(cmd);
+#  endif
 
   const raul::Socket socket(raul::Socket::Type::UNIX);
 
   (void)socket;
+
 #endif
 
   (void)array;
