@@ -1,5 +1,5 @@
 # Copyright 2020-2023 David Robillard <d@drobilla.net>
-# SPDX-License-Identifier: 0BSD OR ISC
+# SPDX-License-Identifier: 0BSD OR GPL-3.0-or-later
 
 Checks: >
   *,
