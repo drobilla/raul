@@ -10,6 +10,7 @@ Checks: >
   -altera-*,
   -android-cloexec-accept,
   -bugprone-easily-swappable-parameters,
+  -cppcoreguidelines-avoid-do-while,
   -cppcoreguidelines-owning-memory,
   -cppcoreguidelines-pro-bounds-array-to-pointer-decay,
   -cppcoreguidelines-pro-bounds-pointer-arithmetic,
