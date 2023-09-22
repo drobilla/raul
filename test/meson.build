@@ -35,6 +35,7 @@ if cpp.get_id() == 'clang'
     '-Wno-c++17-extensions',
     '-Wno-c++98-compat',
     '-Wno-padded',
+    '-Wno-unsafe-buffer-usage',
     '-Wno-weak-vtables',
   ]
 
@@ -70,6 +71,8 @@ elif cpp.get_id() == 'msvc'
     '/wd5262', # implicit fall-through
   ]
 endif
+
+header_args = cpp.get_supported_arguments(header_args)
 
 # Test that headers have (almost) no warnings (ignoring usual suppressions)
 test(
