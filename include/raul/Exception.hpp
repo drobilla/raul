@@ -30,7 +30,7 @@ protected:
   {}
 
 private:
-  const std::string _what;
+  std::string _what;
 };
 
 } // namespace raul

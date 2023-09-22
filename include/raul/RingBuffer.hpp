@@ -39,8 +39,8 @@ public:
 
   RingBuffer(const RingBuffer&)            = delete;
   RingBuffer& operator=(const RingBuffer&) = delete;
-  RingBuffer(RingBuffer&&)                 = delete;
-  RingBuffer& operator=(RingBuffer&&)      = delete;
+  RingBuffer(RingBuffer&&)                 = default;
+  RingBuffer& operator=(RingBuffer&&)      = default;
 
   ~RingBuffer() = default;
 
@@ -186,13 +186,13 @@ private:
     return size;
   }
 
-  mutable uint32_t _write_head{}; ///< Read index into _buf
-  mutable uint32_t _read_head{};  ///< Write index into _buf
+  uint32_t _write_head{}; ///< Read index into _buf
+  uint32_t _read_head{};  ///< Write index into _buf
 
-  const uint32_t _size;      ///< Size (capacity) in bytes
-  const uint32_t _size_mask; ///< Mask for fast modulo
+  uint32_t _size;      ///< Size (capacity) in bytes
+  uint32_t _size_mask; ///< Mask for fast modulo
 
-  const std::unique_ptr<char[]> _buf; ///< Contents
+  std::unique_ptr<char[]> _buf; ///< Contents
 };
 
 } // namespace raul
