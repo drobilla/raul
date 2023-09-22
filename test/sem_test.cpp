@@ -9,18 +9,22 @@
 #include <chrono>
 #include <thread>
 
-static void
+namespace {
+
+void
 wait_for_sem(raul::Semaphore* sem)
 {
   sem->wait();
 }
 
-static void
+void
 timed_wait_for_sem(raul::Semaphore* sem)
 {
   while (!sem->timed_wait(std::chrono::milliseconds(100))) {
   }
 }
+
+} // namespace
 
 int
 main()

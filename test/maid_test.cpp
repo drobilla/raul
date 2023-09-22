@@ -15,11 +15,13 @@
 
 using raul::Maid;
 
-static const size_t n_threads         = 8U;
-static const size_t n_junk_per_thread = 1U << 16U;
+namespace {
 
-static std::atomic<size_t> n_junk(0);
-static std::atomic<size_t> n_finished_threads(0);
+const size_t n_threads         = 8U;
+const size_t n_junk_per_thread = 1U << 16U;
+
+std::atomic<size_t> n_junk(0);
+std::atomic<size_t> n_finished_threads(0);
 
 class Junk : public Maid::Disposable
 {
@@ -43,7 +45,7 @@ private:
   size_t _val;
 };
 
-static void
+void
 litter(Maid* maid)
 {
   for (size_t i = 0; i < n_junk_per_thread; ++i) {
@@ -54,7 +56,7 @@ litter(Maid* maid)
   ++n_finished_threads;
 }
 
-static void
+void
 test()
 {
   Maid maid;
@@ -119,6 +121,8 @@ test()
   const Maid::managed_ptr<Junk> c = maid.make_managed<Junk>(5U);
   assert(n_junk == 1);
 }
+
+} // namespace
 
 int
 main()
