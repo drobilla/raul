@@ -57,19 +57,19 @@ public:
   }
 
   /// Return the number of bytes of space available for reading
-  uint32_t read_space() const
+  [[nodiscard]] uint32_t read_space() const
   {
     return read_space_internal(_read_head, _write_head);
   }
 
   /// Return the number of bytes of space available for writing
-  uint32_t write_space() const
+  [[nodiscard]] uint32_t write_space() const
   {
     return write_space_internal(_read_head, _write_head);
   }
 
   /// Return the capacity (i.e. total write space when empty)
-  uint32_t capacity() const { return _size - 1; }
+  [[nodiscard]] uint32_t capacity() const { return _size - 1; }
 
   /// Read from the RingBuffer without advancing the read head
   uint32_t peek(uint32_t size, void* dst)
@@ -147,7 +147,7 @@ private:
     return size;
   }
 
-  uint32_t write_space_internal(uint32_t r, uint32_t w) const
+  [[nodiscard]] uint32_t write_space_internal(uint32_t r, uint32_t w) const
   {
     if (r == w) {
       return _size - 1;
@@ -160,7 +160,7 @@ private:
     return (r - w) - 1;
   }
 
-  uint32_t read_space_internal(uint32_t r, uint32_t w) const
+  [[nodiscard]] uint32_t read_space_internal(uint32_t r, uint32_t w) const
   {
     if (r < w) {
       return w - r;
