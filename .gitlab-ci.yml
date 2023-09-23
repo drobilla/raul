@@ -1,13 +1,17 @@
 # Copyright 2019-2023 David Robillard <d@drobilla.net>
 # SPDX-License-Identifier: 0BSD OR GPL-3.0-or-later
 
+stages: [build, deploy]
+
 default:
+  stage: build
   image: lv2plugin/debian-x64
   script:
     - meson setup build -Dwerror=true
     - ninja -C build test
 
 dev:
+  stage: build
   image: lv2plugin/debian-x64
   script:
     - meson setup build -Dbuildtype=debug -Dwarning_level=3 -Dwerror=true -Db_coverage=true
@@ -21,12 +25,14 @@ dev:
       - build/meson-logs/coveragereport
 
 static:
+  stage: build
   image: lv2plugin/debian-x64
   script:
     - meson setup build -Ddefault_library=static -Dwarning_level=3 -Dwerror=true
     - ninja -C build test
 
 sanitize:
+  stage: build
   image: lv2plugin/debian-x64-clang
   script:
   script:
@@ -52,6 +58,7 @@ fedora:
 # Linux Platforms
 
 arm32:
+  stage: build
   image: lv2plugin/debian-arm32
   script:
     - meson setup build --cross-file=/usr/share/meson/cross/arm-linux-gnueabihf.ini -Dbuildtype=debug -Dwarning_level=3 -Dwerror=true
@@ -60,6 +67,7 @@ arm32:
     - ninja -C build test
 
 arm64:
+  stage: build
   image: lv2plugin/debian-arm64
   script:
     - meson setup build --cross-file=/usr/share/meson/cross/aarch64-linux-gnu.ini -Dbuildtype=debug -Dwarning_level=3 -Dwerror=true
@@ -68,6 +76,7 @@ arm64:
     - ninja -C build test
 
 x32:
+  stage: build
   image: lv2plugin/debian-x32
   script:
     - meson setup build --cross-file=/usr/share/meson/cross/i686-linux-gnu.ini -Dbuildtype=debug -Dwarning_level=3 -Dwerror=true
@@ -78,6 +87,7 @@ x32:
 # Non-Linux/Docker rows (not hosted)
 
 freebsd:
+  stage: build
   tags: [freebsd,meson]
   script:
     - meson setup build -Dbuildtype=debug -Dwarning_level=everything -Dwerror=true
@@ -86,6 +96,7 @@ freebsd:
     - ninja -C build test
 
 mac:
+  stage: build
   tags: [macos]
   script:
     - meson setup build -Dbuildtype=debug -Dwarning_level=everything -Dwerror=true
@@ -94,6 +105,7 @@ mac:
     - ninja -C build test
 
 win:
+  stage: build
   tags: [windows,meson]
   script:
     - meson setup build -Dbuildtype=debug -Dwarning_level=everything -Dwerror=true
@@ -113,4 +125,4 @@ pages:
     paths:
       - public
   only:
-    - main
+    - master
