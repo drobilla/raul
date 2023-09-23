@@ -1,15 +1,18 @@
 # Copyright 2019-2023 David Robillard <d@drobilla.net>
 # SPDX-License-Identifier: 0BSD OR GPL-3.0-or-later
 
-project('raul', ['cpp'],
-        version: '2.0.1',
-        license: 'GPLv3+',
-        meson_version : '>= 0.49.2',
-        default_options: [
-          'b_ndebug=if-release',
-          'buildtype=release',
-          'cpp_std=c++17',
-        ])
+project(
+  'raul',
+  ['cpp'],
+  default_options: [
+    'b_ndebug=if-release',
+    'buildtype=release',
+    'cpp_std=c++17',
+  ],
+  license: 'GPLv3+',
+  meson_version: '>= 0.49.2',
+  version: '2.0.1',
+)
 
 raul_src_root = meson.current_source_dir()
 raul_build_root = meson.current_build_dir()
