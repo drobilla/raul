@@ -39,7 +39,8 @@ main()
   try {
     const raul::Symbol bad_symbol("not a valid symbol!");
     (void)bad_symbol;
-  } catch (const raul::Exception&) {
+  } catch (const raul::Exception& e) {
+    (void)e;
   }
 
 #if !defined(_WIN32) && !defined(__EMSCRIPTEN__)
