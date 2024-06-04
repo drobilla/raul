@@ -21,9 +21,9 @@ void
 wait_for_sem(Semaphore* sem)
 {
   var = 41;
-  std::cout << "[Waiter] Waiting for signal..." << std::endl;
+  std::cout << "[Waiter] Waiting for signal...\n";
   sem->wait();
-  std::cout << "[Waiter] Received signal, exiting" << std::endl;
+  std::cout << "[Waiter] Received signal, exiting\n";
   var = 42;
   assert(var == 42);
 }
@@ -38,13 +38,13 @@ main()
 
   var = 24;
 
-  std::cout << "[Main] Signalling..." << std::endl;
+  std::cout << "[Main] Signalling...\n";
   sem.post();
 
-  std::cout << "[Main] Waiting for waiter..." << std::endl;
+  std::cout << "[Main] Waiting for waiter...\n";
   waiter.join();
 
-  std::cout << "[Main] Exiting" << std::endl;
+  std::cout << "[Main] Exiting\n";
 
   assert(var == 24);
 

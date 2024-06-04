@@ -41,7 +41,7 @@ main()
   try {
     const Symbol symbol{"0startswithdigit"};
   } catch (const Symbol::BadSymbol& e) {
-    std::cerr << "Caught exception: " << e.what() << std::endl;
+    std::cerr << "Caught exception: " << e.what() << "\n";
     valid = false;
   }
   assert(!valid);
@@ -50,7 +50,7 @@ main()
   try {
     const Symbol symbol{std::string("invalid/symbol")};
   } catch (const Symbol::BadSymbol& e) {
-    std::cerr << "Caught exception: " << e.what() << std::endl;
+    std::cerr << "Caught exception: " << e.what() << "\n";
     valid = false;
   }
   assert(!valid);

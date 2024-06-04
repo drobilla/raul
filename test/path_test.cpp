@@ -69,7 +69,7 @@ main()
   try {
     const Path path{"/ends/in/slash/"};
   } catch (const Path::BadPath& e) {
-    std::cerr << "Caught exception: " << e.what() << std::endl;
+    std::cerr << "Caught exception: " << e.what() << "\n";
     valid = false;
   }
   assert(!valid);
@@ -78,7 +78,7 @@ main()
   try {
     const Path path{std::string("/has//double/slash")};
   } catch (const Path::BadPath& e) {
-    std::cerr << "Caught exception: " << e.what() << std::endl;
+    std::cerr << "Caught exception: " << e.what() << "\n";
     valid = false;
   }
   assert(!valid);
