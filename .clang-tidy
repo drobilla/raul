@@ -21,6 +21,7 @@ Checks: >
   -google-runtime-int,
   -hicpp-no-array-decay,
   -llvmlibc-*,
+  -misc-include-cleaner,
   -modernize-use-trailing-return-type,
   -readability-identifier-length,
   -readability-implicit-bool-conversion,
