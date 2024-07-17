@@ -35,6 +35,7 @@ if cpp.get_id() in ['clang', 'emscripten']
       '-Wno-c++17-extensions',
       '-Wno-c++98-compat',
       '-Wno-padded',
+      '-Wno-switch-default',
       '-Wno-unsafe-buffer-usage',
       '-Wno-weak-vtables',
     ]

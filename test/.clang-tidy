@@ -1,4 +1,4 @@
-# Copyright 2020-2023 David Robillard <d@drobilla.net>
+# Copyright 2020-2024 David Robillard <d@drobilla.net>
 # SPDX-License-Identifier: 0BSD OR GPL-3.0-or-later
 
 Checks: >
@@ -11,4 +11,5 @@ Checks: >
   -hicpp-signed-bitwise,
   -modernize-make-unique,
   -readability-function-cognitive-complexity,
+  -readability-redundant-member-init,
 InheritParentConfig: true
