@@ -57,6 +57,7 @@ elif cpp.get_id() == 'gcc'
   if warning_level == 'everything'
     cpp_suppressions += [
       '-Wno-abi-tag',
+      '-Wno-effc++',
       '-Wno-inline',
       '-Wno-multiple-inheritance',
       '-Wno-padded',

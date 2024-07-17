@@ -11,5 +11,4 @@ Checks: >
   -hicpp-signed-bitwise,
   -modernize-make-unique,
   -readability-function-cognitive-complexity,
-  -readability-redundant-member-init,
 InheritParentConfig: true
