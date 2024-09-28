@@ -65,8 +65,10 @@ test()
   {
     assert(n_junk == 0);
     const Maid::managed_ptr<Junk> a = maid.make_managed<Junk>(1U);
+    assert(a->value() == 1U);
     assert(n_junk == 1);
     const Maid::managed_ptr<Junk> b = maid.make_managed<Junk>(2U);
+    assert(b->value() == 2U);
     assert(n_junk == 2);
   }
 
@@ -119,6 +121,7 @@ test()
 
   // Allocate a new object, then let it and the Maid go out of scope
   const Maid::managed_ptr<Junk> c = maid.make_managed<Junk>(5U);
+  assert(c->value() == 5U);
   assert(n_junk == 1);
 }
 

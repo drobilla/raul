@@ -60,11 +60,15 @@ main()
 
       if (pfds[0].revents & POLLIN) {
         const std::shared_ptr<Socket> conn = unix_server_sock.accept();
+        assert(conn);
+        assert(conn->fd());
         ++n_received;
       }
 
       if (pfds[1].revents & POLLIN) {
         const std::shared_ptr<Socket> conn = tcp_server_sock.accept();
+        assert(conn);
+        assert(conn->fd());
         ++n_received;
       }
     }
@@ -72,7 +76,6 @@ main()
     unix_server_sock.shutdown();
     tcp_server_sock.shutdown();
     unlink("/tmp/raul_test_sock");
-    fprintf(stderr, "n received: %u\n", n_received);
     return n_received != 2;
   }
 
