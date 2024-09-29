@@ -1,6 +1,24 @@
 # Copyright 2019-2022 David Robillard <d@drobilla.net>
 # SPDX-License-Identifier: 0BSD OR GPL-3.0-or-later
 
+########
+# Lint #
+########
+
+test_sources = files(
+  'headers/test_headers.cpp',
+  'array_test.cpp',
+  'build_test.cpp',
+  'double_buffer_test.cpp',
+  'maid_test.cpp',
+  'path_test.cpp',
+  'ringbuffer_test.cpp',
+  'sem_test.cpp',
+  'socket_test.cpp',
+  'symbol_test.cpp',
+  'thread_test.cpp',
+)
+
 if get_option('lint')
   if not meson.is_subproject()
     # Check release metadata
@@ -23,6 +41,17 @@ if get_option('lint')
       reuse,
       args: ['--root', raul_src_root, 'lint'],
       suite: 'data',
+    )
+  endif
+
+  # Check code formatting
+  clang_format = find_program('clang-format', required: false)
+  if clang_format.found()
+    test(
+      'format',
+      clang_format,
+      args: ['--Werror', '--dry-run'] + headers + test_sources,
+      suite: 'code',
     )
   endif
 endif

@@ -252,7 +252,7 @@ Semaphore::timed_wait(const std::chrono::duration<Rep, Period>& wait)
   const auto now(chr::seconds(time.tv_sec) + chr::nanoseconds(time.tv_nsec));
   const auto end(now + wait);
 
-  const chr::seconds end_sec(chr::duration_cast<chr::seconds>(end));
+  const chr::seconds     end_sec(chr::duration_cast<chr::seconds>(end));
   const chr::nanoseconds end_nsec(end - end_sec);
 
   const timespec ts_end = {static_cast<time_t>(end_sec.count()),
