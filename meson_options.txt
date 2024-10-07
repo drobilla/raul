@@ -4,7 +4,7 @@
 option('lint', type: 'boolean', value: false, yield: true,
        description: 'Run code quality checks')
 
-option('tests', type: 'feature', value: 'auto', yield: true,
+option('tests', type: 'feature', yield: true,
        description: 'Build tests')
 
 option('title', type: 'string', value: 'Raul',
