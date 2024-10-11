@@ -10,7 +10,7 @@ project(
     'cpp_std=c++17',
   ],
   license: 'GPLv3+',
-  meson_version: '>= 0.49.2',
+  meson_version: '>= 0.56.0',
   version: '2.0.1',
 )
 
