@@ -35,7 +35,6 @@ sanitize:
   stage: build
   image: lv2plugin/debian-x64-clang
   script:
-  script:
     - meson setup build -Db_lundef=false -Dbuildtype=plain -Dwarning_level=3 -Dwerror=true -Dcpp_args="-fno-sanitize-recover=all -fsanitize=address -fsanitize=undefined -fsanitize=float-divide-by-zero" -Dcpp_link_args="-fno-sanitize-recover=all -fsanitize=address -fsanitize=undefined -fsanitize=float-divide-by-zero"
     - ninja -C build test
     - meson configure build -Dbuildtype=debugoptimized -Dcpp_args="" -Dcpp_link_args=""
