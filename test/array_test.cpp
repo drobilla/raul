@@ -3,7 +3,7 @@
 
 #undef NDEBUG
 
-#include "raul/Array.hpp"
+#include <raul/Array.hpp>
 
 #include <cassert>
 #include <cstdio>

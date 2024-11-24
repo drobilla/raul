@@ -3,7 +3,7 @@
 
 #undef NDEBUG
 
-#include "raul/Semaphore.hpp"
+#include <raul/Semaphore.hpp>
 
 #include <cassert>
 #include <chrono>

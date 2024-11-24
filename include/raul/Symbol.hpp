@@ -4,7 +4,7 @@
 #ifndef RAUL_SYMBOL_HPP
 #define RAUL_SYMBOL_HPP
 
-#include "raul/Exception.hpp"
+#include <raul/Exception.hpp>
 
 #include <algorithm>
 #include <cstddef>

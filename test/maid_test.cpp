@@ -3,7 +3,7 @@
 
 #undef NDEBUG
 
-#include "raul/Maid.hpp"
+#include <raul/Maid.hpp>
 
 #include <atomic>
 #include <cassert>

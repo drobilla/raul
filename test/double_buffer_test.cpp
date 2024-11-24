@@ -3,7 +3,7 @@
 
 #undef NDEBUG
 
-#include "raul/DoubleBuffer.hpp"
+#include <raul/DoubleBuffer.hpp>
 
 #include <cassert>
 

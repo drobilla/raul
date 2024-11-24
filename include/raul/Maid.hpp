@@ -4,7 +4,7 @@
 #ifndef RAUL_MAID_HPP
 #define RAUL_MAID_HPP
 
-#include "raul/Deletable.hpp"
+#include <raul/Deletable.hpp>
 
 #include <atomic>
 #include <memory>

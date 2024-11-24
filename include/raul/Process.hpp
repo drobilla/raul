@@ -4,7 +4,7 @@
 #ifndef RAUL_PROCESS_HPP
 #define RAUL_PROCESS_HPP
 
-#include "raul/Noncopyable.hpp"
+#include <raul/Noncopyable.hpp>
 
 #include <sys/resource.h>
 #include <unistd.h>

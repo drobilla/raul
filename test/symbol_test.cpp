@@ -3,7 +3,7 @@
 
 #undef NDEBUG
 
-#include "raul/Symbol.hpp"
+#include <raul/Symbol.hpp>
 
 #include <cassert>
 #include <iostream>

@@ -4,9 +4,9 @@
 #ifndef RAUL_ARRAY_HPP
 #define RAUL_ARRAY_HPP
 
-#include "raul/Maid.hpp"
+#include <raul/Maid.hpp>
 
-#include <algorithm> // IWYU pragma: keep
+#include <algorithm>
 #include <cassert>
 #include <cstddef>
 #include <memory>

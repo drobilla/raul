@@ -4,8 +4,8 @@
 #ifndef RAUL_PATH_HPP
 #define RAUL_PATH_HPP
 
-#include "raul/Exception.hpp"
-#include "raul/Symbol.hpp"
+#include <raul/Exception.hpp>
+#include <raul/Symbol.hpp>
 
 #include <algorithm>
 #include <cstddef>

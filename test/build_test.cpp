@@ -1,20 +1,20 @@
 // Copyright 2007-2017 David Robillard <d@drobilla.net>
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-#include "raul/Array.hpp"
-#include "raul/Deletable.hpp"
-#include "raul/DoubleBuffer.hpp"
-#include "raul/Exception.hpp"
-#include "raul/Maid.hpp"
-#include "raul/Noncopyable.hpp"
-#include "raul/Path.hpp"
-#include "raul/RingBuffer.hpp"
-#include "raul/Semaphore.hpp"
-#include "raul/Symbol.hpp"
+#include <raul/Array.hpp>
+#include <raul/Deletable.hpp>
+#include <raul/DoubleBuffer.hpp>
+#include <raul/Exception.hpp>
+#include <raul/Maid.hpp>
+#include <raul/Noncopyable.hpp>
+#include <raul/Path.hpp>
+#include <raul/RingBuffer.hpp>
+#include <raul/Semaphore.hpp>
+#include <raul/Symbol.hpp>
 
 #ifndef _WIN32
-#  include "raul/Process.hpp"
-#  include "raul/Socket.hpp"
+#  include <raul/Process.hpp>
+#  include <raul/Socket.hpp>
 #endif
 
 class DeletableThing : public raul::Deletable
