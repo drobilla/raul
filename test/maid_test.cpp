@@ -84,6 +84,7 @@ test()
 
   // Create some threads to produce garbage
   std::vector<std::thread> litterers;
+  litterers.reserve(n_threads);
   for (size_t i = 0; i < n_threads; ++i) {
     litterers.emplace_back(litter, &maid);
   }
