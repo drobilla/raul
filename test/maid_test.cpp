@@ -74,7 +74,7 @@ test()
 
   maid.dispose(nullptr); // Mustn't crash
 
-  // All referenes dropped, but deletion deferred
+  // All references dropped, but deletion deferred
   assert(n_junk == 2);
 
   // Trigger actual deletion

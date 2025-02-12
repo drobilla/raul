@@ -127,7 +127,7 @@ raul_dep = declare_dependency(
   include_directories: include_directories('include'),
 )
 
-# Generage pkg-config file for external dependants
+# Generate pkg-config file for external dependants
 pkg.generate(
   name: 'Raul',
   description: 'Real-time audio utility library',
