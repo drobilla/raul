@@ -1,4 +1,4 @@
-# Copyright 2020-2024 David Robillard <d@drobilla.net>
+# Copyright 2020-2025 David Robillard <d@drobilla.net>
 # SPDX-License-Identifier: 0BSD OR GPL-3.0-or-later
 
 Checks: >
@@ -9,7 +9,9 @@ Checks: >
   -abseil-string-find-str-contains,
   -altera-*,
   -android-cloexec-accept,
+  -boost-use-ranges,
   -bugprone-easily-swappable-parameters,
+  -cert-err33-c,
   -cppcoreguidelines-avoid-do-while,
   -cppcoreguidelines-owning-memory,
   -cppcoreguidelines-pro-bounds-array-to-pointer-decay,
