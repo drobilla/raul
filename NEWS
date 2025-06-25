@@ -1,9 +1,10 @@
-raul (2.0.1) unstable; urgency=medium
+raul (2.1.1) unstable; urgency=medium
 
   * Avoid maintainer tests unless strict option is set
+  * De-virtualize Array template class methods
   * Fix dependency override for use as a meson subproject
 
- -- David Robillard <d@drobilla.net>  Wed, 25 Jun 2025 15:04:02 +0000
+ -- David Robillard <d@drobilla.net>  Wed, 25 Jun 2025 16:54:16 +0000
 
 raul (2.0.0) stable; urgency=medium
 

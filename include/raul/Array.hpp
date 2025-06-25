@@ -1,4 +1,4 @@
-// Copyright 2007-2013 David Robillard <d@drobilla.net>
+// Copyright 2007-2025 David Robillard <d@drobilla.net>
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 #ifndef RAUL_ARRAY_HPP
@@ -101,7 +101,7 @@ public:
     }
   }
 
-  virtual void alloc(size_t num_elems)
+  void alloc(size_t num_elems)
   {
     _size = num_elems;
 
@@ -112,7 +112,7 @@ public:
     }
   }
 
-  virtual void alloc(size_t num_elems, T initial_value)
+  void alloc(size_t num_elems, T initial_value)
   {
     _size = num_elems;
 

@@ -1,4 +1,4 @@
-# Copyright 2019-2023 David Robillard <d@drobilla.net>
+# Copyright 2019-2025 David Robillard <d@drobilla.net>
 # SPDX-License-Identifier: 0BSD OR GPL-3.0-or-later
 
 project(
@@ -11,7 +11,7 @@ project(
   ],
   license: 'GPLv3+',
   meson_version: '>= 0.56.0',
-  version: '2.0.1',
+  version: '2.1.1',
 )
 
 raul_src_root = meson.current_source_dir()
