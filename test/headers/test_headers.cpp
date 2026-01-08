@@ -17,7 +17,7 @@
 #  include <raul/Socket.hpp>  // IWYU pragma: keep
 #endif
 
-#if defined(__GNUC__)
+#ifdef __GNUC__
 __attribute__((const))
 #endif
 int

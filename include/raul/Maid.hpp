@@ -133,12 +133,12 @@ public:
   void cleanup()
   {
     // Atomically get the head of the disposed list
-    Disposable* const disposed =
+    const Disposable* const disposed =
       _disposed.exchange(nullptr, std::memory_order_acquire);
 
     // Free the disposed list
-    for (Disposable* obj = disposed; obj;) {
-      Disposable* const next = obj->_maid_next;
+    for (const Disposable* obj = disposed; obj;) {
+      const Disposable* const next = obj->_maid_next;
       delete obj;
       obj = next;
     }

@@ -45,7 +45,7 @@ main()
 
 #if !defined(_WIN32) && !defined(__EMSCRIPTEN__)
 
-#  if !defined(_FORTIFY_SOURCE)
+#  ifndef _FORTIFY_SOURCE
   const char* cmd[] = {"echo", nullptr};
   raul::Process::launch(cmd);
 #  endif

@@ -10,5 +10,6 @@ Checks: >
   -google-runtime-references,
   -hicpp-signed-bitwise,
   -modernize-make-unique,
+  -readability-ambiguous-smartptr-reset-call,
   -readability-function-cognitive-complexity,
 InheritParentConfig: true

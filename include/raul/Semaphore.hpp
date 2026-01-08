@@ -83,7 +83,7 @@ private:
   inline bool init(unsigned initial);
   inline void destroy();
 
-#if defined(__APPLE__)
+#ifdef __APPLE__
   semaphore_t _sem; // sem_t is a worthless broken mess on OSX
 #elif defined(_WIN32)
   HANDLE _sem; // types are overrated anyway
